@@ -5,10 +5,11 @@ using System.Runtime.InteropServices;
 
 namespace SharpLib.EuropeanDataFormat
 {
-    public class File : IDisposable
+    public class File : IDisposable 
     {
         public Header Header { get; set; }
         public Signal[] Signals { get; set; }
+        public AnnotationSignal AnnotationSignal { get; set; }
 
         private Reader iReader;
 
@@ -28,7 +29,7 @@ namespace SharpLib.EuropeanDataFormat
         /// </summary>
         public void Dispose()
         {
-            if (iReader!=null)
+            if (iReader != null)
             {
                 iReader.Dispose();
                 iReader = null;
@@ -80,12 +81,10 @@ namespace SharpLib.EuropeanDataFormat
             {
                 return null;
             }
-            
+
             iReader.ReadSignal(Header, signal);
             return signal;
         }
-
-
 
         /// <summary>
         /// Read the whole file into memory
