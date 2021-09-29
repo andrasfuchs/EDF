@@ -83,7 +83,7 @@ namespace SharpLib.EuropeanDataFormat
 
         private double startSeconds;
         private double durationSeconds;
-        public string StartSecondsString => startSeconds < 0 ? $"-{startSeconds}" : $"+{startSeconds}";
+        public string StartSecondsString => startSeconds < 0 ? $"-{startSeconds.ToString(CultureInfo.InvariantCulture)}" : $"+{startSeconds.ToString(CultureInfo.InvariantCulture)}";
         public string DurationSecondsString => durationSeconds >= 0 ? durationSeconds.ToString(CultureInfo.InvariantCulture) : null;
         public String AnnotationDescription { get; private set; }
 
