@@ -74,6 +74,7 @@ namespace SharpLib.EuropeanDataFormat
     /// </summary>
     public class TAL
     {
+        private const String StringDoubleFormat = "0.###";
         //Standard TAL separators
         public static readonly byte byte_21 = BitConverter.GetBytes(21)[0];
         public static readonly byte byte_20 = BitConverter.GetBytes(20)[0];
@@ -83,8 +84,10 @@ namespace SharpLib.EuropeanDataFormat
 
         private double startSeconds;
         private double durationSeconds;
-        public string StartSecondsString => startSeconds < 0 ? $"-{startSeconds.ToString(CultureInfo.InvariantCulture)}" : $"+{startSeconds.ToString(CultureInfo.InvariantCulture)}";
-        public string DurationSecondsString => durationSeconds >= 0 ? durationSeconds.ToString(CultureInfo.InvariantCulture) : null;
+        public string StartSecondsString => startSeconds < 0 ? 
+                                            $"-{startSeconds.ToString(StringDoubleFormat,CultureInfo.InvariantCulture)}" : 
+                                            $"+{startSeconds.ToString(StringDoubleFormat, CultureInfo.InvariantCulture)}";
+        public string DurationSecondsString => durationSeconds >= 0 ? durationSeconds.ToString(StringDoubleFormat, CultureInfo.InvariantCulture) : null;
         public String AnnotationDescription { get; private set; }
 
         public TAL(double startSeconds, double durationSeconds, string description)
@@ -124,7 +127,7 @@ namespace SharpLib.EuropeanDataFormat
             List<byte> result = new List<byte>();
             float indexF = (float)index / 10;
             var leftSide = Math.Truncate(indexF);
-            var rightSide = (int)(((decimal)indexF % 1) * 10);
+            var rightSide = (int)((decimal)indexF % 1 * 10);
             result.AddRange(Encoding.ASCII.GetBytes($"+{leftSide}"));
             result.Add(TAL.byte_46);
             result.AddRange(Encoding.ASCII.GetBytes($"{rightSide}"));
