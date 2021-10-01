@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define TRACE_BYTES
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -104,8 +105,10 @@ namespace SharpLib.EuropeanDataFormat
             if (strItem == null) strItem = "";
             byte[] itemBytes = AsciiToBytes(strItem);
             this.Write(itemBytes);
+#if TRACE_BYTES
             Console.WriteLine(headerItem.Name + " [" + strItem + "] \n\n-- ** BYTES LENGTH: " + itemBytes.Length
                 + "> Position after write item: " + this.BaseStream.Position + "\n");
+#endif
         }
 
         private void WriteItem(IEnumerable<HeaderItem> headerItems)
@@ -114,8 +117,10 @@ namespace SharpLib.EuropeanDataFormat
             if (joinedItems == null) joinedItems = "";
             byte[] itemBytes = AsciiToBytes(joinedItems);
             this.Write(itemBytes);
+#if TRACE_BYTES
             Console.WriteLine("[" + joinedItems + "] \n\n-- ** BYTES LENGTH: " + itemBytes.Length
                 + ", Position after write item: " + this.BaseStream.Position + "\n");
+#endif
         }
 
         private string StrJoin(IEnumerable<HeaderItem> list)
@@ -151,9 +156,9 @@ namespace SharpLib.EuropeanDataFormat
                 Console.WriteLine("There are no signals to write");
                 return;
             }
-
+#if TRACE_BYTES
             Console.WriteLine("Write position before signal: " + this.BaseStream.Position);
-
+#endif
             int numberOfRecords = edf.Header.RecordCount.Value;
 
             for (int recordIndex = 0; recordIndex < numberOfRecords; recordIndex++)
@@ -168,7 +173,9 @@ namespace SharpLib.EuropeanDataFormat
                 if (edf.AnnotationSignal != null && edf.AnnotationSignal.Samples.Any())
                     WriteAnnotations(recordIndex, edf.AnnotationSignal.Samples, edf.AnnotationSignal.SampleCountPerRecord.Value);
             }
+#if TRACE_BYTES
             Console.WriteLine("Write position after signals: " + this.BaseStream.Position);
+#endif
         }
 
         /// <summary>
@@ -189,31 +196,49 @@ namespace SharpLib.EuropeanDataFormat
 
             //Fills block size left with 0
             var blockSize = sampleCountPerRecord * 2;
+#if TRACE_BYTES
             Console.WriteLine($"Total bytes for Annotation index {0} is {bytesWritten}");
+#endif
             Debug.Assert(bytesWritten <= blockSize, "Annotation signal too big for SampleCountPerRecord");
+#if TRACE_BYTES
             Console.WriteLine($"Filling with {blockSize - bytesWritten} bytes");
+#endif
             for (int i = bytesWritten; i < blockSize; i++)
                 this.Write(TAL.byte_0);
+#if TRACE_BYTES
             Console.WriteLine("Write position after filled by 0: " + this.BaseStream.Position);
+#endif
         }
 
         private int WriteAnnotation(TAL annotations)
         {
+#if TRACE_BYTES
             Console.WriteLine("Write position before annotation: " + this.BaseStream.Position);
+#endif
             var bytesToWrite = TALExtensions.GetBytes(annotations);
+#if TRACE_BYTES
             Console.WriteLine("Bytes to write: " + bytesToWrite.Length);
+#endif
             this.Write(bytesToWrite);
+#if TRACE_BYTES
             Console.WriteLine("Write position after annotation: " + this.BaseStream.Position);
+#endif
             return bytesToWrite.Length;
         }
 
         private int WriteAnnotationIndex(int index)
         {
+#if TRACE_BYTES
             Console.WriteLine("Write position before annotation index: " + this.BaseStream.Position);
+#endif
             var bytesToWrite = TALExtensions.GetBytesForTALIndex(index);
+#if TRACE_BYTES
             Console.WriteLine("Bytes to write: " + bytesToWrite.Length);
+#endif
             this.Write(bytesToWrite);
+#if TRACE_BYTES
             Console.WriteLine("Write position after annotation index: " + this.BaseStream.Position);
+#endif
             return bytesToWrite.Length;
 
 
