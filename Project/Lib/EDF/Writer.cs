@@ -30,53 +30,53 @@ namespace SharpLib.EuropeanDataFormat
 
             //----------------- Variable length header items -----------------
             var headerSignalsLabel = edf.Signals.Select(s => s.Label);
-            if (edf.AnnotationSignal != null)
-                headerSignalsLabel = headerSignalsLabel.Concat(new List<FixedLengthString>() { edf.AnnotationSignal.Label });
+            if (edf.AnnotationSignals != null)
+                headerSignalsLabel = headerSignalsLabel.Concat(edf.AnnotationSignals.Select(x => x.Label));
             WriteItem(headerSignalsLabel);
 
             var trandsducerTypes = edf.Signals.Select(s => s.TransducerType);
-            if (edf.AnnotationSignal != null)
-                trandsducerTypes = trandsducerTypes.Concat(new List<FixedLengthString>() { edf.AnnotationSignal.TransducerType });
+            if (edf.AnnotationSignals != null)
+                trandsducerTypes = trandsducerTypes.Concat(edf.AnnotationSignals.Select(x => x.TransducerType));
             WriteItem(trandsducerTypes);
 
             var physicalDimensions = edf.Signals.Select(s => s.PhysicalDimension);
-            if (edf.AnnotationSignal != null)
-                physicalDimensions = physicalDimensions.Concat(new List<FixedLengthString>() { edf.AnnotationSignal.PhysicalDimension });
+            if (edf.AnnotationSignals != null)
+                physicalDimensions = physicalDimensions.Concat(edf.AnnotationSignals.Select(x => x.PhysicalDimension));
             WriteItem(physicalDimensions);
 
             var physicalMinimums = edf.Signals.Select(s => s.PhysicalMinimum);
-            if (edf.AnnotationSignal != null)
-                physicalMinimums = physicalMinimums.Concat(new List<FixedLengthDouble>() { edf.AnnotationSignal.PhysicalMinimum });
+            if (edf.AnnotationSignals != null)
+                physicalMinimums = physicalMinimums.Concat(edf.AnnotationSignals.Select(x => x.PhysicalMinimum));
             WriteItem(physicalMinimums);
 
             var physicalMaximuns = edf.Signals.Select(s => s.PhysicalMaximum);
-            if (edf.AnnotationSignal != null)
-                physicalMaximuns = physicalMaximuns.Concat(new List<FixedLengthDouble>() { edf.AnnotationSignal.PhysicalMaximum });
+            if (edf.AnnotationSignals != null)
+                physicalMaximuns = physicalMaximuns.Concat(edf.AnnotationSignals.Select(x => x.PhysicalMaximum));
             WriteItem(physicalMaximuns);
 
             var digitalMinimuns = edf.Signals.Select(s => s.DigitalMinimum);
-            if (edf.AnnotationSignal != null)
-                digitalMinimuns = digitalMinimuns.Concat(new List<FixedLengthInt>() { edf.AnnotationSignal.DigitalMinimum });
+            if (edf.AnnotationSignals != null)
+                digitalMinimuns = digitalMinimuns.Concat(edf.AnnotationSignals.Select(x => x.DigitalMinimum));
             WriteItem(digitalMinimuns);
 
             var digitalMaximuns = edf.Signals.Select(s => s.DigitalMaximum);
-            if (edf.AnnotationSignal != null)
-                digitalMaximuns = digitalMaximuns.Concat(new List<FixedLengthInt>() { edf.AnnotationSignal.DigitalMaximum });
+            if (edf.AnnotationSignals != null)
+                digitalMaximuns = digitalMaximuns.Concat(edf.AnnotationSignals.Select(x => x.DigitalMaximum));
             WriteItem(digitalMaximuns);
 
             var prefilterings = edf.Signals.Select(s => s.Prefiltering);
-            if (edf.AnnotationSignal != null)
-                prefilterings = prefilterings.Concat(new List<FixedLengthString>() { edf.AnnotationSignal.Prefiltering });
+            if (edf.AnnotationSignals != null)
+                prefilterings = prefilterings.Concat(edf.AnnotationSignals.Select(x => x.Prefiltering));
             WriteItem(prefilterings);
 
             var samplesCountPerRecords = edf.Signals.Select(s => s.SampleCountPerRecord);
-            if (edf.AnnotationSignal != null)
-                samplesCountPerRecords = samplesCountPerRecords.Concat(new List<FixedLengthInt>() { edf.AnnotationSignal.SampleCountPerRecord });
+            if (edf.AnnotationSignals != null)
+                samplesCountPerRecords = samplesCountPerRecords.Concat(edf.AnnotationSignals.Select(x => x.SampleCountPerRecord));
             WriteItem(samplesCountPerRecords);
 
             var reservedValues = edf.Signals.Select(s => s.Reserved);
-            if (edf.AnnotationSignal != null)
-                reservedValues = reservedValues.Concat(new List<FixedLengthString>() { edf.AnnotationSignal.Reserved });
+            if (edf.AnnotationSignals != null)
+                reservedValues = reservedValues.Concat(edf.AnnotationSignals.Select(x => x.Reserved));
             WriteItem(reservedValues);
 
             Console.WriteLine("Writer position after header: " + BaseStream.Position);
@@ -94,7 +94,7 @@ namespace SharpLib.EuropeanDataFormat
         {
             int totalFixedLength = 256;
             int ns = edf.Signals.Length;
-            ns = edf.AnnotationSignal != null ? ++ns : ns;
+            ns = edf.AnnotationSignals != null ? ns + edf.AnnotationSignals.Count() : ns;
             int totalVariableLength = ns * 16 + (ns * 80) * 2 + (ns * 8) * 6 + (ns * 32);
             return totalFixedLength + totalVariableLength;
         }
@@ -170,8 +170,12 @@ namespace SharpLib.EuropeanDataFormat
                     for (; signalStartPos < signalEndPos; signalStartPos++)
                         this.Write(BitConverter.GetBytes(signal.Samples[signalStartPos]));
                 }
-                if (edf.AnnotationSignal != null && edf.AnnotationSignal.Samples.Any())
-                    WriteAnnotations(recordIndex, edf.AnnotationSignal.Samples, edf.AnnotationSignal.SampleCountPerRecord.Value);
+                if (edf.AnnotationSignals != null && edf.AnnotationSignals.Any())
+                {
+                    foreach (var annotationSignal in edf.AnnotationSignals)
+                        WriteAnnotations(recordIndex, annotationSignal.Samples, annotationSignal.SampleCountPerRecord.Value);
+                }
+
             }
 #if TRACE_BYTES
             Console.WriteLine("Write position after signals: " + this.BaseStream.Position);

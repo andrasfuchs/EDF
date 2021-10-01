@@ -1,19 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace SharpLib.EuropeanDataFormat
 {
-    public class File : IDisposable 
+    public class File : IDisposable
     {
         public Header Header { get; set; }
         public Signal[] Signals { get; set; }
-        public AnnotationSignal AnnotationSignal { get; set; }
+        public IList<AnnotationSignal> AnnotationSignals { get; set; }
 
         private Reader iReader;
 
-        public File() { }
+        public File() { AnnotationSignals = new List<AnnotationSignal>(); }
         public File(string edfFilePath)
         {
             ReadAll(edfFilePath);
@@ -96,6 +97,7 @@ namespace SharpLib.EuropeanDataFormat
             {
                 Header = reader.ReadHeader();
                 Signals = reader.ReadSignals(Header);
+               // AnnotationSignals = reader.ReadAnnotationSignals(Header);
             }
         }
 
