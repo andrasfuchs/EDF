@@ -125,9 +125,8 @@ namespace SharpLib.EuropeanDataFormat
         public static byte[] GetBytesForTALIndex(int index)
         {
             List<byte> result = new List<byte>();
-            float indexF = (float)index / 10;
-            var leftSide = Math.Truncate(indexF);
-            var rightSide = (int)((decimal)indexF % 1 * 10);
+            var leftSide = index / 10;
+            var rightSide = index % 10;
             result.AddRange(Encoding.ASCII.GetBytes($"+{leftSide}"));
             result.Add(TAL.byte_46);
             result.AddRange(Encoding.ASCII.GetBytes($"{rightSide}"));
@@ -135,6 +134,7 @@ namespace SharpLib.EuropeanDataFormat
             result.Add(TAL.byte_20);
             result.Add(TAL.byte_0);
             return result.ToArray();
+            
         }
     }
 }
