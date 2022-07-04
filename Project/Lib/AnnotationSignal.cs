@@ -1,11 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace SharpLib.EuropeanDataFormat
+namespace EDF
 {
     public class AnnotationSignal : IBaseSignal<TAL>
     {
@@ -63,10 +62,10 @@ namespace SharpLib.EuropeanDataFormat
             this.DigitalMaximum.Value = 32767;
             this.PhysicalMinimum.Value = -1;
             this.PhysicalMaximum.Value = 1;
-            this.PhysicalDimension.Value = String.Empty;
-            this.TransducerType.Value = String.Empty;
-            this.Prefiltering.Value = String.Empty;
-            this.Reserved.Value = String.Empty;
+            this.PhysicalDimension.Value = string.Empty;
+            this.TransducerType.Value = string.Empty;
+            this.Prefiltering.Value = string.Empty;
+            this.Reserved.Value = string.Empty;
         }
     }
     /// <summary>
@@ -74,7 +73,7 @@ namespace SharpLib.EuropeanDataFormat
     /// </summary>
     public class TAL
     {
-        private const String StringDoubleFormat = "0.###";
+        private const string StringDoubleFormat = "0.###";
         //Standard TAL separators
         public static readonly byte byte_21 = BitConverter.GetBytes(21)[0];
         public static readonly byte byte_20 = BitConverter.GetBytes(20)[0];
@@ -88,7 +87,7 @@ namespace SharpLib.EuropeanDataFormat
                                             $"-{startSeconds.ToString(StringDoubleFormat,CultureInfo.InvariantCulture)}" : 
                                             $"+{startSeconds.ToString(StringDoubleFormat, CultureInfo.InvariantCulture)}";
         public string DurationSecondsString => durationSeconds >= 0 ? durationSeconds.ToString(StringDoubleFormat, CultureInfo.InvariantCulture) : null;
-        public String AnnotationDescription { get; private set; }
+        public string AnnotationDescription { get; private set; }
 
         public TAL(double startSeconds, double durationSeconds, string description)
         {

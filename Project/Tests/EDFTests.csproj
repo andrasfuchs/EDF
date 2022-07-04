@@ -36,6 +36,6 @@
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Lib\SharpLibEuropeanDataFormat.csproj" />
+    <ProjectReference Include="..\Lib\EDF.csproj" />
   </ItemGroup>
 </Project>

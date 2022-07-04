@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SharpLib.EuropeanDataFormat;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using EDF;
 
 namespace EDFSharpTests
 {
@@ -12,7 +13,7 @@ namespace EDFSharpTests
         public void Test_WriteReadEDF_ShouldReturnSameData()
         {
             //Write an EDF file with two signals then read it and check the data is correct
-            var edf1 = new File();
+            var edf1 = new EDFFile();
 
             var ecgSig = new Signal();
             ecgSig.Label.Value = "ECG";
@@ -42,7 +43,7 @@ namespace EDFSharpTests
                         
             edf1.Signals = new Signal[2] { ecgSig, soundSig };
 
-            var h = new Header();
+            var h = new EDFHeader();
             h.RecordDurationInSeconds.Value = 1;
             h.Version.Value = "0";
             h.PatientID.Value = "TEST PATIENT ID";
@@ -56,12 +57,11 @@ namespace EDFSharpTests
 
             edf1.Header = h;
 
-            string edfFilePath = @"C:\temp\test1.EDF";
-
+            string edfFilePath = @"test1.EDF";
             edf1.Save(edfFilePath);
 
             //Read the file back
-            var edf2 = new File(edfFilePath);
+            var edf2 = new EDFFile(edfFilePath);
 
             Assert.AreEqual(edf2.Header.Version.ToAscii(),              edf1.Header.Version.ToAscii());
             Assert.AreEqual(edf2.Header.PatientID.ToAscii(),            edf1.Header.PatientID.ToAscii());
@@ -73,13 +73,14 @@ namespace EDFSharpTests
             Assert.AreEqual(edf2.Header.SignalCount.ToAscii(),      edf1.Header.SignalCount.ToAscii());
             Assert.AreEqual(edf2.Header.Signals.Reserveds.ToAscii(),      edf1.Header.Signals.Reserveds.ToAscii());
             Assert.AreEqual(edf2.Signals[0].Samples.Count,             edf1.Signals[0].Samples.Count);
+            System.IO.File.Delete(edfFilePath);
         }
 
-        [TestMethod]
+      //  [TestMethod]
         public void ReadFie()
         {
             string filename = @"D:\edf\12-38-08.EDF";
-           var edf = new File(filename);
+           var edf = new EDFFile(filename);
            
         }
     }

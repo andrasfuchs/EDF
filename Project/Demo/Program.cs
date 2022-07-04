@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
-using EDF = SharpLib.EuropeanDataFormat;
 using System.IO;
 using System.Collections.Generic;
+using EDF;
+using File = System.IO.File;
 
 namespace EuropeanDataFormatDemo
 {
@@ -34,25 +35,25 @@ namespace EuropeanDataFormatDemo
                 DateTime mark = DateTime.Now;
                 //
 
-                EDF.File edf = null;
+                EDF.EDFFile edf = null;
                 int signalIndex = -1;
 
                 if (args.Count()==1)
                 {
                     // No signal index specified, read the whole file
-                    edf = new EDF.File(fileInfo.FullName);
+                    edf = new EDF.EDFFile(fileInfo.FullName);
                 }
                 else
                 {
                     // Signal specified, just read that one signal 
-                    using (edf = new EDF.File())
+                    using (edf = new EDF.EDFFile())
                     {
                         edf.Open(fileInfo.FullName);
                         // Read specified signals
                         for (int i=1; i<args.Count(); i++)
                         {
                             Console.WriteLine("Reading signal: " + args[i]);
-                            EDF.Signal signal = edf.ReadSignal(args[i]);
+                            Signal signal = edf.ReadSignal(args[i]);
                             if (signal==null)
                             {
                                 Console.WriteLine("ERROR: Signal " + args[i] + " not found");
@@ -73,7 +74,7 @@ namespace EuropeanDataFormatDemo
                 if (signalIndex<0)
                 {
                     // Print all signal
-                    foreach (EDF.Signal s in edf.Signals)
+                    foreach (Signal s in edf.Signals)
                     {
                         Console.WriteLine(s.ToString());
                     }      
@@ -104,10 +105,10 @@ namespace EuropeanDataFormatDemo
         {
 
             //Crreate an empty EDF file
-            var edfFile = new EDF.File();
+            var edfFile = new EDF.EDFFile();
 
             //Create a signal object
-            var ecgSig = new EDF.Signal();
+            var ecgSig = new Signal();
             ecgSig.Label.Value = "ECG";
             ecgSig.SampleCountPerRecord.Value = 10;
             ecgSig.PhysicalDimension.Value = "mV";
@@ -121,10 +122,10 @@ namespace EuropeanDataFormatDemo
             ecgSig.Samples = new List<short> { 100, 50, 23, 75, 12, 88, 73, 12, 34, 83 };
 
             //Set the signal
-            edfFile.Signals = new EDF.Signal[1] { ecgSig };
+            edfFile.Signals = new Signal[1] { ecgSig };
 
             //Create the header object
-            var h = new EDF.Header();
+            var h = new EDFHeader();
             h.RecordDurationInSeconds.Value = 1;
             h.Version.Value = "0";
             h.PatientID.Value = "TEST PATIENT ID";
@@ -156,7 +157,7 @@ namespace EuropeanDataFormatDemo
             edfFile.Save(fileName);
 
             //Read the file
-            var f = new EDF.File(fileName);
+            var f = new EDF.EDFFile(fileName);
 
             Console.ReadLine();
         }
@@ -164,7 +165,7 @@ namespace EuropeanDataFormatDemo
         private static void Example2_Read_EDF_From_Base64(string edfBase64FilePath)
         {
             var edfBase64 = File.ReadAllText(edfBase64FilePath);
-            var edfFile = new EDF.File();
+            var edfFile = new EDF.EDFFile();
             edfFile.ReadBase64(edfBase64);
             edfFile.Save(@"C:\temp\edf_bytes.edf");
         }

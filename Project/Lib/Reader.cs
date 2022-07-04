@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace SharpLib.EuropeanDataFormat
+namespace EDF
 {
     class Reader : BinaryReader
     {
         public Reader(FileStream fs) : base(fs) { }
         public Reader(byte[] edfBytes) : base(new MemoryStream(edfBytes)) { }
 
-        public Header ReadHeader()
+        public EDFHeader ReadHeader()
         {
-            Header h = new Header();
+            EDFHeader h = new EDFHeader();
 
             this.BaseStream.Seek(0, SeekOrigin.Begin);
 
@@ -40,7 +41,7 @@ namespace SharpLib.EuropeanDataFormat
             h.Signals.PhysicalMaximums.Value = ReadMultipleDouble(HeaderItems.PhysicalMaximum, ns);
             h.Signals.DigitalMinimums.Value = ReadMultipleInt(HeaderItems.DigitalMinimum, ns);
             h.Signals.DigitalMaximums.Value = ReadMultipleInt(HeaderItems.DigitalMaximum, ns);
-            h.Signals.Prefilterings.Value = ReadMultipleAscii(HeaderItems.Prefiltering, ns);
+            h.Signals.PreFilterings.Value = ReadMultipleAscii(HeaderItems.Prefiltering, ns);
             h.Signals.SampleCountPerRecords.Value = ReadMultipleInt(HeaderItems.NumberOfSamplesInDataRecord, ns);
             h.Signals.Reserveds.Value = ReadMultipleAscii(HeaderItems.SignalsReserved, ns);
 
@@ -52,27 +53,27 @@ namespace SharpLib.EuropeanDataFormat
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="aHeader"></param>
+        /// <param name="aEdfHeader"></param>
         /// <returns></returns>
-        public Signal[] AllocateSignals(Header aHeader)
+        public Signal[] AllocateSignals(EDFHeader aEdfHeader)
         {
-            Signal[] signals = new Signal[aHeader.SignalCount.Value];
+            Signal[] signals = new Signal[aEdfHeader.SignalCount.Value];
 
             for (int i = 0; i < signals.Length; i++)
             {
                 signals[i] = new Signal();
                 // Just copy data from the header, ugly architecture really...
                 signals[i].Index = i;
-                signals[i].Label.Value = aHeader.Signals.Labels.Value[i];
-                signals[i].TransducerType.Value = aHeader.Signals.TransducerTypes.Value[i];
-                signals[i].PhysicalDimension.Value = aHeader.Signals.PhysicalDimensions.Value[i];
-                signals[i].PhysicalMinimum.Value = aHeader.Signals.PhysicalMinimums.Value[i];
-                signals[i].PhysicalMaximum.Value = aHeader.Signals.PhysicalMaximums.Value[i];
-                signals[i].DigitalMinimum.Value = aHeader.Signals.DigitalMinimums.Value[i];
-                signals[i].DigitalMaximum.Value = aHeader.Signals.DigitalMaximums.Value[i];
-                signals[i].Prefiltering.Value = aHeader.Signals.Prefilterings.Value[i];
-                signals[i].Reserved.Value = aHeader.Signals.Reserveds.Value[i];
-                signals[i].SampleCountPerRecord.Value = aHeader.Signals.SampleCountPerRecords.Value[i];
+                signals[i].Label.Value = aEdfHeader.Signals.Labels.Value[i];
+                signals[i].TransducerType.Value = aEdfHeader.Signals.TransducerTypes.Value[i];
+                signals[i].PhysicalDimension.Value = aEdfHeader.Signals.PhysicalDimensions.Value[i];
+                signals[i].PhysicalMinimum.Value = aEdfHeader.Signals.PhysicalMinimums.Value[i];
+                signals[i].PhysicalMaximum.Value = aEdfHeader.Signals.PhysicalMaximums.Value[i];
+                signals[i].DigitalMinimum.Value = aEdfHeader.Signals.DigitalMinimums.Value[i];
+                signals[i].DigitalMaximum.Value = aEdfHeader.Signals.DigitalMaximums.Value[i];
+                signals[i].Prefiltering.Value = aEdfHeader.Signals.PreFilterings.Value[i];
+                signals[i].Reserved.Value = aEdfHeader.Signals.Reserveds.Value[i];
+                signals[i].SampleCountPerRecord.Value = aEdfHeader.Signals.SampleCountPerRecords.Value[i];
             }
 
             return signals;
@@ -81,78 +82,70 @@ namespace SharpLib.EuropeanDataFormat
         /// <summary>
         /// Read the requested signal for our file
         /// </summary>
-        /// <param name="aHeader"></param>
+        /// <param name="aEdfHeader"></param>
         /// <param name="aSignal"></param>
-        public void ReadSignal(Header aHeader, Signal aSignal)
+        public void ReadSignal(EDFHeader aEdfHeader, Signal aSignal)
         {
             // Make sure we start just after our header
-            this.BaseStream.Seek(aHeader.SizeInBytes.Value, SeekOrigin.Begin);
+            this.BaseStream.Seek(aEdfHeader.SizeInBytes.Value, SeekOrigin.Begin);
 
             aSignal.Samples.Clear();
-            // Compute capacity thus pre-allocating memory to avoid resizing
-            //aSignal.Samples.Capacity = aHeader.RecordCount.Value * aSignal.SampleCountPerRecord.Value;
-            int capacity = aSignal.Samples.Capacity;
             // For each record
-            for (int j = 0; j < aHeader.RecordCount.Value; j++)
+            for (int j = 0; j < aEdfHeader.RecordCount.Value; j++)
             {
                 // For each signal
-                for (int i = 0; i < aHeader.SignalCount.Value; i++)
+                for (int i = 0; i < aEdfHeader.SignalCount.Value; i++)
                 {
                     // Read that signal samples
-                    if (i==aSignal.Index)
+                    if (i == aSignal.Index)
                     {
                         ReadNextSignalSamples(aSignal.Samples, aSignal.SampleCountPerRecord.Value);
                     }
                     else
                     {
                         // Just skip it
-                        SkipSignalSamples(aHeader.Signals.SampleCountPerRecords.Value[i]);
+                        SkipSignalSamples(aEdfHeader.Signals.SampleCountPerRecords.Value[i]);
                     }
                 }
             }
-
-            if (capacity != aSignal.Samples.Capacity)
-            {
-                // We should never get there
-                Debug.WriteLine("ERROR: signal array was resized");
-            }
-
         }
 
         /// <summary>
         /// Read all signal sample value from our file.
         /// </summary>
         /// <returns></returns>
-        public Signal[] ReadSignals(Header aHeader)
-        {            
-            Signal[] signals = AllocateSignals(aHeader);
+        public Signal[] ReadSignals(EDFHeader aEdfHeader)
+        {
+            Signal[] signals = AllocateSignals(aEdfHeader);
             // For each record
-            for (int j = 0; j < aHeader.RecordCount.Value; j++)
+            for (int j = 0; j < aEdfHeader.RecordCount.Value; j++)
             {
                 // For each signal
                 for (int i = 0; i < signals.Length; i++)
                 {
                     // Read that signal samples
-                    ReadNextSignalSamples(signals[i].Samples, signals[i].SampleCountPerRecord.Value);                    
+                    ReadNextSignalSamples(signals[i].Samples, signals[i].SampleCountPerRecord.Value);
                 }
             }
 
             return signals;
         }
-        
+
+
         /// <summary>
         /// Read n next samples
         /// </summary>
         /// <param name="aSamples"></param>
         /// <param name="aSampleCount"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ReadNextSignalSamples(ICollection<short> aSamples, int aSampleCount)
         {
             // Single file read operation per record
             byte[] intBytes = this.ReadBytes(sizeof(short) * aSampleCount);
-            for (int i=0;i<aSampleCount;i++)
+            for (int i = 0; i < aSampleCount; i++)
             {
                 // Fetch our sample short from our record buffer
-                short intVal = BitConverter.ToInt16(intBytes, i* sizeof(short));
+                short intVal = BitConverter.ToInt16(intBytes, i * sizeof(short));
                 // TODO: use a static array for better performance? I guess it's not needed since we prealloc using Capacity.
                 aSamples.Add(intVal);
             }
@@ -162,46 +155,21 @@ namespace SharpLib.EuropeanDataFormat
         /// 
         /// </summary>
         /// <param name="aSampleCount"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SkipSignalSamples(int aSampleCount)
         {
             BaseStream.Seek(aSampleCount * sizeof(short), SeekOrigin.Current);
         }
-
-
-
-        /// <summary>
-        /// TODO: Is this still being used?
-        /// </summary>
-        /// <param name="startPosition"></param>
-        /// <param name="numberOfSamples"></param>
-        /// <returns></returns>
-        private short[] ReadSignalSamples(int startPosition, int numberOfSamples)
-        {
-            var samples = new List<short>();
-            int countBytesRead = 0;
-
-            this.BaseStream.Seek(startPosition, SeekOrigin.Begin);
-
-            while (countBytesRead < numberOfSamples * 2) //2 bytes per integer
-            {
-                byte[] intBytes = this.ReadBytes(2);
-                short intVal = BitConverter.ToInt16(intBytes, 0);
-                samples.Add(intVal);
-                countBytesRead += intBytes.Length;
-            }
-
-            return samples.ToArray();
-        }
-
-        private Int16 ReadInt16(Field itemInfo)
+        #region Read Types   
+        private short ReadInt16(EDFField itemInfo)
         {
             string strInt = ReadAscii(itemInfo).Trim();
-            Int16 intResult = -1;
+            short intResult = -1;
             try { intResult = Convert.ToInt16(strInt); }
             catch (Exception ex) { Console.WriteLine("Error, could not convert string to integer. " + ex.Message); }
             return intResult;
         }
-        private long ReadLong(Field itemInfo)
+        private long ReadLong(EDFField itemInfo)
         {
             string strlong = ReadAscii(itemInfo).Trim();
             if (long.TryParse(strlong, out var result))
@@ -212,36 +180,40 @@ namespace SharpLib.EuropeanDataFormat
 
 
         }
-        private Double ReadDouble(Field itemInfo)
+        private double ReadDouble(EDFField itemInfo)
         {
-            String value = ReadAscii(itemInfo).Trim();
-            try {
-                return Double.Parse(value, CultureInfo.InvariantCulture);
-            } catch (FormatException ex) {
+            string value = ReadAscii(itemInfo).Trim();
+            try
+            {
+                return double.Parse(value, CultureInfo.InvariantCulture);
+            }
+            catch (FormatException ex)
+            {
                 Console.WriteLine("Error, could not convert string to integer: " + ex.Message);
                 return -1;
             }
         }
 
-        private string ReadAscii(Field itemInfo)
+        private string ReadAscii(EDFField itemInfo)
         {
             byte[] bytes = this.ReadBytes(itemInfo.AsciiLength);
             return AsciiString(bytes).Trim();
         }
 
-        private string[] ReadMultipleAscii(Field itemInfo, int numberOfParts)
+        private string[] ReadMultipleAscii(EDFField itemInfo, int numberOfParts)
         {
             var parts = new List<string>();
 
-            for (int i = 0; i < numberOfParts; i++) {
+            for (int i = 0; i < numberOfParts; i++)
+            {
                 byte[] bytes = this.ReadBytes(itemInfo.AsciiLength);
                 parts.Add(AsciiString(bytes).Trim());
             }
-            
+
             return parts.ToArray();
         }
 
-        private int[] ReadMultipleInt(Field itemInfo, int numberOfParts)
+        private int[] ReadMultipleInt(EDFField itemInfo, int numberOfParts)
         {
             var parts = new List<int>();
 
@@ -261,7 +233,7 @@ namespace SharpLib.EuropeanDataFormat
         /// <param name="itemInfo"></param>
         /// <param name="numberOfParts"></param>
         /// <returns></returns>
-        private double[] ReadMultipleDouble(Field itemInfo, int numberOfParts)
+        private double[] ReadMultipleDouble(EDFField itemInfo, int numberOfParts)
         {
             var parts = new List<double>();
 
@@ -275,7 +247,9 @@ namespace SharpLib.EuropeanDataFormat
 
             return parts.ToArray();
         }
+        #endregion
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string AsciiString(byte[] bytes)
         {
             return Encoding.ASCII.GetString(bytes);

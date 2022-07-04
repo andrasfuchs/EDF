@@ -1,18 +1,19 @@
 ﻿//#define TRACE_BYTES
+
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Linq;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
 
-namespace SharpLib.EuropeanDataFormat
+namespace EDF
 {
-    class Writer : BinaryWriter
+    public class EDFWriter : BinaryWriter
     {
-        public Writer(FileStream fs) : base(fs) { }
+        public EDFWriter(FileStream fs) : base(fs) { }
 
-        public void WriteEDF(File edf, string edfFilePath)
+        public void WriteEDF(EDFFile edf, string edfFilePath)
         {
             edf.Header.SizeInBytes.Value = CalcNumOfBytesInHeader(edf);
 
@@ -90,7 +91,7 @@ namespace SharpLib.EuropeanDataFormat
 
 
 
-        private int CalcNumOfBytesInHeader(File edf)
+        private int CalcNumOfBytesInHeader(EDFFile edf)
         {
             int totalFixedLength = 256;
             int ns = edf.Signals.Length;
@@ -149,7 +150,7 @@ namespace SharpLib.EuropeanDataFormat
             return Encoding.ASCII.GetBytes(strInt);
         }
 
-        private void WriteSignals(File edf)
+        private void WriteSignals(EDFFile edf)
         {
             if (!edf.Signals.Any())
             {

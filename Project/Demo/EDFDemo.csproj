@@ -20,6 +20,6 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Lib\SharpLibEuropeanDataFormat.csproj" />
+    <ProjectReference Include="..\Lib\EDF.csproj" />
   </ItemGroup>
 </Project>

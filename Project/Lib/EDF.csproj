@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<RootNamespace>EDFCSharp</RootNamespace>
+		<TargetFrameworks>net6.0-windows;net5.0-windows;netcoreapp3.1;net48;net472;net471</TargetFrameworks>
+		<AssemblyTitle>EDFCSharp</AssemblyTitle>
+		<AssemblyName>EDFCSharp</AssemblyName>
+		<RootNamespace>EDFCSharp</RootNamespace>
+		<Company>Lior Banai</Company>
+		<Product>EDF</Product>
+		<Description>Read and write EDF signal files.</Description>
+		<Copyright>Copyright © 2022</Copyright>
+		<SignAssembly>false</SignAssembly>
+		<DelaySign>false</DelaySign>
+		<Platforms>AnyCPU;x86;x64</Platforms>
+		<PackageId>EDF-CSharp</PackageId>
+		<Authors>LiorBanai</Authors>
+		<Company>LiorBanai</Company>
+		<Product>EDF-CSharp</Product>
+		<Description>C# Implementation of the EDF (European Data Format)</Description>
+		<Copyright>Lior Banai @ 2020-2022</Copyright>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/LiorBanai/EDF</PackageProjectUrl>
+		<PackageIcon>EDFCSharp.png</PackageIcon>
+		<PackageIconUrl />
+		<RepositoryUrl>https://github.com/LiorBanai/EDF</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReleaseNotes>initial version</PackageReleaseNotes>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>0.8.0</Version>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ApplicationIcon>EDFCSharp.ico</ApplicationIcon>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+		<LangVersion>8</LangVersion>
+		<PackageTags>EDF;European Data Format</PackageTags>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System.Data.DataSetExtensions" />
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Net.Http" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\EDFCSharp.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\Nuget\README.md" Pack="true" PackagePath="\"/>
+
+	</ItemGroup>
+
+</Project>

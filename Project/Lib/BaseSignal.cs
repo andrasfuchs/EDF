@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SharpLib.EuropeanDataFormat
+namespace EDF
 {
     public interface IBaseSignal<T>
     {

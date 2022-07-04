@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 
-namespace SharpLib.EuropeanDataFormat
+namespace EDF
 {
-    public class File : IDisposable
+    public class EDFFile : IDisposable
     {
-        public Header Header { get; set; }
+        public EDFHeader Header { get; set; }
         public Signal[] Signals { get; set; }
         public IList<AnnotationSignal> AnnotationSignals { get; set; }
 
         private Reader iReader;
 
-        public File() { AnnotationSignals = new List<AnnotationSignal>(); }
-        public File(string edfFilePath)
+        public EDFFile() { AnnotationSignals = new List<AnnotationSignal>(); }
+        public EDFFile(string edfFilePath)
         {
             ReadAll(edfFilePath);
         }
 
-        public File(byte[] edfBytes)
+        public EDFFile(byte[] edfBytes)
         {
             ReadAll(edfBytes);
         }
@@ -118,7 +117,7 @@ namespace SharpLib.EuropeanDataFormat
         {
             if (Header == null) return;
 
-            using (var writer = new Writer(System.IO.File.Open(edfFilePath, FileMode.Create)))
+            using (var writer = new EDFWriter(System.IO.File.Open(edfFilePath, FileMode.Create)))
             {
                 writer.WriteEDF(this, edfFilePath);
             }
