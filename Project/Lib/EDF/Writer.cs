@@ -159,7 +159,7 @@ namespace SharpLib.EuropeanDataFormat
 #if TRACE_BYTES
             Console.WriteLine("Write position before signal: " + this.BaseStream.Position);
 #endif
-            int numberOfRecords = edf.Header.RecordCount.Value;
+            long numberOfRecords = edf.Header.RecordCount.Value;
 
             for (int recordIndex = 0; recordIndex < numberOfRecords; recordIndex++)
             {

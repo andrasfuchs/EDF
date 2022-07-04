@@ -74,5 +74,13 @@ namespace EDFSharpTests
             Assert.AreEqual(edf2.Header.Signals.Reserveds.ToAscii(),      edf1.Header.Signals.Reserveds.ToAscii());
             Assert.AreEqual(edf2.Signals[0].Samples.Count,             edf1.Signals[0].Samples.Count);
         }
+
+        [TestMethod]
+        public void ReadFie()
+        {
+            string filename = @"D:\edf\12-38-08.EDF";
+           var edf = new File(filename);
+           
+        }
     }
 }

@@ -97,7 +97,7 @@ namespace SharpLib.EuropeanDataFormat
             {
                 Header = reader.ReadHeader();
                 Signals = reader.ReadSignals(Header);
-               // AnnotationSignals = reader.ReadAnnotationSignals(Header);
+                //AnnotationSignals = reader.ReadAnnotationSignals(Header);
             }
         }
 

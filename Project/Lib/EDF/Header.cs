@@ -10,7 +10,8 @@ namespace SharpLib.EuropeanDataFormat
 
         public Field() { }
 
-        public Field(string name, int asciiLength) {
+        public Field(string name, int asciiLength)
+        {
             Name = name;
             AsciiLength = asciiLength;
         }
@@ -25,7 +26,7 @@ namespace SharpLib.EuropeanDataFormat
         public static Field RecordingStartDate { get; private set; } = new Field("StartDate", 8);
         public static Field RecordingStartTime { get; private set; } = new Field("StartTime", 8);
         public static Field SizeInBytes { get; private set; } = new Field("NumberOfBytesInHeader", 8);
-        public static Field Reserved { get; private set; }  = new Field("Reserved", 44);
+        public static Field Reserved { get; private set; } = new Field("Reserved", 44);
         public static Field NumberOfDataRecords { get; private set; } = new Field("NumberOfDataRecords", 8);
         public static Field RecordDurationInSeconds { get; private set; } = new Field("DurationOfDataRecord", 8);
         public static Field SignalCount { get; private set; } = new Field("NumberOfSignals", 4);
@@ -45,7 +46,8 @@ namespace SharpLib.EuropeanDataFormat
 
     public abstract class HeaderItem
     {
-        public HeaderItem(Field info) {
+        public HeaderItem(Field info)
+        {
             Name = info.Name;
             AsciiLength = info.AsciiLength;
         }
@@ -59,7 +61,8 @@ namespace SharpLib.EuropeanDataFormat
         public string Value { get; set; }
         public FixedLengthString(Field info) : base(info) { }
 
-        public override string ToAscii() {
+        public override string ToAscii()
+        {
             string asciiString = "";
             if (Value != null)
                 asciiString = Value.PadRight(AsciiLength, ' ');
@@ -74,19 +77,16 @@ namespace SharpLib.EuropeanDataFormat
     {
         public int Value { get; set; }
         public FixedLengthInt(Field info) : base(info) { }
+        public override string ToAscii() => Value.ToString(CultureInfo.InvariantCulture).PadRight(AsciiLength, ' ');
 
-        public override string ToAscii()
-        {
-            string asciiString = "";
-            if (Value != null)
-                asciiString = Value.ToString(CultureInfo.InvariantCulture).PadRight(AsciiLength, ' ');
-            else
-                asciiString = asciiString.PadRight(AsciiLength, ' ');
-
-            return asciiString;
-        }
     }
+    public class FixedLengthLong : HeaderItem
+    {
+        public long Value { get; set; }
+        public FixedLengthLong(Field info) : base(info) { }
+        public override string ToAscii() => Value.ToString(CultureInfo.InvariantCulture).PadRight(AsciiLength, ' ');
 
+    }
     public class FixedLengthDouble : HeaderItem
     {
         public double Value { get; set; }
@@ -94,19 +94,10 @@ namespace SharpLib.EuropeanDataFormat
 
         public override string ToAscii()
         {
-            string asciiString = "";
-            if (Value != null)
-            {
-                asciiString = Value.ToString(CultureInfo.InvariantCulture);
-                if (asciiString.Length >= AsciiLength)
-                    asciiString = asciiString.Substring(0, AsciiLength);
-                else
-                    asciiString = Value.ToString(CultureInfo.InvariantCulture).PadRight(AsciiLength, ' ');
-            }
-                
-            else
-                asciiString = asciiString.PadRight(AsciiLength, ' ');
-
+            string asciiString = Value.ToString(CultureInfo.InvariantCulture);
+            asciiString = asciiString.Length >= AsciiLength
+                ? asciiString.Substring(0, AsciiLength)
+                : Value.ToString(CultureInfo.InvariantCulture).PadRight(AsciiLength, ' ');
             return asciiString;
         }
     }
@@ -116,7 +107,8 @@ namespace SharpLib.EuropeanDataFormat
         public string[] Value { get; set; }
         public VariableLengthString(Field info) : base(info) { }
 
-        public override string ToAscii() {
+        public override string ToAscii()
+        {
             string ascii = "";
             foreach (var strVal in Value)
             {
@@ -135,7 +127,8 @@ namespace SharpLib.EuropeanDataFormat
         public int[] Value { get; set; }
         public VariableLengthInt(Field info) : base(info) { }
 
-        public override string ToAscii() {
+        public override string ToAscii()
+        {
             string ascii = "";
             foreach (var intVal in Value)
             {
@@ -153,7 +146,8 @@ namespace SharpLib.EuropeanDataFormat
         public double[] Value { get; set; }
         public VariableLengthDouble(Field info) : base(info) { }
 
-        public override string ToAscii() {
+        public override string ToAscii()
+        {
             string ascii = "";
             foreach (var doubleVal in Value)
             {
@@ -180,12 +174,12 @@ namespace SharpLib.EuropeanDataFormat
         public FixedLengthString RecordingStartTime { get; private set; } = new FixedLengthString(HeaderItems.RecordingStartTime);
         public FixedLengthInt SizeInBytes { get; private set; } = new FixedLengthInt(HeaderItems.SizeInBytes);
         public FixedLengthString Reserved { get; private set; } = new FixedLengthString(HeaderItems.Reserved);
-        public FixedLengthInt RecordCount { get; private set; } = new FixedLengthInt(HeaderItems.NumberOfDataRecords);
+        public FixedLengthLong RecordCount { get; private set; } = new FixedLengthLong(HeaderItems.NumberOfDataRecords);
         public FixedLengthDouble RecordDurationInSeconds { get; private set; } = new FixedLengthDouble(HeaderItems.RecordDurationInSeconds);
         public FixedLengthInt SignalCount { get; private set; } = new FixedLengthInt(HeaderItems.SignalCount);
 
         public class Signal
-        {        
+        {
             public VariableLengthString Labels { get; private set; } = new VariableLengthString(HeaderItems.Label);
             public VariableLengthString TransducerTypes { get; private set; } = new VariableLengthString(HeaderItems.TransducerType);
             public VariableLengthString PhysicalDimensions { get; private set; } = new VariableLengthString(HeaderItems.PhysicalDimension);
@@ -222,7 +216,7 @@ namespace SharpLib.EuropeanDataFormat
             return FirstRecordTime.AddSeconds(aRecordIndex * RecordDurationInSeconds.Value);
         }
 
-        
+
         /// <summary>
         /// Provides the time corresponding to the given signal sample with millisecond precision.
         /// </summary>
@@ -249,7 +243,7 @@ namespace SharpLib.EuropeanDataFormat
         {
             string strOutput = "";
 
-            strOutput += "\n---------- Header ---------\n";            
+            strOutput += "\n---------- Header ---------\n";
             strOutput += "8b\tVersion [" + Version.Value + "]\n";
             strOutput += "80b\tPatient ID [" + PatientID.Value + "]\n";
             strOutput += "80b\tRecording ID [" + RecordID.Value + "]\n";
@@ -263,9 +257,9 @@ namespace SharpLib.EuropeanDataFormat
             //strOutput += "First record time: " + FirstRecordTime + "\n\n";
 
             // For each signal
-            for (int i=0;i<SignalCount.Value;i++)
+            for (int i = 0; i < SignalCount.Value; i++)
             {
-                strOutput += "\tSignal " + i + ": "+ Signals.Labels.Value[i] + "\n\n";
+                strOutput += "\tSignal " + i + ": " + Signals.Labels.Value[i] + "\n\n";
                 //strOutput += "\tLabel [" + Signals.Labels.Value[i] + "]\n";
                 strOutput += "\t\tTransducer type [" + Signals.TransducerTypes.Value[i] + "]\n";
                 strOutput += "\t\tPhysical dimension [" + Signals.PhysicalDimensions.Value[i] + "]\n";

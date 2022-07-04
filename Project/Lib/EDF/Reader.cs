@@ -26,7 +26,7 @@ namespace SharpLib.EuropeanDataFormat
             h.RecordingStartTime.Value = ReadAscii(HeaderItems.RecordingStartTime);
             h.SizeInBytes.Value = ReadInt16(HeaderItems.SizeInBytes);
             h.Reserved.Value = ReadAscii(HeaderItems.Reserved);
-            h.RecordCount.Value = ReadInt16(HeaderItems.NumberOfDataRecords);
+            h.RecordCount.Value = ReadLong(HeaderItems.NumberOfDataRecords);
             h.RecordDurationInSeconds.Value = ReadDouble(HeaderItems.RecordDurationInSeconds);
             h.SignalCount.Value = ReadInt16(HeaderItems.SignalCount);
 
@@ -90,7 +90,7 @@ namespace SharpLib.EuropeanDataFormat
 
             aSignal.Samples.Clear();
             // Compute capacity thus pre-allocating memory to avoid resizing
-            aSignal.Samples.Capacity = aHeader.RecordCount.Value * aSignal.SampleCountPerRecord.Value;
+            //aSignal.Samples.Capacity = aHeader.RecordCount.Value * aSignal.SampleCountPerRecord.Value;
             int capacity = aSignal.Samples.Capacity;
             // For each record
             for (int j = 0; j < aHeader.RecordCount.Value; j++)
@@ -201,7 +201,17 @@ namespace SharpLib.EuropeanDataFormat
             catch (Exception ex) { Console.WriteLine("Error, could not convert string to integer. " + ex.Message); }
             return intResult;
         }
-        
+        private long ReadLong(Field itemInfo)
+        {
+            string strlong = ReadAscii(itemInfo).Trim();
+            if (long.TryParse(strlong, out var result))
+            {
+                return result;
+            }
+            return -1;
+
+
+        }
         private Double ReadDouble(Field itemInfo)
         {
             String value = ReadAscii(itemInfo).Trim();
