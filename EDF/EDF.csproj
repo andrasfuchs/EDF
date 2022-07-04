@@ -38,6 +38,9 @@
 		<PackageTags>EDF;European Data Format</PackageTags>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Content Include="EDFCSharp.ico" />
+	</ItemGroup>
+	<ItemGroup>
 		<Reference Include="System.Data.DataSetExtensions" />
 		<Reference Include="Microsoft.CSharp" />
 		<Reference Include="System.Net.Http" />
@@ -48,7 +51,7 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
-		<None Include="..\Nuget\README.md" Pack="true" PackagePath="\"/>
+		<None Include="..\Nuget\README.md" Pack="true" PackagePath="\" />
 
 	</ItemGroup>
 
