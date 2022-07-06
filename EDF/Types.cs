@@ -19,7 +19,7 @@ namespace EDF
         public static EDFField Reserved { get; private set; } = new EDFField("Reserved", 44);
         public static EDFField NumberOfDataRecords { get; private set; } = new EDFField("NumberOfDataRecords", 8);
         public static EDFField RecordDurationInSeconds { get; private set; } = new EDFField("DurationOfDataRecord", 8);
-        public static EDFField SignalCount { get; private set; } = new EDFField("NumberOfSignals", 4);
+        public static EDFField NumberOfSignalsInRecord { get; private set; } = new EDFField("NumberOfSignals", 4);
 
         //Variable size signal header items
         public static EDFField Label { get; private set; } = new EDFField("Labels", 16);
@@ -101,9 +101,7 @@ namespace EDF
             string ascii = "";
             foreach (var strVal in Value)
             {
-                string temp = strVal.ToString();
-                if (strVal.Length > AsciiLength)
-                    temp = temp.Substring(0, AsciiLength);
+                string temp = strVal.PadRight(AsciiLength, ' ');
                 ascii += temp;
             }
 

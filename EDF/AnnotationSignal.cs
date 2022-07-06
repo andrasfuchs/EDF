@@ -23,7 +23,7 @@ namespace EDF
 
         public override string ToString()
         {
-            return Label.Value + " " + SampleCountPerRecord.Value.ToString() + "/" + Samples.Count().ToString() + " ["
+            return Label.Value + " " + NumberOfSamplesInDataRecord.Value.ToString() + "/" + Samples.Count().ToString() + " ["
                 + string.Join<TAL>(",", Samples.Skip(0).Take(10).ToArray()) + " ...]";
         }
 
@@ -45,11 +45,12 @@ namespace EDF
 
         public FixedLengthString Prefiltering { get; } = new FixedLengthString(HeaderItems.Prefiltering);
 
-        public FixedLengthInt SampleCountPerRecord { get; } = new FixedLengthInt(HeaderItems.NumberOfSamplesInDataRecord);
+        public FixedLengthInt NumberOfSamplesInDataRecord { get; } = new FixedLengthInt(HeaderItems.NumberOfSamplesInDataRecord);
 
         public FixedLengthString Reserved { get; } = new FixedLengthString(HeaderItems.SignalsReserved);
 
         public List<TAL> Samples { get; set; } = new List<TAL> { };
+        public long SamplesCount => Samples.Count;
 
         public AnnotationSignal()
         {

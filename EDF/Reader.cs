@@ -27,23 +27,23 @@ namespace EDF
             h.RecordingStartTime.Value = ReadAscii(HeaderItems.RecordingStartTime);
             h.SizeInBytes.Value = ReadInt16(HeaderItems.SizeInBytes);
             h.Reserved.Value = ReadAscii(HeaderItems.Reserved);
-            h.RecordCount.Value = ReadLong(HeaderItems.NumberOfDataRecords);
+            h.NumberOfDataRecords.Value = ReadLong(HeaderItems.NumberOfDataRecords);
             h.RecordDurationInSeconds.Value = ReadDouble(HeaderItems.RecordDurationInSeconds);
-            h.SignalCount.Value = ReadInt16(HeaderItems.SignalCount);
+            h.NumberOfSignalsInRecord.Value = ReadInt16(HeaderItems.NumberOfSignalsInRecord);
 
             // Variable size header
             // Contains signal headers
-            int ns = h.SignalCount.Value;
-            h.Signals.Labels.Value = ReadMultipleAscii(HeaderItems.Label, ns);
-            h.Signals.TransducerTypes.Value = ReadMultipleAscii(HeaderItems.TransducerType, ns);
-            h.Signals.PhysicalDimensions.Value = ReadMultipleAscii(HeaderItems.PhysicalDimension, ns);
-            h.Signals.PhysicalMinimums.Value = ReadMultipleDouble(HeaderItems.PhysicalMinimum, ns);
-            h.Signals.PhysicalMaximums.Value = ReadMultipleDouble(HeaderItems.PhysicalMaximum, ns);
-            h.Signals.DigitalMinimums.Value = ReadMultipleInt(HeaderItems.DigitalMinimum, ns);
-            h.Signals.DigitalMaximums.Value = ReadMultipleInt(HeaderItems.DigitalMaximum, ns);
-            h.Signals.PreFilterings.Value = ReadMultipleAscii(HeaderItems.Prefiltering, ns);
-            h.Signals.SampleCountPerRecords.Value = ReadMultipleInt(HeaderItems.NumberOfSamplesInDataRecord, ns);
-            h.Signals.Reserveds.Value = ReadMultipleAscii(HeaderItems.SignalsReserved, ns);
+            int ns = h.NumberOfSignalsInRecord.Value;
+            h.Labels.Value = ReadMultipleAscii(HeaderItems.Label, ns);
+            h.TransducerTypes.Value = ReadMultipleAscii(HeaderItems.TransducerType, ns);
+            h.PhysicalDimensions.Value = ReadMultipleAscii(HeaderItems.PhysicalDimension, ns);
+            h.PhysicalMinimums.Value = ReadMultipleDouble(HeaderItems.PhysicalMinimum, ns);
+            h.PhysicalMaximums.Value = ReadMultipleDouble(HeaderItems.PhysicalMaximum, ns);
+            h.DigitalMinimums.Value = ReadMultipleInt(HeaderItems.DigitalMinimum, ns);
+            h.DigitalMaximums.Value = ReadMultipleInt(HeaderItems.DigitalMaximum, ns);
+            h.PreFilterings.Value = ReadMultipleAscii(HeaderItems.Prefiltering, ns);
+            h.NumberOfSamplesPerRecord.Value = ReadMultipleInt(HeaderItems.NumberOfSamplesInDataRecord, ns);
+            h.SignalsReserved.Value = ReadMultipleAscii(HeaderItems.SignalsReserved, ns);
 
             h.ParseRecordingStartTime();
 
@@ -55,25 +55,25 @@ namespace EDF
         /// </summary>
         /// <param name="aEdfHeader"></param>
         /// <returns></returns>
-        public Signal[] AllocateSignals(EDFHeader aEdfHeader)
+        public EDFSignal[] AllocateSignals(EDFHeader aEdfHeader)
         {
-            Signal[] signals = new Signal[aEdfHeader.SignalCount.Value];
+            EDFSignal[] signals = new EDFSignal[aEdfHeader.NumberOfSignalsInRecord.Value];
 
             for (int i = 0; i < signals.Length; i++)
             {
-                signals[i] = new Signal();
+                signals[i] = new EDFSignal();
                 // Just copy data from the header, ugly architecture really...
                 signals[i].Index = i;
-                signals[i].Label.Value = aEdfHeader.Signals.Labels.Value[i];
-                signals[i].TransducerType.Value = aEdfHeader.Signals.TransducerTypes.Value[i];
-                signals[i].PhysicalDimension.Value = aEdfHeader.Signals.PhysicalDimensions.Value[i];
-                signals[i].PhysicalMinimum.Value = aEdfHeader.Signals.PhysicalMinimums.Value[i];
-                signals[i].PhysicalMaximum.Value = aEdfHeader.Signals.PhysicalMaximums.Value[i];
-                signals[i].DigitalMinimum.Value = aEdfHeader.Signals.DigitalMinimums.Value[i];
-                signals[i].DigitalMaximum.Value = aEdfHeader.Signals.DigitalMaximums.Value[i];
-                signals[i].Prefiltering.Value = aEdfHeader.Signals.PreFilterings.Value[i];
-                signals[i].Reserved.Value = aEdfHeader.Signals.Reserveds.Value[i];
-                signals[i].SampleCountPerRecord.Value = aEdfHeader.Signals.SampleCountPerRecords.Value[i];
+                signals[i].Label.Value = aEdfHeader.Labels.Value[i];
+                signals[i].TransducerType.Value = aEdfHeader.TransducerTypes.Value[i];
+                signals[i].PhysicalDimension.Value = aEdfHeader.PhysicalDimensions.Value[i];
+                signals[i].PhysicalMinimum.Value = aEdfHeader.PhysicalMinimums.Value[i];
+                signals[i].PhysicalMaximum.Value = aEdfHeader.PhysicalMaximums.Value[i];
+                signals[i].DigitalMinimum.Value = aEdfHeader.DigitalMinimums.Value[i];
+                signals[i].DigitalMaximum.Value = aEdfHeader.DigitalMaximums.Value[i];
+                signals[i].Prefiltering.Value = aEdfHeader.PreFilterings.Value[i];
+                signals[i].Reserved.Value = aEdfHeader.SignalsReserved.Value[i];
+                signals[i].NumberOfSamplesInDataRecord.Value = aEdfHeader.NumberOfSamplesPerRecord.Value[i];
             }
 
             return signals;
@@ -83,28 +83,28 @@ namespace EDF
         /// Read the requested signal for our file
         /// </summary>
         /// <param name="aEdfHeader"></param>
-        /// <param name="aSignal"></param>
-        public void ReadSignal(EDFHeader aEdfHeader, Signal aSignal)
+        /// <param name="aEdfSignal"></param>
+        public void ReadSignal(EDFHeader aEdfHeader, EDFSignal aEdfSignal)
         {
             // Make sure we start just after our header
             this.BaseStream.Seek(aEdfHeader.SizeInBytes.Value, SeekOrigin.Begin);
 
-            aSignal.Samples.Clear();
+            aEdfSignal.Samples.Clear();
             // For each record
-            for (int j = 0; j < aEdfHeader.RecordCount.Value; j++)
+            for (int j = 0; j < aEdfHeader.NumberOfDataRecords.Value; j++)
             {
                 // For each signal
-                for (int i = 0; i < aEdfHeader.SignalCount.Value; i++)
+                for (int i = 0; i < aEdfHeader.NumberOfSignalsInRecord.Value; i++)
                 {
                     // Read that signal samples
-                    if (i == aSignal.Index)
+                    if (i == aEdfSignal.Index)
                     {
-                        ReadNextSignalSamples(aSignal.Samples, aSignal.SampleCountPerRecord.Value);
+                        ReadNextSignalSamples(aEdfSignal.Samples, aEdfSignal.NumberOfSamplesInDataRecord.Value);
                     }
                     else
                     {
                         // Just skip it
-                        SkipSignalSamples(aEdfHeader.Signals.SampleCountPerRecords.Value[i]);
+                        SkipSignalSamples(aEdfHeader.NumberOfSamplesPerRecord.Value[i]);
                     }
                 }
             }
@@ -114,17 +114,17 @@ namespace EDF
         /// Read all signal sample value from our file.
         /// </summary>
         /// <returns></returns>
-        public Signal[] ReadSignals(EDFHeader aEdfHeader)
+        public EDFSignal[] ReadSignals(EDFHeader header)
         {
-            Signal[] signals = AllocateSignals(aEdfHeader);
+            EDFSignal[] signals = AllocateSignals(header);
             // For each record
-            for (int j = 0; j < aEdfHeader.RecordCount.Value; j++)
+            for (int j = 0; j < header.NumberOfDataRecords.Value; j++)
             {
                 // For each signal
                 for (int i = 0; i < signals.Length; i++)
                 {
                     // Read that signal samples
-                    ReadNextSignalSamples(signals[i].Samples, signals[i].SampleCountPerRecord.Value);
+                    ReadNextSignalSamples(signals[i].Samples, signals[i].NumberOfSamplesInDataRecord.Value);
                 }
             }
 

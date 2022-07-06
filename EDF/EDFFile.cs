@@ -8,7 +8,7 @@ namespace EDF
     public class EDFFile : IDisposable
     {
         public EDFHeader Header { get; set; }
-        public Signal[] Signals { get; set; }
+        public EDFSignal[] Signals { get; set; }
         public IList<AnnotationSignal> AnnotationSignals { get; set; }
 
         private Reader iReader;
@@ -22,6 +22,12 @@ namespace EDF
         public EDFFile(byte[] edfBytes)
         {
             ReadAll(edfBytes);
+        }
+
+
+        public override string ToString()
+        {
+            return $@"Header: {Header}";
         }
 
         /// <summary>
@@ -74,7 +80,7 @@ namespace EDF
         /// </summary>
         /// <param name="aContains"></param>
         /// <returns></returns>
-        public Signal ReadSignal(string aMatch)
+        public EDFSignal ReadSignal(string aMatch)
         {
             var signal = Signals.FirstOrDefault(s => s.Label.Value.Equals(aMatch));
             if (signal == null)

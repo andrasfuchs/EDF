@@ -17,12 +17,13 @@ namespace EDF
         FixedLengthInt DigitalMinimum { get; }
         FixedLengthInt DigitalMaximum { get; }
         FixedLengthString Prefiltering { get; }
-        FixedLengthInt SampleCountPerRecord { get; }
+        FixedLengthInt NumberOfSamplesInDataRecord { get; }
         FixedLengthString Reserved { get; }
         List<T> Samples { get; set; }
+        long SamplesCount { get; }
     }
 
-    public class Signal : IBaseSignal<short>
+    public class EDFSignal : IBaseSignal<short>
     {
         public int Index { get; set; }
 
@@ -42,11 +43,12 @@ namespace EDF
 
         public FixedLengthString Prefiltering { get; } = new FixedLengthString(HeaderItems.Prefiltering);
 
-        public FixedLengthInt SampleCountPerRecord { get; } = new FixedLengthInt(HeaderItems.NumberOfSamplesInDataRecord);
+        public FixedLengthInt NumberOfSamplesInDataRecord { get; } = new FixedLengthInt(HeaderItems.NumberOfSamplesInDataRecord);
 
         public FixedLengthString Reserved { get; } = new FixedLengthString(HeaderItems.SignalsReserved);
 
         public List<short> Samples { get; set; } = new List<short> { };
+        public long SamplesCount => Samples.Count;
 
         /// <summary>
         /// Provided sample value after scaling.
@@ -59,11 +61,11 @@ namespace EDF
         /// Provide sample scaling factor.
         /// </summary>
         /// <returns></returns>
-        public double ScaleFactor() { return (PhysicalMaximum.Value - PhysicalMinimum.Value)/(DigitalMaximum.Value - DigitalMinimum.Value); }
+        public double ScaleFactor() { return (PhysicalMaximum.Value - PhysicalMinimum.Value) / (DigitalMaximum.Value - DigitalMinimum.Value); }
 
         public override string ToString()
         {
-            return Label.Value + " " + SampleCountPerRecord.Value.ToString() + "/" + Samples.Count().ToString() + " [" 
+            return Label.Value + " " + NumberOfSamplesInDataRecord.Value.ToString() + "/" + Samples.Count().ToString() + " ["
                 + string.Join(",", Samples.Skip(0).Take(10).ToArray()) + " ...]";
         }
     }

@@ -25,9 +25,9 @@ namespace EDF
             WriteItem(edf.Header.RecordingStartTime);
             WriteItem(edf.Header.SizeInBytes);
             WriteItem(edf.Header.Reserved);
-            WriteItem(edf.Header.RecordCount);
+            WriteItem(edf.Header.NumberOfDataRecords);
             WriteItem(edf.Header.RecordDurationInSeconds);
-            WriteItem(edf.Header.SignalCount);
+            WriteItem(edf.Header.NumberOfSignalsInRecord);
 
             //----------------- Variable length header items -----------------
             var headerSignalsLabel = edf.Signals.Select(s => s.Label);
@@ -70,9 +70,9 @@ namespace EDF
                 prefilterings = prefilterings.Concat(edf.AnnotationSignals.Select(x => x.Prefiltering));
             WriteItem(prefilterings);
 
-            var samplesCountPerRecords = edf.Signals.Select(s => s.SampleCountPerRecord);
+            var samplesCountPerRecords = edf.Signals.Select(s => s.NumberOfSamplesInDataRecord);
             if (edf.AnnotationSignals != null)
-                samplesCountPerRecords = samplesCountPerRecords.Concat(edf.AnnotationSignals.Select(x => x.SampleCountPerRecord));
+                samplesCountPerRecords = samplesCountPerRecords.Concat(edf.AnnotationSignals.Select(x => x.NumberOfSamplesInDataRecord));
             WriteItem(samplesCountPerRecords);
 
             var reservedValues = edf.Signals.Select(s => s.Reserved);
@@ -160,21 +160,21 @@ namespace EDF
 #if TRACE_BYTES
             Console.WriteLine("Write position before signal: " + this.BaseStream.Position);
 #endif
-            long numberOfRecords = edf.Header.RecordCount.Value;
+            long numberOfRecords = edf.Header.NumberOfDataRecords.Value;
 
             for (int recordIndex = 0; recordIndex < numberOfRecords; recordIndex++)
             {
-                foreach (Signal signal in edf.Signals)
+                foreach (EDFSignal signal in edf.Signals)
                 {
-                    int signalStartPos = recordIndex * signal.SampleCountPerRecord.Value;
-                    int signalEndPos = Math.Min(signalStartPos + signal.SampleCountPerRecord.Value, signal.Samples.Count);
+                    int signalStartPos = recordIndex * signal.NumberOfSamplesInDataRecord.Value;
+                    int signalEndPos = Math.Min(signalStartPos + signal.NumberOfSamplesInDataRecord.Value, signal.Samples.Count);
                     for (; signalStartPos < signalEndPos; signalStartPos++)
                         this.Write(BitConverter.GetBytes(signal.Samples[signalStartPos]));
                 }
                 if (edf.AnnotationSignals != null && edf.AnnotationSignals.Any())
                 {
                     foreach (var annotationSignal in edf.AnnotationSignals)
-                        WriteAnnotations(recordIndex, annotationSignal.Samples, annotationSignal.SampleCountPerRecord.Value);
+                        WriteAnnotations(recordIndex, annotationSignal.Samples, annotationSignal.NumberOfSamplesInDataRecord.Value);
                 }
 
             }
@@ -204,7 +204,7 @@ namespace EDF
 #if TRACE_BYTES
             Console.WriteLine($"Total bytes for Annotation index {0} is {bytesWritten}");
 #endif
-            Debug.Assert(bytesWritten <= blockSize, "Annotation signal too big for SampleCountPerRecord");
+            Debug.Assert(bytesWritten <= blockSize, "Annotation signal too big for NumberOfSamplesInDataRecord");
 #if TRACE_BYTES
             Console.WriteLine($"Filling with {blockSize - bytesWritten} bytes");
 #endif

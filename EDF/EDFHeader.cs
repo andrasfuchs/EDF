@@ -17,12 +17,19 @@ namespace EDF
         public FixedLengthString RecordingStartTime { get; } = new FixedLengthString(HeaderItems.RecordingStartTime);
         public FixedLengthInt SizeInBytes { get; } = new FixedLengthInt(HeaderItems.SizeInBytes);
         public FixedLengthString Reserved { get; } = new FixedLengthString(HeaderItems.Reserved);
-        public FixedLengthLong RecordCount { get; } = new FixedLengthLong(HeaderItems.NumberOfDataRecords);
+        public FixedLengthLong NumberOfDataRecords { get; } = new FixedLengthLong(HeaderItems.NumberOfDataRecords);
         public FixedLengthDouble RecordDurationInSeconds { get; } = new FixedLengthDouble(HeaderItems.RecordDurationInSeconds);
-        public FixedLengthInt SignalCount { get; } = new FixedLengthInt(HeaderItems.SignalCount);
-        public SignalDefinition Signals { get; } = new SignalDefinition();
-
-
+        public FixedLengthInt NumberOfSignalsInRecord { get; } = new FixedLengthInt(HeaderItems.NumberOfSignalsInRecord);
+        public VariableLengthString Labels { get; } = new VariableLengthString(HeaderItems.Label);
+        public VariableLengthString TransducerTypes { get; } = new VariableLengthString(HeaderItems.TransducerType);
+        public VariableLengthString PhysicalDimensions { get; } = new VariableLengthString(HeaderItems.PhysicalDimension);
+        public VariableLengthDouble PhysicalMinimums { get; } = new VariableLengthDouble(HeaderItems.PhysicalMinimum);
+        public VariableLengthDouble PhysicalMaximums { get; } = new VariableLengthDouble(HeaderItems.PhysicalMaximum);
+        public VariableLengthInt DigitalMinimums { get; } = new VariableLengthInt(HeaderItems.DigitalMinimum);
+        public VariableLengthInt DigitalMaximums { get; } = new VariableLengthInt(HeaderItems.DigitalMaximum);
+        public VariableLengthString PreFilterings { get; } = new VariableLengthString(HeaderItems.Prefiltering);
+        public VariableLengthInt NumberOfSamplesPerRecord { get; } = new VariableLengthInt(HeaderItems.NumberOfSamplesInDataRecord);
+        public VariableLengthString SignalsReserved { get; } = new VariableLengthString(HeaderItems.SignalsReserved);
         /// <summary>
         /// Parse record start date and time string to obtain a DateTime object.
         /// </summary>
@@ -47,16 +54,16 @@ namespace EDF
         /// <summary>
         /// Provides the time corresponding to the given signal sample with millisecond precision.
         /// </summary>
-        /// <param name="aSignal"></param>
+        /// <param name="aEdfSignal"></param>
         /// <param name="aSampleIndex"></param>
         /// <returns></returns>
-        public DateTime SampleTime(EDF.Signal aSignal, int aSampleIndex)
+        public DateTime SampleTime(EDF.EDFSignal aEdfSignal, int aSampleIndex)
         {
-            int recordIndex = aSampleIndex / aSignal.SampleCountPerRecord.Value;
-            int modulo = aSampleIndex % aSignal.SampleCountPerRecord.Value;
+            int recordIndex = aSampleIndex / aEdfSignal.NumberOfSamplesInDataRecord.Value;
+            int modulo = aSampleIndex % aEdfSignal.NumberOfSamplesInDataRecord.Value;
             DateTime recordTime = RecordTime(recordIndex);
             // That will only give us milliseconds precision
-            DateTime sampleTime = recordTime.AddMilliseconds(RecordDurationInSeconds.Value * 1000 * modulo / aSignal.SampleCountPerRecord.Value);
+            DateTime sampleTime = recordTime.AddMilliseconds(RecordDurationInSeconds.Value * 1000 * modulo / aEdfSignal.NumberOfSamplesInDataRecord.Value);
             return sampleTime;
         }
 
@@ -78,25 +85,25 @@ namespace EDF
             strOutput += "8b\tRecording start time [" + RecordingStartTime.Value + "]\n";
             strOutput += "8b\tHeader size (bytes) [" + SizeInBytes.Value + "]\n";
             strOutput += "44b\tReserved [" + Reserved.Value + "]\n";
-            strOutput += "8b\tRecord count [" + RecordCount.Value + "]\n";
+            strOutput += "8b\tRecord count [" + NumberOfDataRecords.Value + "]\n";
             strOutput += "8b\tRecord duration in seconds [" + RecordDurationInSeconds.Value + "]\n";
-            strOutput += "4b\tSignal count [" + SignalCount.Value + "]\n\n";
+            strOutput += "4b\tSignal count [" + NumberOfSignalsInRecord.Value + "]\n\n";
             //strOutput += "First record time: " + FirstRecordTime + "\n\n";
 
             // For each signal
-            for (int i = 0; i < SignalCount.Value; i++)
+            for (int i = 0; i < NumberOfSignalsInRecord.Value; i++)
             {
-                strOutput += "\tSignal " + i + ": " + Signals.Labels.Value[i] + "\n\n";
+                strOutput += "\tSignal " + i + ": " + Labels.Value[i] + "\n\n";
                 //strOutput += "\tLabel [" + Signals.Labels.Value[i] + "]\n";
-                strOutput += "\t\tTransducer type [" + Signals.TransducerTypes.Value[i] + "]\n";
-                strOutput += "\t\tPhysical dimension [" + Signals.PhysicalDimensions.Value[i] + "]\n";
-                strOutput += "\t\tPhysical minimum [" + Signals.PhysicalMinimums.Value[i] + "]\n";
-                strOutput += "\t\tPhysical maximum [" + Signals.PhysicalMaximums.Value[i] + "]\n";
-                strOutput += "\t\tDigital minimum [" + Signals.DigitalMinimums.Value[i] + "]\n";
-                strOutput += "\t\tDigital maximum [" + Signals.DigitalMaximums.Value[i] + "]\n";
-                strOutput += "\t\tPrefiltering [" + Signals.PreFilterings.Value[i] + "]\n";
-                strOutput += "\t\tSample count per record [" + Signals.SampleCountPerRecords.Value[i] + "]\n";
-                strOutput += "\t\tSignals reserved [" + Signals.Reserveds.Value[i] + "]\n\n";
+                strOutput += "\t\tTransducer type [" + TransducerTypes.Value[i] + "]\n";
+                strOutput += "\t\tPhysical dimension [" + PhysicalDimensions.Value[i] + "]\n";
+                strOutput += "\t\tPhysical minimum [" + PhysicalMinimums.Value[i] + "]\n";
+                strOutput += "\t\tPhysical maximum [" + PhysicalMaximums.Value[i] + "]\n";
+                strOutput += "\t\tDigital minimum [" + DigitalMinimums.Value[i] + "]\n";
+                strOutput += "\t\tDigital maximum [" + DigitalMaximums.Value[i] + "]\n";
+                strOutput += "\t\tPrefiltering [" + PreFilterings.Value[i] + "]\n";
+                strOutput += "\t\tSample count per record [" + NumberOfSamplesPerRecord.Value[i] + "]\n";
+                strOutput += "\t\tSignals reserved [" + SignalsReserved.Value[i] + "]\n\n";
             }
 
             strOutput += "\n-----------------------------------\n";
