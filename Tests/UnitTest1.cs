@@ -76,7 +76,7 @@ namespace EDFSharpTests
             System.IO.File.Delete(edfFilePath);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void ReadFie()
         {
             string filename = @"D:\edf\12-38-08.EDF";

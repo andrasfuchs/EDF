@@ -106,10 +106,6 @@ namespace EDF
             if (strItem == null) strItem = "";
             byte[] itemBytes = AsciiToBytes(strItem);
             this.Write(itemBytes);
-#if TRACE_BYTES
-            Console.WriteLine(headerItem.Name + " [" + strItem + "] \n\n-- ** BYTES LENGTH: " + itemBytes.Length
-                + "> Position after write item: " + this.BaseStream.Position + "\n");
-#endif
         }
 
         private void WriteItem(IEnumerable<HeaderItem> headerItems)
@@ -118,10 +114,6 @@ namespace EDF
             if (joinedItems == null) joinedItems = "";
             byte[] itemBytes = AsciiToBytes(joinedItems);
             this.Write(itemBytes);
-#if TRACE_BYTES
-            Console.WriteLine("[" + joinedItems + "] \n\n-- ** BYTES LENGTH: " + itemBytes.Length
-                + ", Position after write item: " + this.BaseStream.Position + "\n");
-#endif
         }
 
         private string StrJoin(IEnumerable<HeaderItem> list)
@@ -157,9 +149,6 @@ namespace EDF
                 Console.WriteLine("There are no signals to write");
                 return;
             }
-#if TRACE_BYTES
-            Console.WriteLine("Write position before signal: " + this.BaseStream.Position);
-#endif
             long numberOfRecords = edf.Header.NumberOfDataRecords.Value;
 
             for (int recordIndex = 0; recordIndex < numberOfRecords; recordIndex++)
@@ -178,9 +167,6 @@ namespace EDF
                 }
 
             }
-#if TRACE_BYTES
-            Console.WriteLine("Write position after signals: " + this.BaseStream.Position);
-#endif
         }
 
         /// <summary>
@@ -210,43 +196,21 @@ namespace EDF
 #endif
             for (int i = bytesWritten; i < blockSize; i++)
                 this.Write(TAL.byte_0);
-#if TRACE_BYTES
-            Console.WriteLine("Write position after filled by 0: " + this.BaseStream.Position);
-#endif
+
         }
 
         private int WriteAnnotation(TAL annotations)
         {
-#if TRACE_BYTES
-            Console.WriteLine("Write position before annotation: " + this.BaseStream.Position);
-#endif
             var bytesToWrite = TALExtensions.GetBytes(annotations);
-#if TRACE_BYTES
-            Console.WriteLine("Bytes to write: " + bytesToWrite.Length);
-#endif
             this.Write(bytesToWrite);
-#if TRACE_BYTES
-            Console.WriteLine("Write position after annotation: " + this.BaseStream.Position);
-#endif
             return bytesToWrite.Length;
         }
 
         private int WriteAnnotationIndex(int index)
         {
-#if TRACE_BYTES
-            Console.WriteLine("Write position before annotation index: " + this.BaseStream.Position);
-#endif
             var bytesToWrite = TALExtensions.GetBytesForTALIndex(index);
-#if TRACE_BYTES
-            Console.WriteLine("Bytes to write: " + bytesToWrite.Length);
-#endif
             this.Write(bytesToWrite);
-#if TRACE_BYTES
-            Console.WriteLine("Write position after annotation index: " + this.BaseStream.Position);
-#endif
             return bytesToWrite.Length;
-
-
         }
     }
 }
