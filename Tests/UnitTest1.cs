@@ -79,9 +79,14 @@ namespace EDFSharpTests
         //[TestMethod]
         public void ReadFie()
         {
-            string filename = @"D:\edf\12-38-08.EDF";
+            string filename = @"D:\edf\11-11-27.EDF";
             var edf = new EDFFile(filename);
             Console.WriteLine(edf.ToString());
+            Console.WriteLine(edf.Header.GetStartTime());
+            Console.WriteLine(edf.Header.GetEndTime());
+            Console.WriteLine(edf.Header.DurationInSeconds);
+            TimeSpan t = TimeSpan.FromSeconds(edf.Header.DurationInSeconds);
+            Console.WriteLine(t);
         }
     }
 }

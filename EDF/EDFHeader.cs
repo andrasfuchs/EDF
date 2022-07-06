@@ -30,6 +30,40 @@ namespace EDF
         public VariableLengthString PreFilterings { get; } = new VariableLengthString(HeaderItems.Prefiltering);
         public VariableLengthInt NumberOfSamplesPerRecord { get; } = new VariableLengthInt(HeaderItems.NumberOfSamplesInDataRecord);
         public VariableLengthString SignalsReserved { get; } = new VariableLengthString(HeaderItems.SignalsReserved);
+
+        public DateTime GetStartTime() => GetDateTime(RecordingStartDate.Value, RecordingStartTime.Value);
+
+        public DateTime GetEndTime() => GetDateTime(RecordingStartDate.Value, RecordingStartTime.Value)
+            .AddSeconds(NumberOfDataRecords.Value * RecordDurationInSeconds.Value);
+        
+
+        public double DurationInSeconds => NumberOfDataRecords.Value * RecordDurationInSeconds.Value;
+
+
+        private DateTime GetDateTime(string datePart, string timePart)
+        {
+            CultureInfo provider = CultureInfo.InvariantCulture;
+            DateTime date = DateTime.MinValue;
+            try
+            {
+                date = DateTime.ParseExact(datePart, "dd.MM.yy", provider);
+            }
+            catch (FormatException)
+            {
+                //do nothing
+            }
+            DateTime time = DateTime.MinValue;
+            try
+            {
+                time = DateTime.ParseExact(timePart, "hh.mm.ss", provider);
+            }
+            catch (FormatException)
+            {
+                //do nothing
+            }
+            DateTime combined = date.Date.Add(time.TimeOfDay);
+            return combined;
+        }
         /// <summary>
         /// Parse record start date and time string to obtain a DateTime object.
         /// </summary>

@@ -41,3 +41,8 @@ This project is provided under the terms of the [MIT license](http://choosealice
 |.. | |
 |.. | |
 |nr of samples[ns] * integer | last signal |
+
+## History
+
+### V0.5.0: 
+ - Add Start/End DateTime and Duration in the Header class
