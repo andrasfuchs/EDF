@@ -37,7 +37,7 @@ namespace EDF
             .AddSeconds(NumberOfDataRecords.Value * RecordDurationInSeconds.Value);
         
 
-        public double DurationInSeconds => NumberOfDataRecords.Value * RecordDurationInSeconds.Value;
+        public double TotalDurationInSeconds => NumberOfDataRecords.Value * RecordDurationInSeconds.Value;
 
 
         private DateTime GetDateTime(string datePart, string timePart)

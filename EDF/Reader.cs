@@ -53,27 +53,27 @@ namespace EDF
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="aEdfHeader"></param>
+        /// <param name="header"></param>
         /// <returns></returns>
-        public EDFSignal[] AllocateSignals(EDFHeader aEdfHeader)
+        public EDFSignal[] AllocateSignals(EDFHeader header)
         {
-            EDFSignal[] signals = new EDFSignal[aEdfHeader.NumberOfSignalsInRecord.Value];
+            EDFSignal[] signals = new EDFSignal[header.NumberOfSignalsInRecord.Value];
 
             for (int i = 0; i < signals.Length; i++)
             {
                 signals[i] = new EDFSignal();
-                // Just copy data from the header, ugly architecture really...
                 signals[i].Index = i;
-                signals[i].Label.Value = aEdfHeader.Labels.Value[i];
-                signals[i].TransducerType.Value = aEdfHeader.TransducerTypes.Value[i];
-                signals[i].PhysicalDimension.Value = aEdfHeader.PhysicalDimensions.Value[i];
-                signals[i].PhysicalMinimum.Value = aEdfHeader.PhysicalMinimums.Value[i];
-                signals[i].PhysicalMaximum.Value = aEdfHeader.PhysicalMaximums.Value[i];
-                signals[i].DigitalMinimum.Value = aEdfHeader.DigitalMinimums.Value[i];
-                signals[i].DigitalMaximum.Value = aEdfHeader.DigitalMaximums.Value[i];
-                signals[i].Prefiltering.Value = aEdfHeader.PreFilterings.Value[i];
-                signals[i].Reserved.Value = aEdfHeader.SignalsReserved.Value[i];
-                signals[i].NumberOfSamplesInDataRecord.Value = aEdfHeader.NumberOfSamplesPerRecord.Value[i];
+                signals[i].Label.Value = header.Labels.Value[i];
+                signals[i].TransducerType.Value = header.TransducerTypes.Value[i];
+                signals[i].PhysicalDimension.Value = header.PhysicalDimensions.Value[i];
+                signals[i].PhysicalMinimum.Value = header.PhysicalMinimums.Value[i];
+                signals[i].PhysicalMaximum.Value = header.PhysicalMaximums.Value[i];
+                signals[i].DigitalMinimum.Value = header.DigitalMinimums.Value[i];
+                signals[i].DigitalMaximum.Value = header.DigitalMaximums.Value[i];
+                signals[i].Prefiltering.Value = header.PreFilterings.Value[i];
+                signals[i].Reserved.Value = header.SignalsReserved.Value[i];
+                signals[i].NumberOfSamplesInDataRecord.Value = header.NumberOfSamplesPerRecord.Value[i];
+                signals[i].FrequencyInHZ = signals[i].NumberOfSamplesInDataRecord.Value / header.RecordDurationInSeconds.Value;
             }
 
             return signals;

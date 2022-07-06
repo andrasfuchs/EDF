@@ -46,7 +46,7 @@ namespace EDF
         public FixedLengthInt NumberOfSamplesInDataRecord { get; } = new FixedLengthInt(HeaderItems.NumberOfSamplesInDataRecord);
 
         public FixedLengthString Reserved { get; } = new FixedLengthString(HeaderItems.SignalsReserved);
-
+        public double FrequencyInHZ { get; set; }
         public List<short> Samples { get; set; } = new List<short> { };
         public long SamplesCount => Samples.Count;
 

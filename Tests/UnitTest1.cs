@@ -80,12 +80,16 @@ namespace EDFSharpTests
         public void ReadFie()
         {
             string filename = @"D:\edf\11-11-27.EDF";
+            if (!File.Exists(filename))
+            {
+                return;
+            }
             var edf = new EDFFile(filename);
             Console.WriteLine(edf.ToString());
             Console.WriteLine(edf.Header.GetStartTime());
             Console.WriteLine(edf.Header.GetEndTime());
-            Console.WriteLine(edf.Header.DurationInSeconds);
-            TimeSpan t = TimeSpan.FromSeconds(edf.Header.DurationInSeconds);
+            Console.WriteLine(edf.Header.TotalDurationInSeconds);
+            TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
             Console.WriteLine(t);
         }
     }

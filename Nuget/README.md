@@ -44,5 +44,8 @@ This project is provided under the terms of the [MIT license](http://choosealice
 
 ## History
 
+### V0.5.1: 
+ - Add Signal Frequency per channel
+
 ### V0.5.0: 
  - Add Start/End DateTime and Duration in the Header class
