@@ -86,8 +86,9 @@ namespace EDF.Viewer
 
         private void TbRange_ValueChanged(object sender, EventArgs e)
         {
-            SelectedSecond = tbRange.Value;
-            LoadDataToChart(false);
+         SelectedSecond = tbRange.Value;
+         lblOffset.Text = $"Offset from start: {SelectedSecond}";
+         LoadDataToChart(false);
         }
 
         public void GeneratePlotter()
@@ -158,12 +159,12 @@ namespace EDF.Viewer
                 var data = new List<AnalogyPlottingPointData>();
                 for (int i = 0; i < signal.SamplesCount; i++)
                 {
-                    if (signal.Times[i] > StartTime.AddMilliseconds(maximumRange))
+                    if (signal.Times[i] > StartTime.AddSeconds(maximumRange))
                     {
                         break;
                     }
-                    if (signal.Times[i] >= StartTime.AddMilliseconds(minimumRange) &&
-                        signal.Times[i] <= StartTime.AddMilliseconds(maximumRange))
+                    if (signal.Times[i] >= StartTime.AddSeconds(minimumRange) &&
+                        signal.Times[i] <= StartTime.AddSeconds(maximumRange))
                     {
                         data.Add(new AnalogyPlottingPointData(signal.Label.Value, signal.Samples[i], signal.Times[i].DateTime, signal.Timestamps[i], AxisType));
                     }

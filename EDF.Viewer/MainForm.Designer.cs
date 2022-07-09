@@ -31,14 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.gcTop = new DevExpress.XtraEditors.GroupControl();
-            this.sbtnLoad = new DevExpress.XtraEditors.SimpleButton();
-            this.sbtnBrowse = new DevExpress.XtraEditors.SimpleButton();
-            this.teH5 = new DevExpress.XtraEditors.TextEdit();
-            this.lblH5File = new DevExpress.XtraEditors.LabelControl();
-            this.sbtnForceRedraw = new DevExpress.XtraEditors.SimpleButton();
-            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
-            this.seTimeOffset = new DevExpress.XtraEditors.SpinEdit();
-            this.ceTimeAxis = new DevExpress.XtraEditors.CheckEdit();
+            this.tbRange = new DevExpress.XtraEditors.TrackBarControl();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.btsiShowChartControl = new DevExpress.XtraBars.BarToggleSwitchItem();
@@ -49,17 +42,28 @@
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.gcDocument = new DevExpress.XtraEditors.GroupControl();
-            this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
             this.lblWindowInterval = new DevExpress.XtraEditors.LabelControl();
             this.seWindowInterval = new DevExpress.XtraEditors.SpinEdit();
-            this.tbRange = new DevExpress.XtraEditors.TrackBarControl();
+            this.sbtnLoad = new DevExpress.XtraEditors.SimpleButton();
+            this.sbtnBrowse = new DevExpress.XtraEditors.SimpleButton();
+            this.teH5 = new DevExpress.XtraEditors.TextEdit();
+            this.lblH5File = new DevExpress.XtraEditors.LabelControl();
+            this.sbtnForceRedraw = new DevExpress.XtraEditors.SimpleButton();
+            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
+            this.seTimeOffset = new DevExpress.XtraEditors.SpinEdit();
+            this.ceTimeAxis = new DevExpress.XtraEditors.CheckEdit();
+            this.gcDocument = new DevExpress.XtraEditors.GroupControl();
+            this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
+            this.lblOffset = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.gcTop)).BeginInit();
             this.gcTop.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbRange)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbRange.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.seWindowInterval.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teH5.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.seTimeOffset.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ceTimeAxis.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcDocument)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1.Panel1)).BeginInit();
@@ -67,13 +71,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1.Panel2)).BeginInit();
             this.splitContainerControl1.Panel2.SuspendLayout();
             this.splitContainerControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.seWindowInterval.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbRange)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbRange.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // gcTop
             // 
+            this.gcTop.Controls.Add(this.lblOffset);
             this.gcTop.Controls.Add(this.tbRange);
             this.gcTop.Controls.Add(this.lblWindowInterval);
             this.gcTop.Controls.Add(this.seWindowInterval);
@@ -91,97 +93,19 @@
             this.gcTop.Size = new System.Drawing.Size(1746, 149);
             this.gcTop.TabIndex = 1;
             // 
-            // sbtnLoad
+            // tbRange
             // 
-            this.sbtnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.sbtnLoad.Location = new System.Drawing.Point(1663, 28);
-            this.sbtnLoad.Name = "sbtnLoad";
-            this.sbtnLoad.Size = new System.Drawing.Size(80, 27);
-            this.sbtnLoad.TabIndex = 57;
-            this.sbtnLoad.Text = "Load";
-            // 
-            // sbtnBrowse
-            // 
-            this.sbtnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.sbtnBrowse.Location = new System.Drawing.Point(1614, 28);
-            this.sbtnBrowse.Name = "sbtnBrowse";
-            this.sbtnBrowse.Size = new System.Drawing.Size(43, 27);
-            this.sbtnBrowse.TabIndex = 56;
-            this.sbtnBrowse.Text = "...";
-            // 
-            // teH5
-            // 
-            this.teH5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbRange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.teH5.Location = new System.Drawing.Point(39, 31);
-            this.teH5.Name = "teH5";
-            this.teH5.Size = new System.Drawing.Size(1569, 22);
-            this.teH5.TabIndex = 55;
-            // 
-            // lblH5File
-            // 
-            this.lblH5File.Location = new System.Drawing.Point(12, 34);
-            this.lblH5File.Name = "lblH5File";
-            this.lblH5File.Size = new System.Drawing.Size(25, 16);
-            this.lblH5File.TabIndex = 54;
-            this.lblH5File.Text = "File:";
-            // 
-            // sbtnForceRedraw
-            // 
-            this.sbtnForceRedraw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.sbtnForceRedraw.Location = new System.Drawing.Point(1621, 61);
-            this.sbtnForceRedraw.Name = "sbtnForceRedraw";
-            this.sbtnForceRedraw.Size = new System.Drawing.Size(120, 29);
-            this.sbtnForceRedraw.TabIndex = 53;
-            this.sbtnForceRedraw.Text = "Force Redraw";
-            this.sbtnForceRedraw.Click += new System.EventHandler(this.sbtnForceRedraw_Click);
-            // 
-            // labelControl1
-            // 
-            this.labelControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelControl1.Location = new System.Drawing.Point(1427, 68);
-            this.labelControl1.Name = "labelControl1";
-            this.labelControl1.Size = new System.Drawing.Size(72, 16);
-            this.labelControl1.TabIndex = 52;
-            this.labelControl1.Text = "Time Offset:";
-            // 
-            // seTimeOffset
-            // 
-            this.seTimeOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.seTimeOffset.EditValue = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.seTimeOffset.Enabled = false;
-            this.seTimeOffset.Location = new System.Drawing.Point(1522, 64);
-            this.seTimeOffset.Name = "seTimeOffset";
-            this.seTimeOffset.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.seTimeOffset.Properties.MaskSettings.Set("mask", "n0");
-            this.seTimeOffset.Properties.MaxValue = new decimal(new int[] {
-            23,
-            0,
-            0,
-            0});
-            this.seTimeOffset.Properties.MinValue = new decimal(new int[] {
-            23,
-            0,
-            0,
-            -2147483648});
-            this.seTimeOffset.Size = new System.Drawing.Size(93, 24);
-            this.seTimeOffset.TabIndex = 51;
-            this.seTimeOffset.EditValueChanged += new System.EventHandler(this.seTimeOffset_EditValueChanged);
-            // 
-            // ceTimeAxis
-            // 
-            this.ceTimeAxis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ceTimeAxis.EditValue = true;
-            this.ceTimeAxis.Location = new System.Drawing.Point(1279, 64);
-            this.ceTimeAxis.Name = "ceTimeAxis";
-            this.ceTimeAxis.Properties.Caption = "Show Time in Axis";
-            this.ceTimeAxis.Size = new System.Drawing.Size(146, 24);
-            this.ceTimeAxis.TabIndex = 50;
+            this.tbRange.EditValue = null;
+            this.tbRange.Location = new System.Drawing.Point(12, 93);
+            this.tbRange.MenuManager = this.barManager1;
+            this.tbRange.Name = "tbRange";
+            this.tbRange.Properties.LabelAppearance.Options.UseTextOptions = true;
+            this.tbRange.Properties.LabelAppearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbRange.Properties.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.tbRange.Size = new System.Drawing.Size(1268, 56);
+            this.tbRange.TabIndex = 62;
             // 
             // barManager1
             // 
@@ -282,6 +206,134 @@
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 538);
             // 
+            // lblWindowInterval
+            // 
+            this.lblWindowInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblWindowInterval.Location = new System.Drawing.Point(1501, 113);
+            this.lblWindowInterval.Name = "lblWindowInterval";
+            this.lblWindowInterval.Size = new System.Drawing.Size(131, 16);
+            this.lblWindowInterval.TabIndex = 61;
+            this.lblWindowInterval.Text = "Window Interval [sec]:";
+            // 
+            // seWindowInterval
+            // 
+            this.seWindowInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.seWindowInterval.EditValue = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.seWindowInterval.Location = new System.Drawing.Point(1641, 108);
+            this.seWindowInterval.Name = "seWindowInterval";
+            this.seWindowInterval.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.seWindowInterval.Properties.MaskSettings.Set("mask", "n0");
+            this.seWindowInterval.Properties.MaxValue = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.seWindowInterval.Properties.MinValue = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.seWindowInterval.Size = new System.Drawing.Size(93, 24);
+            this.seWindowInterval.TabIndex = 60;
+            this.seWindowInterval.EditValueChanged += new System.EventHandler(this.seWindowInterval_EditValueChanged);
+            // 
+            // sbtnLoad
+            // 
+            this.sbtnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.sbtnLoad.Location = new System.Drawing.Point(1663, 28);
+            this.sbtnLoad.Name = "sbtnLoad";
+            this.sbtnLoad.Size = new System.Drawing.Size(80, 27);
+            this.sbtnLoad.TabIndex = 57;
+            this.sbtnLoad.Text = "Load";
+            // 
+            // sbtnBrowse
+            // 
+            this.sbtnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.sbtnBrowse.Location = new System.Drawing.Point(1614, 28);
+            this.sbtnBrowse.Name = "sbtnBrowse";
+            this.sbtnBrowse.Size = new System.Drawing.Size(43, 27);
+            this.sbtnBrowse.TabIndex = 56;
+            this.sbtnBrowse.Text = "...";
+            // 
+            // teH5
+            // 
+            this.teH5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.teH5.Location = new System.Drawing.Point(39, 31);
+            this.teH5.Name = "teH5";
+            this.teH5.Size = new System.Drawing.Size(1569, 22);
+            this.teH5.TabIndex = 55;
+            // 
+            // lblH5File
+            // 
+            this.lblH5File.Location = new System.Drawing.Point(12, 34);
+            this.lblH5File.Name = "lblH5File";
+            this.lblH5File.Size = new System.Drawing.Size(25, 16);
+            this.lblH5File.TabIndex = 54;
+            this.lblH5File.Text = "File:";
+            // 
+            // sbtnForceRedraw
+            // 
+            this.sbtnForceRedraw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.sbtnForceRedraw.Location = new System.Drawing.Point(1621, 61);
+            this.sbtnForceRedraw.Name = "sbtnForceRedraw";
+            this.sbtnForceRedraw.Size = new System.Drawing.Size(120, 29);
+            this.sbtnForceRedraw.TabIndex = 53;
+            this.sbtnForceRedraw.Text = "Force Redraw";
+            this.sbtnForceRedraw.Click += new System.EventHandler(this.sbtnForceRedraw_Click);
+            // 
+            // labelControl1
+            // 
+            this.labelControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelControl1.Location = new System.Drawing.Point(1427, 68);
+            this.labelControl1.Name = "labelControl1";
+            this.labelControl1.Size = new System.Drawing.Size(72, 16);
+            this.labelControl1.TabIndex = 52;
+            this.labelControl1.Text = "Time Offset:";
+            // 
+            // seTimeOffset
+            // 
+            this.seTimeOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.seTimeOffset.EditValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.seTimeOffset.Enabled = false;
+            this.seTimeOffset.Location = new System.Drawing.Point(1522, 64);
+            this.seTimeOffset.Name = "seTimeOffset";
+            this.seTimeOffset.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.seTimeOffset.Properties.MaskSettings.Set("mask", "n0");
+            this.seTimeOffset.Properties.MaxValue = new decimal(new int[] {
+            23,
+            0,
+            0,
+            0});
+            this.seTimeOffset.Properties.MinValue = new decimal(new int[] {
+            23,
+            0,
+            0,
+            -2147483648});
+            this.seTimeOffset.Size = new System.Drawing.Size(93, 24);
+            this.seTimeOffset.TabIndex = 51;
+            this.seTimeOffset.EditValueChanged += new System.EventHandler(this.seTimeOffset_EditValueChanged);
+            // 
+            // ceTimeAxis
+            // 
+            this.ceTimeAxis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ceTimeAxis.EditValue = true;
+            this.ceTimeAxis.Location = new System.Drawing.Point(1279, 64);
+            this.ceTimeAxis.Name = "ceTimeAxis";
+            this.ceTimeAxis.Properties.Caption = "Show Time in Axis";
+            this.ceTimeAxis.Size = new System.Drawing.Size(146, 24);
+            this.ceTimeAxis.TabIndex = 50;
+            // 
             // gcDocument
             // 
             this.gcDocument.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -311,59 +363,14 @@
             this.splitContainerControl1.SplitterPosition = 149;
             this.splitContainerControl1.TabIndex = 39;
             // 
-            // lblWindowInterval
+            // lblOffset
             // 
-            this.lblWindowInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblWindowInterval.Location = new System.Drawing.Point(1526, 112);
-            this.lblWindowInterval.Name = "lblWindowInterval";
-            this.lblWindowInterval.Size = new System.Drawing.Size(98, 16);
-            this.lblWindowInterval.TabIndex = 61;
-            this.lblWindowInterval.Text = "Window Interval:";
-            // 
-            // seWindowInterval
-            // 
-            this.seWindowInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.seWindowInterval.EditValue = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.seWindowInterval.Location = new System.Drawing.Point(1641, 108);
-            this.seWindowInterval.Name = "seWindowInterval";
-            this.seWindowInterval.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.seWindowInterval.Properties.Increment = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.seWindowInterval.Properties.MaskSettings.Set("mask", "n0");
-            this.seWindowInterval.Properties.MaxValue = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.seWindowInterval.Properties.MinValue = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.seWindowInterval.Size = new System.Drawing.Size(93, 24);
-            this.seWindowInterval.TabIndex = 60;
-            this.seWindowInterval.EditValueChanged += new System.EventHandler(this.seWindowInterval_EditValueChanged);
-            // 
-            // tbRange
-            // 
-            this.tbRange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRange.Location = new System.Drawing.Point(12, 93);
-            this.tbRange.MenuManager = this.barManager1;
-            this.tbRange.Name = "tbRange";
-            this.tbRange.Properties.LabelAppearance.Options.UseTextOptions = true;
-            this.tbRange.Properties.LabelAppearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.tbRange.Properties.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.tbRange.Size = new System.Drawing.Size(1487, 56);
-            this.tbRange.TabIndex = 62;
+            this.lblOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblOffset.Location = new System.Drawing.Point(1286, 112);
+            this.lblOffset.Name = "lblOffset";
+            this.lblOffset.Size = new System.Drawing.Size(116, 16);
+            this.lblOffset.TabIndex = 63;
+            this.lblOffset.Text = "Offset From Start: 0";
             // 
             // MainForm
             // 
@@ -383,10 +390,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.gcTop)).EndInit();
             this.gcTop.ResumeLayout(false);
             this.gcTop.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbRange.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbRange)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.seWindowInterval.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.teH5.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.seTimeOffset.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ceTimeAxis.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcDocument)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1.Panel1)).EndInit();
             this.splitContainerControl1.Panel1.ResumeLayout(false);
@@ -394,9 +404,6 @@
             this.splitContainerControl1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).EndInit();
             this.splitContainerControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.seWindowInterval.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbRange.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbRange)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -427,5 +434,6 @@
         private DevExpress.XtraEditors.LabelControl lblWindowInterval;
         private DevExpress.XtraEditors.SpinEdit seWindowInterval;
         private DevExpress.XtraEditors.TrackBarControl tbRange;
+        private DevExpress.XtraEditors.LabelControl lblOffset;
     }
 }
