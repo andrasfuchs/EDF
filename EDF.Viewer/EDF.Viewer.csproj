@@ -10,6 +10,7 @@
 		<Copyright>Lior Banai © 2022</Copyright>
 		<Version>0.1.0</Version>
 		<RepositoryType>git</RepositoryType>
+		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
 
 	</PropertyGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows' ">
