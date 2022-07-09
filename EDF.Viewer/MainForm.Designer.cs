@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.gcTop = new DevExpress.XtraEditors.GroupControl();
             this.sbtnLoad = new DevExpress.XtraEditors.SimpleButton();
             this.sbtnBrowse = new DevExpress.XtraEditors.SimpleButton();
@@ -87,7 +88,7 @@
             this.gcTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gcTop.Location = new System.Drawing.Point(0, 0);
             this.gcTop.Name = "gcTop";
-            this.gcTop.Size = new System.Drawing.Size(1746, 176);
+            this.gcTop.Size = new System.Drawing.Size(1746, 149);
             this.gcTop.TabIndex = 1;
             // 
             // sbtnLoad
@@ -127,6 +128,7 @@
             // 
             // sbtnForceRedraw
             // 
+            this.sbtnForceRedraw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.sbtnForceRedraw.Location = new System.Drawing.Point(1621, 61);
             this.sbtnForceRedraw.Name = "sbtnForceRedraw";
             this.sbtnForceRedraw.Size = new System.Drawing.Size(120, 29);
@@ -136,6 +138,7 @@
             // 
             // labelControl1
             // 
+            this.labelControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelControl1.Location = new System.Drawing.Point(1427, 68);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(72, 16);
@@ -144,6 +147,7 @@
             // 
             // seTimeOffset
             // 
+            this.seTimeOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.seTimeOffset.EditValue = new decimal(new int[] {
             0,
             0,
@@ -171,6 +175,7 @@
             // 
             // ceTimeAxis
             // 
+            this.ceTimeAxis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ceTimeAxis.EditValue = true;
             this.ceTimeAxis.Location = new System.Drawing.Point(1279, 64);
             this.ceTimeAxis.Name = "ceTimeAxis";
@@ -219,7 +224,9 @@
             // 
             // btsiShowChartLegend
             // 
+            this.btsiShowChartLegend.BindableChecked = true;
             this.btsiShowChartLegend.Caption = "Show Chart Legend";
+            this.btsiShowChartLegend.Checked = true;
             this.btsiShowChartLegend.Id = 1;
             this.btsiShowChartLegend.Name = "btsiShowChartLegend";
             this.btsiShowChartLegend.CheckedChanged += new DevExpress.XtraBars.ItemClickEventHandler(this.btsiShowChartLegend_CheckedChanged);
@@ -280,7 +287,7 @@
             this.gcDocument.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gcDocument.Location = new System.Drawing.Point(0, 0);
             this.gcDocument.Name = "gcDocument";
-            this.gcDocument.Size = new System.Drawing.Size(1746, 350);
+            this.gcDocument.Size = new System.Drawing.Size(1746, 377);
             this.gcDocument.TabIndex = 11;
             this.gcDocument.Text = "Result";
             // 
@@ -301,12 +308,13 @@
             this.splitContainerControl1.Panel2.Controls.Add(this.gcDocument);
             this.splitContainerControl1.Panel2.Text = "Panel2";
             this.splitContainerControl1.Size = new System.Drawing.Size(1746, 538);
-            this.splitContainerControl1.SplitterPosition = 176;
+            this.splitContainerControl1.SplitterPosition = 149;
             this.splitContainerControl1.TabIndex = 39;
             // 
             // lblWindowInterval
             // 
-            this.lblWindowInterval.Location = new System.Drawing.Point(1526, 134);
+            this.lblWindowInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblWindowInterval.Location = new System.Drawing.Point(1526, 112);
             this.lblWindowInterval.Name = "lblWindowInterval";
             this.lblWindowInterval.Size = new System.Drawing.Size(98, 16);
             this.lblWindowInterval.TabIndex = 61;
@@ -314,12 +322,13 @@
             // 
             // seWindowInterval
             // 
+            this.seWindowInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.seWindowInterval.EditValue = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.seWindowInterval.Location = new System.Drawing.Point(1641, 130);
+            this.seWindowInterval.Location = new System.Drawing.Point(1641, 108);
             this.seWindowInterval.Name = "seWindowInterval";
             this.seWindowInterval.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -347,7 +356,7 @@
             // 
             this.tbRange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRange.Location = new System.Drawing.Point(12, 115);
+            this.tbRange.Location = new System.Drawing.Point(12, 93);
             this.tbRange.MenuManager = this.barManager1;
             this.tbRange.Name = "tbRange";
             this.tbRange.Properties.LabelAppearance.Options.UseTextOptions = true;
@@ -366,8 +375,9 @@
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
+            this.IconOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("MainForm.IconOptions.LargeImage")));
             this.Name = "MainForm";
-            this.Text = "Data Diff Plotter";
+            this.Text = "EDF Viewer";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gcTop)).EndInit();
