@@ -16,7 +16,7 @@ namespace EDF.Viewer
 #if NET6
             ApplicationConfiguration.Initialize();
 #endif
-            Application.Run(new DiffComparerForm());
+            Application.Run(new MainForm());
         }
     }
 }

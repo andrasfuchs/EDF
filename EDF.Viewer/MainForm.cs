@@ -10,31 +10,38 @@ using Analogy.CommonControls.Plotting;
 using Analogy.Interfaces;
 using Analogy.Interfaces.DataTypes;
 using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Repository;
 using EDFCSharp;
 
 namespace EDF.Viewer
 {
-    public partial class DiffComparerForm : XtraForm, IAnalogyPlotting
+    public partial class MainForm : XtraForm, IAnalogyPlotting
     {
-        private int _selectedMissingGtIndex;
-        private int _selectedMissingUtIndex;
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid FactoryId { get; set; } = Guid.NewGuid();
         public string Title { get; set; } = "ECG Plotter";
-        public event EventHandler<AnalogyPlottingPointData> OnNewPointData;
-        public event EventHandler<List<AnalogyPlottingPointData>> OnNewPointsData;
-        private PlottingUC Plotter { get; set; }
+        public event EventHandler<AnalogyPlottingPointData>? OnNewPointData;
+        public event EventHandler<List<AnalogyPlottingPointData>>? OnNewPointsData;
+        private PlottingUC? Plotter { get; set; }
         private List<(string SeriesName, AnalogyPlottingSeriesType SeriesViewType)> Series { get; set; }
         private AnalogyPlottingPointXAxisDataType AxisType { get; set; }
         private int TimeOffset { get; set; }
         private EDFSignal[] Signals { get; set; }
-        public DiffComparerForm()
+        private int SelectedSecond { get; set; }
+        private int TotalDurationInSeconds { get; set; }
+        public DateTime StartTime { get; set; }
+
+        public MainForm()
         {
             InitializeComponent();
+            tbRange.Properties.EditValueChangedFiringMode = DevExpress.XtraEditors.Controls.EditValueChangedFiringMode.Buffered;
+            RepositoryItem.EditValueChangedFiringDelay = Convert.ToInt32(100);
+
+            Signals = Array.Empty<EDFSignal>();
             Series = new List<(string SeriesName, AnalogyPlottingSeriesType SeriesViewType)>();
         }
 
-        private void DiffComparerForm_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             seTimeOffset.EditValue = TimeOffset;
             if (!DesignMode)
@@ -66,9 +73,23 @@ namespace EDF.Viewer
             {
                 Series = edf.Signals.Select(s => (s.Label.Value, AnalogyPlottingSeriesType.Line)).ToList();
                 Signals = edf.Signals;
+                TotalDurationInSeconds = (int)edf.Header.TotalDurationInSeconds;
+                StartTime = edf.Header.GetStartTime();
+                tbRange.EditValueChanged -= TbRange_ValueChanged;
+                tbRange.Properties.Maximum = TotalDurationInSeconds;
+                tbRange.Properties.Minimum = 0;
+                tbRange.Value = 0;
+                tbRange.EditValueChanged += TbRange_ValueChanged;
             }
             LoadDataToChart(true);
         }
+
+        private void TbRange_ValueChanged(object sender, EventArgs e)
+        {
+            SelectedSecond = tbRange.Value;
+            LoadDataToChart(false);
+        }
+
         public void GeneratePlotter()
         {
             if (Plotter != null)
@@ -130,13 +151,35 @@ namespace EDF.Viewer
                 Plotter?.ClearSeriesDataAndRemoveConstantLines();
             }
 
+            int minimumRange = Math.Max(0, SelectedSecond - (int)seWindowInterval.Value);
+            int maximumRange = SelectedSecond + (int)seWindowInterval.Value;
             foreach (EDFSignal signal in Signals)
             {
+                bool startData = false;
+                bool endData = false;
                 var data = new List<AnalogyPlottingPointData>();
                 for (int i = 0; i < signal.SamplesCount; i++)
                 {
-                    data.Add(new AnalogyPlottingPointData(signal.Label.Value, signal.Samples[i], signal.Times[i].DateTime, signal.Timestamps[i], AxisType));
+                    if (endData)
+                    {
+                        break;
+
+                    }
+                    if (signal.Times[i] >= StartTime.AddMilliseconds(minimumRange) &&
+                        signal.Times[i] <= StartTime.AddMilliseconds(maximumRange))
+                    {
+                        startData = true;
+                        data.Add(new AnalogyPlottingPointData(signal.Label.Value, signal.Samples[i], signal.Times[i].DateTime, signal.Timestamps[i], AxisType));
+                        continue;
+
+                    }
+                    if (startData)
+                    {
+                        endData = true;
+                    }
                 }
+
+                
                 OnNewPointsData?.Invoke(this, data);
             }
         }
