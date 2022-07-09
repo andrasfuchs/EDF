@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace EDFCSharp
@@ -89,8 +90,7 @@ namespace EDFCSharp
             Console.WriteLine("File size: " + new FileInfo(edfFilePath).Length);
         }
 
-
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int CalcNumOfBytesInHeader(EDFFile edf)
         {
             int totalFixedLength = 256;
@@ -99,7 +99,7 @@ namespace EDFCSharp
             int totalVariableLength = ns * 16 + (ns * 80) * 2 + (ns * 8) * 6 + (ns * 32);
             return totalFixedLength + totalVariableLength;
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteItem(HeaderItem headerItem)
         {
             string strItem = headerItem.ToAscii();
@@ -107,7 +107,8 @@ namespace EDFCSharp
             byte[] itemBytes = AsciiToBytes(strItem);
             Write(itemBytes);
         }
-
+       
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteItem(IEnumerable<HeaderItem> headerItems)
         {
             string joinedItems = StrJoin(headerItems);
@@ -116,6 +117,7 @@ namespace EDFCSharp
             Write(itemBytes);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string StrJoin(IEnumerable<HeaderItem> list)
         {
             string joinedString = "";
@@ -128,11 +130,13 @@ namespace EDFCSharp
             return joinedString;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte[] AsciiToBytes(string strItem)
         {
             return Encoding.ASCII.GetBytes(strItem);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte[] AsciiToIntBytes(string strItem, int length)
         {
             string strInt = "";
@@ -142,6 +146,7 @@ namespace EDFCSharp
             return Encoding.ASCII.GetBytes(strInt);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteSignals(EDFFile edf)
         {
             if (!edf.Signals.Any())
@@ -178,6 +183,7 @@ namespace EDFCSharp
         /// <param name="index">Record index, necessary to locate the TAL and to write index</param>
         /// <param name="annotations">List of Time-stamped Annotations</param>
         /// <param name="sampleCountPerRecord"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteAnnotations(int index, List<TAL> annotations, int sampleCountPerRecord)
         {
             var bytesWritten = 0;
@@ -198,14 +204,16 @@ namespace EDFCSharp
                 Write(TAL.byte_0);
 
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int WriteAnnotation(TAL annotations)
         {
             var bytesToWrite = TALExtensions.GetBytes(annotations);
             Write(bytesToWrite);
             return bytesToWrite.Length;
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int WriteAnnotationIndex(int index)
         {
             var bytesToWrite = TALExtensions.GetBytesForTALIndex(index);
