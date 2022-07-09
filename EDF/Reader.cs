@@ -7,7 +7,7 @@ using System.Text;
 
 namespace EDFCSharp
 {
-    class Reader : BinaryReader
+    internal class Reader : BinaryReader
     {
         public Reader(FileStream fs) : base(fs) { }
         public Reader(byte[] edfBytes) : base(new MemoryStream(edfBytes)) { }
@@ -54,7 +54,7 @@ namespace EDFCSharp
         /// </summary>
         /// <param name="header"></param>
         /// <returns></returns>
-        public EDFSignal[] AllocateSignals(EDFHeader header)
+        internal EDFSignal[] AllocateSignals(EDFHeader header)
         {
             EDFSignal[] signals = new EDFSignal[header.NumberOfSignalsInRecord.Value];
 

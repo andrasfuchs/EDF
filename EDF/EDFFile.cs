@@ -13,7 +13,10 @@ namespace EDFCSharp
 
         private Reader iReader;
 
-        public EDFFile() { AnnotationSignals = new List<AnnotationSignal>(); }
+        public EDFFile()
+        {
+            AnnotationSignals = new List<AnnotationSignal>();
+        }
         public EDFFile(string edfFilePath)
         {
             ReadAll(edfFilePath);
