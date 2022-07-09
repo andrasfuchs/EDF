@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Analogy.CommonControls.DataTypes;
+using Analogy.CommonControls.Plotting;
 using Analogy.Interfaces;
 using Analogy.Interfaces.DataTypes;
 using DevExpress.XtraCharts;
@@ -21,96 +23,24 @@ namespace PeakDetectorAnalyzer
         public string Title { get; set; } = "ECG Plotter";
         public event EventHandler<AnalogyPlottingPointData> OnNewPointData;
         public event EventHandler<List<AnalogyPlottingPointData>> OnNewPointsData;
-
-        private UserSettingsManager Settings => UserSettingsManager.Instance;
-
-        private List<DetectionPeak> GoldPeaks { get; set; }
-        private List<DetectionPeak> ManualPeaks { get; set; }
-        private ECGData ECG { get; set; }
-        private PeakDetectionResultTable Result { get; set; }
         private PlottingUC Plotter { get; set; }
-        private PeakDetectionVerifierTypeResult SelectedResult { get; set; }
-        private List<DetectionPeakWithProperties> SelectedMissingGT { get; set; }
-
-        private int SelectedMissingGTIndex
-        {
-            get => _selectedMissingGtIndex;
-            set
-            {
-                _selectedMissingGtIndex = value;
-                GTMissing.Text = $"{SelectedMissingGTIndex + 1}/{SelectedMissingGT.Count}";
-
-            }
-        }
-
-        private List<DetectionPeakWithProperties> SelectedMissingUT { get; set; }
-
-        private int SelectedMissingUTIndex
-        {
-            get => _selectedMissingUtIndex;
-            set
-            {
-                _selectedMissingUtIndex = value;
-                UTMissing.Text = $"{SelectedMissingUTIndex + 1}/{SelectedMissingUT.Count}";
-
-            }
-        }
-
-        private Dictionary<DetectionPeakType, Color> PeakTypeColors { get; }
-        private DashStyle GTLine => DashStyle.Solid;
-        private DashStyle UTLine => DashStyle.Dot;
-
-        private DetectionPeakWithProperties SelectedPoint
-        {
-            get => _selectedPoint;
-            set
-            {
-                if (value != _selectedPoint && value != null)
-                {
-                    _selectedPoint = value;
-                    LoadDataToChart(false);
-                }
-            }
-        }
-
+        
         private AnalogyPlottingPointXAxisDataType AxisType { get; set; }
-        private List<string> ChannelNames { get; }
         private int TimeOffset { get; set; }
 
         public DiffComparerForm()
         {
-            ChannelNames = new List<string>()
-                { "Lead I", "Lead II", "Lead III", "AVR", "AVL", "AVF", "V1", "V2", "V3", "V4", "V5", "V6" };
-            PeakTypeColors = new Dictionary<DetectionPeakType, Color>()
-            {
-                { DetectionPeakType.P, Color.Blue },
-                { DetectionPeakType.Q, Color.Green },
-                { DetectionPeakType.T, Color.DarkOrange },
-                { DetectionPeakType.V, Color.Chocolate },
-                { DetectionPeakType.A, Color.Gray },
-                { DetectionPeakType.N, Color.SkyBlue },
-                { DetectionPeakType.X, Color.Purple },
-            };
             InitializeComponent();
-
-
+            
         }
 
-        public DiffComparerForm(List<DetectionPeak> goldPeaks, List<DetectionPeak> manualPeaks, ECGData ecg, int timeOffset, PeakDetectionResultTable result) : this()
-        {
-            GoldPeaks = goldPeaks;
-            ManualPeaks = manualPeaks;
-            ECG = ecg;
-            Result = result;
-            TimeOffset = timeOffset;
-        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private DateTime GetTime(long ts) => DateTimeOffset.FromUnixTimeMilliseconds(ts).UtcDateTime.AddHours(TimeOffset);
 
         private void DiffComparerForm_Load(object sender, EventArgs e)
         {
             cbTypes.SelectedIndex = 0;
-            seTimeOffset.Value = Settings.HourOffset;
             seTimeOffset.EditValue = TimeOffset;
             lblTop.Text = $"Missing Detections: P: {Result.PResults.MissingDetectionInGT}(GT)/{Result.PResults.MissingDetectionInUT}(UT). Q: {Result.QResults.MissingDetectionInGT}(GT)/{Result.QResults.MissingDetectionInUT}(UT). T: {Result.TResults.MissingDetectionInGT}(GT)/{Result.TResults.MissingDetectionInUT}(UT). V: {Result.VResults.MissingDetectionInGT}(GT)/{Result.VResults.MissingDetectionInUT}(UT). A: {Result.AResults.MissingDetectionInGT}(GT)/{Result.AResults.MissingDetectionInUT}(UT). N: {Result.NResults.MissingDetectionInGT}(GT)/{Result.NResults.MissingDetectionInUT}(UT). X: {Result.XResults.MissingDetectionInGT}(GT)/{Result.XResults.MissingDetectionInUT}(UT. P over PQ: {Result.PPQResults.MissingDetectionInGT}(GT)/{Result.PPQResults.MissingDetectionInUT}(UT))";
         }

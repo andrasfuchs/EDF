@@ -320,7 +320,6 @@
             // 
             // sbtnUTPerv
             // 
-            this.sbtnUTPerv.ImageOptions.Image = global::PeakDetectorAnalyzer.Properties.Resources.Prev_16x16;
             this.sbtnUTPerv.Location = new System.Drawing.Point(657, 128);
             this.sbtnUTPerv.Name = "sbtnUTPerv";
             this.sbtnUTPerv.Size = new System.Drawing.Size(24, 24);
@@ -338,7 +337,6 @@
             // sbtnUTNext
             // 
             this.sbtnUTNext.Enabled = false;
-            this.sbtnUTNext.ImageOptions.Image = global::PeakDetectorAnalyzer.Properties.Resources.Next_16x16;
             this.sbtnUTNext.Location = new System.Drawing.Point(687, 128);
             this.sbtnUTNext.Name = "sbtnUTNext";
             this.sbtnUTNext.Size = new System.Drawing.Size(24, 24);
@@ -347,7 +345,6 @@
             // 
             // sbtnGTPerv
             // 
-            this.sbtnGTPerv.ImageOptions.Image = global::PeakDetectorAnalyzer.Properties.Resources.Prev_16x16;
             this.sbtnGTPerv.Location = new System.Drawing.Point(657, 98);
             this.sbtnGTPerv.Name = "sbtnGTPerv";
             this.sbtnGTPerv.Size = new System.Drawing.Size(24, 24);
@@ -365,7 +362,6 @@
             // sbtnGTNext
             // 
             this.sbtnGTNext.Enabled = false;
-            this.sbtnGTNext.ImageOptions.Image = global::PeakDetectorAnalyzer.Properties.Resources.Next_16x16;
             this.sbtnGTNext.Location = new System.Drawing.Point(687, 98);
             this.sbtnGTNext.Name = "sbtnGTNext";
             this.sbtnGTNext.Size = new System.Drawing.Size(24, 24);
@@ -515,7 +511,6 @@
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.IconOptions.Image = global::PeakDetectorAnalyzer.Properties.Resources.Datasource_16x16;
             this.Name = "DiffComparerForm";
             this.Text = "Data Diff Plotter";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
