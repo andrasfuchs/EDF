@@ -129,8 +129,7 @@ namespace EDFCSharp
 
             return signals;
         }
-
-
+        
         /// <summary>
         /// Read n next samples
         /// </summary>
@@ -150,16 +149,13 @@ namespace EDFCSharp
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="aSampleCount"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void SkipSignalSamples(int aSampleCount)
+        private void SkipSignalSamples(int sampleCount)
         {
-            BaseStream.Seek(aSampleCount * sizeof(short), SeekOrigin.Current);
+            BaseStream.Seek(sampleCount * sizeof(short), SeekOrigin.Current);
         }
-        #region Read Types   
+        #region Read Types 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private short ReadInt16(EDFField itemInfo)
         {
             string strInt = ReadAscii(itemInfo).Trim();
@@ -168,6 +164,8 @@ namespace EDFCSharp
             catch (Exception ex) { Console.WriteLine("Error, could not convert string to integer. " + ex.Message); }
             return intResult;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private long ReadLong(EDFField itemInfo)
         {
             string strlong = ReadAscii(itemInfo).Trim();
@@ -176,9 +174,9 @@ namespace EDFCSharp
                 return result;
             }
             return -1;
-
-
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private double ReadDouble(EDFField itemInfo)
         {
             string value = ReadAscii(itemInfo).Trim();
@@ -193,12 +191,14 @@ namespace EDFCSharp
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string ReadAscii(EDFField itemInfo)
         {
             byte[] bytes = ReadBytes(itemInfo.AsciiLength);
             return AsciiString(bytes).Trim();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string[] ReadMultipleAscii(EDFField itemInfo, int numberOfParts)
         {
             var parts = new List<string>();
@@ -212,6 +212,7 @@ namespace EDFCSharp
             return parts.ToArray();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int[] ReadMultipleInt(EDFField itemInfo, int numberOfParts)
         {
             var parts = new List<int>();
@@ -226,12 +227,7 @@ namespace EDFCSharp
             return parts.ToArray();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="itemInfo"></param>
-        /// <param name="numberOfParts"></param>
-        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private double[] ReadMultipleDouble(EDFField itemInfo, int numberOfParts)
         {
             var parts = new List<double>();
@@ -246,12 +242,12 @@ namespace EDFCSharp
 
             return parts.ToArray();
         }
-        #endregion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string AsciiString(byte[] bytes)
         {
             return Encoding.ASCII.GetString(bytes);
         }
+        #endregion
     }
 }

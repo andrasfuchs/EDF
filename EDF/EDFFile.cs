@@ -11,18 +11,18 @@ namespace EDFCSharp
         public EDFSignal[] Signals { get; set; }
         public IList<AnnotationSignal> AnnotationSignals { get; set; }
 
-        private Reader iReader;
+        private Reader Reader { get; set; }
 
         public EDFFile()
         {
             AnnotationSignals = new List<AnnotationSignal>();
         }
-        public EDFFile(string edfFilePath)
+        public EDFFile(string edfFilePath):this()
         {
             ReadAll(edfFilePath);
         }
 
-        public EDFFile(byte[] edfBytes)
+        public EDFFile(byte[] edfBytes):this()
         {
             ReadAll(edfBytes);
         }
@@ -38,10 +38,10 @@ namespace EDFCSharp
         /// </summary>
         public void Dispose()
         {
-            if (iReader != null)
+            if (Reader != null)
             {
-                iReader.Dispose();
-                iReader = null;
+                Reader.Dispose();
+                Reader = null;
             }
         }
 
@@ -58,40 +58,40 @@ namespace EDFCSharp
         /// <summary>
         /// Open the given EDF file, read its header and allocate corresponding Signal objects.
         /// </summary>
-        /// <param name="edfFilePath"></param>
-        public void Open(string edfFilePath)
+        /// <param name="filePath"></param>
+        public void Open(string filePath)
         {
             // Open file
-            iReader = new Reader(File.Open(edfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read));
+            Reader = new Reader(File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read));
             // Read headers
-            Header = iReader.ReadHeader();
+            Header = Reader.ReadHeader();
             // Allocate signals
-            Signals = iReader.AllocateSignals(Header);
+            Signals = Reader.AllocateSignals(Header);
         }
 
         /// <summary>
         /// Read the signal at the given index.
         /// </summary>
-        /// <param name="aIndex"></param>
-        public void ReadSignal(int aIndex)
+        /// <param name="index"></param>
+        public void ReadSignal(int index)
         {
-            iReader.ReadSignal(Header, Signals[aIndex]);
+            Reader.ReadSignal(Header, Signals[index]);
         }
 
         /// <summary>
         /// Read the signal matching the given name.
         /// </summary>
-        /// <param name="aContains"></param>
+        /// <param name="match"></param>
         /// <returns></returns>
-        public EDFSignal ReadSignal(string aMatch)
+        public EDFSignal ReadSignal(string match)
         {
-            var signal = Signals.FirstOrDefault(s => s.Label.Value.Equals(aMatch));
+            var signal = Signals.FirstOrDefault(s => s.Label.Value.Equals(match));
             if (signal == null)
             {
                 return null;
             }
 
-            iReader.ReadSignal(Header, signal);
+            Reader.ReadSignal(Header, signal);
             return signal;
         }
 
@@ -122,13 +122,13 @@ namespace EDFCSharp
             }
         }
 
-        public void Save(string edfFilePath)
+        public void Save(string filePath)
         {
             if (Header == null) return;
 
-            using (var writer = new EDFWriter(File.Open(edfFilePath, FileMode.Create)))
+            using (var writer = new EDFWriter(File.Open(filePath, FileMode.Create)))
             {
-                writer.WriteEDF(this, edfFilePath);
+                writer.WriteEDF(this, filePath);
             }
         }
     }
