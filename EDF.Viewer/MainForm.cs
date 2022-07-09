@@ -155,28 +155,19 @@ namespace EDF.Viewer
             int maximumRange = SelectedSecond + (int)seWindowInterval.Value;
             foreach (EDFSignal signal in Signals)
             {
-                bool startData = false;
-                bool endData = false;
                 var data = new List<AnalogyPlottingPointData>();
                 for (int i = 0; i < signal.SamplesCount; i++)
                 {
-                    if (endData)
+                    if (signal.Times[i] > StartTime.AddMilliseconds(maximumRange))
                     {
                         break;
-
                     }
                     if (signal.Times[i] >= StartTime.AddMilliseconds(minimumRange) &&
                         signal.Times[i] <= StartTime.AddMilliseconds(maximumRange))
                     {
-                        startData = true;
                         data.Add(new AnalogyPlottingPointData(signal.Label.Value, signal.Samples[i], signal.Times[i].DateTime, signal.Timestamps[i], AxisType));
-                        continue;
-
                     }
-                    if (startData)
-                    {
-                        endData = true;
-                    }
+                 
                 }
 
                 
@@ -215,5 +206,9 @@ namespace EDF.Viewer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private DateTime GetTime(long ts) => DateTimeOffset.FromUnixTimeMilliseconds(ts).UtcDateTime.AddHours(TimeOffset);
 
+        private void seWindowInterval_EditValueChanged(object sender, EventArgs e)
+        {
+            LoadDataToChart(false);
+        }
     }
 }

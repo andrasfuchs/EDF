@@ -319,11 +319,15 @@
             0,
             0,
             0});
-            this.seWindowInterval.Enabled = false;
             this.seWindowInterval.Location = new System.Drawing.Point(1641, 130);
             this.seWindowInterval.Name = "seWindowInterval";
             this.seWindowInterval.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.seWindowInterval.Properties.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             this.seWindowInterval.Properties.MaskSettings.Set("mask", "n0");
             this.seWindowInterval.Properties.MaxValue = new decimal(new int[] {
             1000000,
@@ -337,6 +341,7 @@
             0});
             this.seWindowInterval.Size = new System.Drawing.Size(93, 24);
             this.seWindowInterval.TabIndex = 60;
+            this.seWindowInterval.EditValueChanged += new System.EventHandler(this.seWindowInterval_EditValueChanged);
             // 
             // tbRange
             // 
