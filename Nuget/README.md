@@ -44,6 +44,10 @@ This project is provided under the terms of the [MIT license](http://choosealice
 
 ## History
 
+### V0.5.4: 
+ - https://github.com/LiorBanai/EDF/issues/4 : Create EDF Viewer #4
+ - Add Timestamps per channel
+
 ### V0.5.1: 
  - Add Signal Frequency per channel
 

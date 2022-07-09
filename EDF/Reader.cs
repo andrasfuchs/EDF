@@ -81,29 +81,34 @@ namespace EDFCSharp
         /// <summary>
         /// Read the requested signal for our file
         /// </summary>
-        /// <param name="aEdfHeader"></param>
-        /// <param name="aEdfSignal"></param>
-        public void ReadSignal(EDFHeader aEdfHeader, EDFSignal aEdfSignal)
+        /// <param name="header"></param>
+        /// <param name="signal"></param>
+        public void ReadSignal(EDFHeader header, EDFSignal signal)
         {
-            // Make sure we start just after our header
-            BaseStream.Seek(aEdfHeader.SizeInBytes.Value, SeekOrigin.Begin);
+            var current = ((DateTimeOffset)header.GetStartTime()).ToUnixTimeMilliseconds();
+            var interval = 1000 / (int)signal.FrequencyInHZ;
 
-            aEdfSignal.Samples.Clear();
+            // Make sure we start just after our header
+            BaseStream.Seek(header.SizeInBytes.Value, SeekOrigin.Begin);
+
+            signal.Samples.Clear();
+            signal.Timestamps.Clear();
             // For each record
-            for (int j = 0; j < aEdfHeader.NumberOfDataRecords.Value; j++)
+            for (int j = 0; j < header.NumberOfDataRecords.Value; j++)
             {
                 // For each signal
-                for (int i = 0; i < aEdfHeader.NumberOfSignalsInRecord.Value; i++)
+                for (int i = 0; i < header.NumberOfSignalsInRecord.Value; i++)
                 {
                     // Read that signal samples
-                    if (i == aEdfSignal.Index)
+                    if (i == signal.Index)
                     {
-                        ReadNextSignalSamples(aEdfSignal.Samples, aEdfSignal.NumberOfSamplesInDataRecord.Value);
+                        ReadNextSignalSamples(signal.Samples,signal.Timestamps, signal.NumberOfSamplesInDataRecord.Value,ref current,interval);
                     }
                     else
                     {
                         // Just skip it
-                        SkipSignalSamples(aEdfHeader.NumberOfSamplesPerRecord.Value[i]);
+                        SkipSignalSamples(header.NumberOfSamplesPerRecord.Value[i]);
+                        current += interval;
                     }
                 }
             }
@@ -115,6 +120,7 @@ namespace EDFCSharp
         /// <returns></returns>
         public EDFSignal[] ReadSignals(EDFHeader header)
         {
+            var current = ((DateTimeOffset)header.GetStartTime()).ToUnixTimeMilliseconds();
             EDFSignal[] signals = AllocateSignals(header);
             // For each record
             for (int j = 0; j < header.NumberOfDataRecords.Value; j++)
@@ -122,30 +128,32 @@ namespace EDFCSharp
                 // For each signal
                 for (int i = 0; i < signals.Length; i++)
                 {
+                    var interval = 1000 / (int)signals[i].FrequencyInHZ;
+
                     // Read that signal samples
-                    ReadNextSignalSamples(signals[i].Samples, signals[i].NumberOfSamplesInDataRecord.Value);
+                    ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps, signals[i].NumberOfSamplesInDataRecord.Value, ref current, interval);
                 }
             }
 
             return signals;
         }
-        
+
         /// <summary>
         /// Read n next samples
         /// </summary>
-        /// <param name="aSamples"></param>
-        /// <param name="aSampleCount"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ReadNextSignalSamples(ICollection<short> aSamples, int aSampleCount)
+        private void ReadNextSignalSamples(ICollection<short> samples,List<long> timestamps, int sampleCount,ref long currentTimestamp,int timestampInterval)
         {
             // Single file read operation per record
-            byte[] intBytes = ReadBytes(sizeof(short) * aSampleCount);
-            for (int i = 0; i < aSampleCount; i++)
+            byte[] intBytes = ReadBytes(sizeof(short) * sampleCount);
+            for (int i = 0; i < sampleCount; i++)
             {
                 // Fetch our sample short from our record buffer
                 short intVal = BitConverter.ToInt16(intBytes, i * sizeof(short));
                 // TODO: use a static array for better performance? I guess it's not needed since we prealloc using Capacity.
-                aSamples.Add(intVal);
+                samples.Add(intVal);
+                timestamps.Add(currentTimestamp);
+                currentTimestamp += timestampInterval;
             }
         }
 
@@ -164,7 +172,7 @@ namespace EDFCSharp
             catch (Exception ex) { Console.WriteLine("Error, could not convert string to integer. " + ex.Message); }
             return intResult;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private long ReadLong(EDFField itemInfo)
         {

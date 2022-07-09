@@ -5,7 +5,12 @@
 		<TargetFrameworks>net48;net472;net471;netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<UseWindowsForms>true</UseWindowsForms>
-		<ImplicitUsings>enable</ImplicitUsings>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<LangVersion>8.0</LangVersion>
+		<Copyright>Lior Banai © 2022</Copyright>
+		<Version>0.1.0</Version>
+		<RepositoryType>git</RepositoryType>
+
 	</PropertyGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows' ">
 		<Reference Include="Analogy.Common">
@@ -361,5 +366,9 @@
 
 	<ItemGroup>
 	  <Folder Include="Plotting\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\EDF\EDF.csproj" />
 	</ItemGroup>
 </Project>

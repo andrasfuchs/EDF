@@ -17,9 +17,9 @@ namespace EDFCSharp
         {
             AnnotationSignals = new List<AnnotationSignal>();
         }
-        public EDFFile(string edfFilePath):this()
+        public EDFFile(string filePath):this()
         {
-            ReadAll(edfFilePath);
+            ReadAll(filePath);
         }
 
         public EDFFile(byte[] edfBytes):this()

@@ -9,10 +9,10 @@ using Analogy.CommonControls.DataTypes;
 using Analogy.CommonControls.Plotting;
 using Analogy.Interfaces;
 using Analogy.Interfaces.DataTypes;
-using DevExpress.XtraCharts;
 using DevExpress.XtraEditors;
+using EDFCSharp;
 
-namespace PeakDetectorAnalyzer
+namespace EDF.Viewer
 {
     public partial class DiffComparerForm : XtraForm, IAnalogyPlotting
     {
@@ -24,43 +24,67 @@ namespace PeakDetectorAnalyzer
         public event EventHandler<AnalogyPlottingPointData> OnNewPointData;
         public event EventHandler<List<AnalogyPlottingPointData>> OnNewPointsData;
         private PlottingUC Plotter { get; set; }
-        
+        private List<(string SeriesName, AnalogyPlottingSeriesType SeriesViewType)> Series { get; set; }
         private AnalogyPlottingPointXAxisDataType AxisType { get; set; }
         private int TimeOffset { get; set; }
-
+        private EDFSignal[] Signals { get; set; }
         public DiffComparerForm()
         {
             InitializeComponent();
-            
+            Series = new List<(string SeriesName, AnalogyPlottingSeriesType SeriesViewType)>();
         }
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private DateTime GetTime(long ts) => DateTimeOffset.FromUnixTimeMilliseconds(ts).UtcDateTime.AddHours(TimeOffset);
 
         private void DiffComparerForm_Load(object sender, EventArgs e)
         {
-            cbTypes.SelectedIndex = 0;
             seTimeOffset.EditValue = TimeOffset;
-            lblTop.Text = $"Missing Detections: P: {Result.PResults.MissingDetectionInGT}(GT)/{Result.PResults.MissingDetectionInUT}(UT). Q: {Result.QResults.MissingDetectionInGT}(GT)/{Result.QResults.MissingDetectionInUT}(UT). T: {Result.TResults.MissingDetectionInGT}(GT)/{Result.TResults.MissingDetectionInUT}(UT). V: {Result.VResults.MissingDetectionInGT}(GT)/{Result.VResults.MissingDetectionInUT}(UT). A: {Result.AResults.MissingDetectionInGT}(GT)/{Result.AResults.MissingDetectionInUT}(UT). N: {Result.NResults.MissingDetectionInGT}(GT)/{Result.NResults.MissingDetectionInUT}(UT). X: {Result.XResults.MissingDetectionInGT}(GT)/{Result.XResults.MissingDetectionInUT}(UT. P over PQ: {Result.PPQResults.MissingDetectionInGT}(GT)/{Result.PPQResults.MissingDetectionInUT}(UT))";
+            if (!DesignMode)
+            {
+                sbtnBrowse.Click += (s, arg) =>
+                {
+                    using (var openFileDialog1 = new OpenFileDialog
+                    {
+                        Multiselect = false,
+                        Filter = "EDF files (*.edf)|*.edf|All files (*.*)|*.*"
+                    })
+                    {
+                        DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
+                        if (result == DialogResult.OK) // Test result.
+                        {
+                            teH5.Text = openFileDialog1.FileName;
+                            LoadEDFFile(teH5.Text);
+
+                        }
+                    }
+                };
+                sbtnLoad.Click += (s, arg) => LoadEDFFile(teH5.Text);
+            }
         }
 
+        public void LoadEDFFile(string filename)
+        {
+            using (var edf = new EDFFile(filename))
+            {
+                Series = edf.Signals.Select(s => (s.Label.Value, AnalogyPlottingSeriesType.Line)).ToList();
+                Signals = edf.Signals;
+            }
+            LoadDataToChart(true);
+        }
         public void GeneratePlotter()
         {
             if (Plotter != null)
             {
                 gcDocument.Controls.Clear();
                 Plotter.Stop();
-                Settings.ChartState = Plotter.PlotState;
+                //Settings.ChartState = Plotter.PlotState;
                 Plotter.LegendItemChecked -= Plotter_LegendItemChecked;
             }
 
             AxisType = ceTimeAxis.Checked ? AnalogyPlottingPointXAxisDataType.DateTime
                 : AnalogyPlottingPointXAxisDataType.Numerical;
-            Plotter = new PlottingUC(this, new AnalogyPlottingInteractor(AxisType, 500000));
+            Plotter = new PlottingUC(this, new AnalogyPlottingInteractor(AxisType, 500000000));
             gcDocument.Controls.Add(Plotter);
             Plotter.Dock = DockStyle.Fill;
-            Plotter.SetState(Settings.ChartState, false);
+            //Plotter.SetState(Settings.ChartState, false);
             Plotter.SetECGScaling();
             Plotter.SetDarkTheme(true);
             Plotter.SetDataColor(Color.Yellow);
@@ -70,79 +94,13 @@ namespace PeakDetectorAnalyzer
 
         private void Plotter_LegendItemChecked(object sender, (string name, bool isChecked) e)
         {
-            Settings.ChartState.AddCheckedState(e.name, e.isChecked);
+            //Settings.ChartState.AddCheckedState(e.name, e.isChecked);
         }
 
-        private void cbTypes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (cbTypes.SelectedIndex)
-            {
-                case 0: //p
-                    SelectedResult = Result.PResults;
-                    break;
-                case 1: //q
-                    SelectedResult = Result.QResults;
-                    break;
-                case 2: //t
-                    SelectedResult = Result.TResults;
-                    break;
-                case 3: //v
-                    SelectedResult = Result.VResults;
-                    break;
-                case 4: //a
-                    SelectedResult = Result.AResults;
-                    break;
-                case 5: //n
-                    SelectedResult = Result.NResults;
-                    break;
-                case 6: //x
-                    SelectedResult = Result.XResults;
-                    break;
-                case 7: //P Over PQ
-                    SelectedResult = Result.PPQResults;
-                    break;
-            }
 
-            SelectedMissingGT = SelectedResult.GetNonMatchedGoldStandardPeaks()
-                .Select(p => new DetectionPeakWithProperties(p, "GT")).ToList();
-
-            SelectedMissingUT = (SelectedResult.GetNonMatchedManualPeaks()
-            .Select(p => new DetectionPeakWithProperties(p, "UT"))).ToList();
-
-            UpdateSelection();
-        }
-
-        private void UpdateSelection()
-        {
-            SelectedMissingGTIndex = -1;
-            SelectedMissingUTIndex = -1;
-
-            sbtnGTPerv.Enabled = SelectedMissingGT.Any();
-            sbtnUTPerv.Enabled = SelectedMissingUT.Any();
-            sbtnGTNext.Enabled = SelectedMissingGT.Any();
-            sbtnUTNext.Enabled = SelectedMissingUT.Any();
-            lueGTMissing.Properties.DataSource = SelectedMissingGT;
-            lueUTMissing.Properties.DataSource = SelectedMissingUT;
-
-        }
         public IEnumerable<(string SeriesName, AnalogyPlottingSeriesType SeriesViewType)> GetChartSeries()
         {
-            for (int i = 0; i < 12; i++)
-            {
-                if (clbchannels.GetItemChecked(i))
-                {
-                    if (ceShowFiltered.Checked)
-                    {
-                        yield return ($"{ChannelNames[i]} (Filtered)", AnalogyPlottingSeriesType.Line);
-                    }
-
-                    if (ceShowUnFiltered.Checked)
-                    {
-                        yield return ($"{ChannelNames[i]} (Non Filtered)", AnalogyPlottingSeriesType.Line);
-
-                    }
-                }
-            }
+            return Series.AsEnumerable();
         }
 
 
@@ -163,11 +121,6 @@ namespace PeakDetectorAnalyzer
 
         private void LoadDataToChart(bool regenerate)
         {
-            if (SelectedPoint == null)
-            {
-                return;
-            }
-
             if (regenerate || Plotter == null)
             {
                 GeneratePlotter();
@@ -176,247 +129,18 @@ namespace PeakDetectorAnalyzer
             {
                 Plotter?.ClearSeriesDataAndRemoveConstantLines();
             }
-            void Plot(int index)
+
+            foreach (EDFSignal signal in Signals)
             {
-                var ts = ECG.Timestamps[index, 0];
-                if (ceShowFiltered.Checked)
+                var data = new List<AnalogyPlottingPointData>();
+                for (int i = 0; i < signal.SamplesCount; i++)
                 {
-                    for (int i = 0; i < ECG.FilteredSignal.GetLength(1); i++)
-                    {
-                        if (clbchannels.GetItemChecked(i))
-                        {
-                            if (AxisType == AnalogyPlottingPointXAxisDataType.Numerical)
-                            {
-                                OnNewPointData?.Invoke(this,
-                                    new AnalogyPlottingPointData($"{ChannelNames[i]} (Filtered)",
-                                        ECG.FilteredSignal[index, i], ts));
-                            }
-                            else
-                            {
-                                OnNewPointData?.Invoke(this,
-                                    new AnalogyPlottingPointData($"{ChannelNames[i]} (Filtered)",
-                                        ECG.FilteredSignal[index, i], GetTime(ts)));
-                            }
-                        }
-                    }
+                    data.Add(new AnalogyPlottingPointData(signal.Label.Value, signal.Samples[i], signal.Times[i].DateTime, signal.Timestamps[i], AxisType));
                 }
-
-                if (ceShowUnFiltered.Checked)
-                {
-                    for (int i = 0; i < ECG.UnfilteredSignal.GetLength(1); i++)
-                    {
-                        if (clbchannels.GetItemChecked(i))
-                        {
-                            if (AxisType == AnalogyPlottingPointXAxisDataType.Numerical)
-                            {
-                                OnNewPointData?.Invoke(this, new AnalogyPlottingPointData($"{ChannelNames[i]} (Non Filtered)", ECG.UnfilteredSignal[index, i],
-                                     ts));
-                            }
-                            else
-                            {
-                                var time = GetTime(ts);
-                                OnNewPointData?.Invoke(this, new AnalogyPlottingPointData($"{ChannelNames[i]} (Non Filtered)", ECG.UnfilteredSignal[index, i], time));
-
-                            }
-                        }
-                    }
-                }
-
-            }
-
-            int offset = decimal.ToInt32((decimal)seTolerance.EditValue);
-            for (int i = 0; i < ECG.Timestamps.GetLength(0); i++)
-            {
-                var timestamp = ECG.Timestamps[i, 0];
-                if (timestamp >= SelectedPoint.On - offset && timestamp <= SelectedPoint.Off + offset)
-                {
-                    Plot(i);
-                }
-
-            }
-
-            if (ceShowAllData.Checked)
-            {
-                GenerateVerticals(Result.TResults, offset, "T");
-                GenerateVerticals(Result.VResults, offset, "V");
-                GenerateVerticals(Result.AResults, offset, "A");
-                GenerateVerticals(Result.NResults, offset, "N");
-                GenerateVerticals(Result.XResults, offset, "X");
-                GenerateVerticals(Result.PResults, offset, "P");
-                GenerateVerticals(Result.QResults, offset, "Q");
-                GenerateVerticals(Result.PPQResults, offset, "P over PQ");
-            }
-            else
-            {
-                switch (SelectedPoint.Type)
-                {
-                    case DetectionPeakType.P:
-                        GenerateVerticals(Result.PResults, offset, "P");
-
-                        break;
-                    case DetectionPeakType.Q:
-                        GenerateVerticals(Result.QResults, offset, "Q");
-                        break;
-                    case DetectionPeakType.T:
-                        GenerateVerticals(Result.TResults, offset, "T");
-                        break;
-                    case DetectionPeakType.V:
-                        GenerateVerticals(Result.VResults, offset, "V");
-                        break;
-                    case DetectionPeakType.A:
-                        GenerateVerticals(Result.AResults, offset, "A");
-                        break;
-                    case DetectionPeakType.N:
-                        GenerateVerticals(Result.NResults, offset, "N");
-                        break;
-                    case DetectionPeakType.X:
-                        GenerateVerticals(Result.XResults, offset, "X");
-                        break;
-                    case DetectionPeakType.START:
-                    case DetectionPeakType.END:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                OnNewPointsData?.Invoke(this, data);
             }
         }
 
-        private void GenerateVerticals(PeakDetectionVerifierTypeResult res, int offset, string name)
-        {
-            foreach (PeakDetectionVerifierMatchedPeaks p in res.GetMatched())
-            {
-                if (p.GoldStandardPeak.On > SelectedPoint.On - offset && p.GoldStandardPeak.On < SelectedPoint.On + offset)
-                {
-                    string legendName = $"GT on ({name})";
-                    if (AxisType == AnalogyPlottingPointXAxisDataType.Numerical)
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, p.GoldStandardPeak.On, PeakTypeColors[p.GoldStandardPeak.Type], GTLine, Settings.ChartState.GetChecked(legendName));
-                    }
-                    else
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, GetTime(p.GoldStandardPeak.On), PeakTypeColors[p.GoldStandardPeak.Type], GTLine, Settings.ChartState.GetChecked(legendName));
-
-                    }
-                }
-                if (p.GoldStandardPeak.Off > SelectedPoint.Off - offset && p.GoldStandardPeak.Off < SelectedPoint.Off + offset)
-                {
-                    string legendName = $"GT off ({name})";
-                    if (AxisType == AnalogyPlottingPointXAxisDataType.Numerical)
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, p.GoldStandardPeak.Off, PeakTypeColors[p.GoldStandardPeak.Type], GTLine, Settings.ChartState.GetChecked(legendName));
-                    }
-                    else
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, GetTime(p.GoldStandardPeak.Off), PeakTypeColors[p.GoldStandardPeak.Type], GTLine, Settings.ChartState.GetChecked(legendName));
-                    }
-                }
-            }
-
-            foreach (var p in res.GetNonMatchedGoldStandardPeaks())
-            {
-                if (p.On > SelectedPoint.On - offset && p.On < SelectedPoint.On + offset)
-                {
-                    string legendName = $"GT on ({name})";
-                    if (AxisType == AnalogyPlottingPointXAxisDataType.Numerical)
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, p.On, PeakTypeColors[p.Type], GTLine, Settings.ChartState.GetChecked(legendName));
-                    }
-                    else
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, GetTime(p.On), PeakTypeColors[p.Type], GTLine, Settings.ChartState.GetChecked(legendName));
-
-                    }
-                }
-                if (p.Off > SelectedPoint.Off - offset && p.Off < SelectedPoint.Off + offset)
-                {
-                    string legendName = $"GT off ({name})";
-                    if (AxisType == AnalogyPlottingPointXAxisDataType.Numerical)
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, p.Off, PeakTypeColors[p.Type], GTLine, Settings.ChartState.GetChecked(legendName));
-                    }
-                    else
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, GetTime(p.Off), PeakTypeColors[p.Type], GTLine, Settings.ChartState.GetChecked(legendName));
-
-                    }
-                }
-            }
-
-            foreach (var p in res.GetNonMatchedManualPeaks())
-            {
-                if (p.On > SelectedPoint.On - offset && p.On < SelectedPoint.On + offset)
-                {
-                    string legendName = $"UT on ({name})";
-                    if (AxisType == AnalogyPlottingPointXAxisDataType.Numerical)
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, p.On, PeakTypeColors[p.Type], UTLine, Settings.ChartState.GetChecked(legendName));
-                    }
-                    else
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, GetTime(p.On), PeakTypeColors[p.Type], UTLine, Settings.ChartState.GetChecked(legendName));
-
-                    }
-                }
-                if (p.Off > SelectedPoint.Off - offset && p.Off < SelectedPoint.Off + offset)
-                {
-                    string legendName = $"UT off ({name})";
-                    if (AxisType == AnalogyPlottingPointXAxisDataType.Numerical)
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, p.Off, PeakTypeColors[p.Type], UTLine, Settings.ChartState.GetChecked(legendName));
-                    }
-                    else
-                    {
-                        Plotter.AddConstantVerticalLine(legendName, GetTime(p.Off), PeakTypeColors[p.Type], UTLine, Settings.ChartState.GetChecked(legendName));
-
-                    }
-                }
-            }
-
-        }
-        private void sbtnGTNext_Click(object sender, EventArgs e)
-        {
-            if (SelectedMissingGT.Count > SelectedMissingGTIndex)
-            {
-                SelectedMissingGTIndex++;
-                SelectedPoint = SelectedMissingGT[SelectedMissingGTIndex];
-                lueGTMissing.EditValue = SelectedPoint;
-            }
-        }
-
-        private void sbtnGTPerv_Click(object sender, EventArgs e)
-        {
-            if (SelectedMissingGTIndex >= 0)
-            {
-                SelectedMissingGTIndex--;
-                SelectedPoint = SelectedMissingGT[SelectedMissingGTIndex];
-                lueGTMissing.EditValue = SelectedPoint;
-            }
-        }
-
-        private void sbtnUTNext_Click(object sender, EventArgs e)
-        {
-            if (SelectedMissingUT.Count > SelectedMissingUTIndex)
-            {
-                SelectedMissingUTIndex++;
-                SelectedPoint = SelectedMissingUT[SelectedMissingUTIndex];
-                lueUTMissing.EditValue = SelectedPoint;
-            }
-        }
-
-        private void sbtnUTPerv_Click(object sender, EventArgs e)
-        {
-            if (SelectedMissingUTIndex >= 0)
-            {
-                SelectedMissingUTIndex--;
-                SelectedPoint = SelectedMissingUT[SelectedMissingUTIndex];
-                lueUTMissing.EditValue = SelectedPoint;
-            }
-        }
-
-        private void seTolerance_EditValueChanged(object sender, EventArgs e)
-        {
-            LoadDataToChart(false);
-        }
 
         private void btsiShowChartControl_CheckedChanged(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -440,32 +164,13 @@ namespace PeakDetectorAnalyzer
                 btsiChartFullScreen.Checked ? SplitPanelVisibility.Panel2 : SplitPanelVisibility.Both;
         }
 
-        private void lueUTMissing_EditValueChanged(object sender, EventArgs e)
-        {
-            if (lueUTMissing.EditValue is DetectionPeakWithProperties val)
-            {
-                SelectedMissingUTIndex = lueUTMissing.ItemIndex;
-                SelectedPoint = val;
-            }
-        }
-
-        private void lueGTMissing_EditValueChanged(object sender, EventArgs e)
-        {
-            if (lueGTMissing.EditValue is DetectionPeakWithProperties val)
-            {
-                SelectedMissingGTIndex = lueGTMissing.ItemIndex;
-                SelectedPoint = val;
-            }
-        }
-
         private void seTimeOffset_EditValueChanged(object sender, EventArgs e)
         {
-            Settings.HourOffset = decimal.ToInt32((decimal)seTimeOffset.EditValue);
+            // Settings.HourOffset = decimal.ToInt32((decimal)seTimeOffset.EditValue);
         }
 
-        private void ceShowAllData_EditValueChanged(object sender, EventArgs e)
-        {
-            LoadDataToChart(false);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private DateTime GetTime(long ts) => DateTimeOffset.FromUnixTimeMilliseconds(ts).UtcDateTime.AddHours(TimeOffset);
+
     }
 }

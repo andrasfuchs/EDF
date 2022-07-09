@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EDFCSharp
 {
     public class EDFSignal : IEDFBaseSignal<short>
     {
+        private List<DateTimeOffset> _times;
         public int Index { get; set; }
 
         public FixedLengthString Label { get; } = new FixedLengthString(HeaderItems.Label);
@@ -27,9 +29,24 @@ namespace EDFCSharp
 
         public FixedLengthString Reserved { get; } = new FixedLengthString(HeaderItems.SignalsReserved);
         public double FrequencyInHZ { get; set; }
-        public List<short> Samples { get; set; } = new List<short> { };
-        public long SamplesCount => Samples.Count;
+        public List<short> Samples { get; set; } = new List<short>();
+        public List<long> Timestamps { get; set; } = new List<long>();
 
+        public List<DateTimeOffset> Times
+        {
+            get
+            {
+                if (_times == null || _times.Count != Samples.Count)
+                {
+                    _times = Timestamps.Select(DateTimeOffset.FromUnixTimeMilliseconds).ToList();
+
+                }
+                return _times;
+            }
+            set => _times = value;
+        }
+
+        public long SamplesCount => Samples.Count;
         /// <summary>
         /// Provided sample value after scaling.
         /// </summary>

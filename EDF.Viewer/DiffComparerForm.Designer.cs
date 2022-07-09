@@ -1,4 +1,4 @@
-﻿namespace PeakDetectorAnalyzer
+﻿namespace EDF.Viewer
 {
     partial class DiffComparerForm
     {
@@ -29,11 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.lblTop = new DevExpress.XtraEditors.LabelControl();
             this.gcTop = new DevExpress.XtraEditors.GroupControl();
-            this.lbUTMissing = new DevExpress.XtraEditors.LabelControl();
-            this.lblGTMissing = new DevExpress.XtraEditors.LabelControl();
-            this.lueUTMissing = new DevExpress.XtraEditors.LookUpEdit();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.btsiShowChartControl = new DevExpress.XtraBars.BarToggleSwitchItem();
@@ -44,39 +40,23 @@
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.lueGTMissing = new DevExpress.XtraEditors.LookUpEdit();
             this.sbtnForceRedraw = new DevExpress.XtraEditors.SimpleButton();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.seTimeOffset = new DevExpress.XtraEditors.SpinEdit();
             this.ceTimeAxis = new DevExpress.XtraEditors.CheckEdit();
-            this.sbtnUTPerv = new DevExpress.XtraEditors.SimpleButton();
-            this.UTMissing = new DevExpress.XtraEditors.LabelControl();
-            this.sbtnUTNext = new DevExpress.XtraEditors.SimpleButton();
-            this.sbtnGTPerv = new DevExpress.XtraEditors.SimpleButton();
-            this.GTMissing = new DevExpress.XtraEditors.LabelControl();
-            this.sbtnGTNext = new DevExpress.XtraEditors.SimpleButton();
-            this.clbchannels = new DevExpress.XtraEditors.CheckedListBoxControl();
-            this.ceShowUnFiltered = new DevExpress.XtraEditors.CheckEdit();
-            this.ceShowFiltered = new DevExpress.XtraEditors.CheckEdit();
-            this.lblTolerance = new DevExpress.XtraEditors.LabelControl();
-            this.seTolerance = new DevExpress.XtraEditors.SpinEdit();
-            this.lblType = new DevExpress.XtraEditors.LabelControl();
-            this.cbTypes = new DevExpress.XtraEditors.ComboBoxEdit();
             this.gcDocument = new DevExpress.XtraEditors.GroupControl();
             this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
-            this.ceShowAllData = new DevExpress.XtraEditors.CheckEdit();
+            this.lblProgressText = new DevExpress.XtraEditors.LabelControl();
+            this.pbH5 = new DevExpress.XtraEditors.ProgressBarControl();
+            this.sbtnLoad = new DevExpress.XtraEditors.SimpleButton();
+            this.sbtnBrowse = new DevExpress.XtraEditors.SimpleButton();
+            this.teH5 = new DevExpress.XtraEditors.TextEdit();
+            this.lblH5File = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.gcTop)).BeginInit();
             this.gcTop.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lueUTMissing.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lueGTMissing.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.seTimeOffset.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ceTimeAxis.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.clbchannels)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ceShowUnFiltered.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ceShowFiltered.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.seTolerance.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cbTypes.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcDocument)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1.Panel1)).BeginInit();
@@ -84,78 +64,27 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1.Panel2)).BeginInit();
             this.splitContainerControl1.Panel2.SuspendLayout();
             this.splitContainerControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ceShowAllData.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbH5.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.teH5.Properties)).BeginInit();
             this.SuspendLayout();
-            // 
-            // lblTop
-            // 
-            this.lblTop.AutoEllipsis = true;
-            this.lblTop.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.lblTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblTop.Location = new System.Drawing.Point(2, 28);
-            this.lblTop.Name = "lblTop";
-            this.lblTop.Size = new System.Drawing.Size(1742, 32);
-            this.lblTop.TabIndex = 0;
-            this.lblTop.Text = "N/A";
             // 
             // gcTop
             // 
-            this.gcTop.Controls.Add(this.ceShowAllData);
-            this.gcTop.Controls.Add(this.lbUTMissing);
-            this.gcTop.Controls.Add(this.lblGTMissing);
-            this.gcTop.Controls.Add(this.lueUTMissing);
-            this.gcTop.Controls.Add(this.lueGTMissing);
+            this.gcTop.Controls.Add(this.lblProgressText);
+            this.gcTop.Controls.Add(this.pbH5);
+            this.gcTop.Controls.Add(this.sbtnLoad);
+            this.gcTop.Controls.Add(this.sbtnBrowse);
+            this.gcTop.Controls.Add(this.teH5);
+            this.gcTop.Controls.Add(this.lblH5File);
             this.gcTop.Controls.Add(this.sbtnForceRedraw);
             this.gcTop.Controls.Add(this.labelControl1);
             this.gcTop.Controls.Add(this.seTimeOffset);
             this.gcTop.Controls.Add(this.ceTimeAxis);
-            this.gcTop.Controls.Add(this.sbtnUTPerv);
-            this.gcTop.Controls.Add(this.UTMissing);
-            this.gcTop.Controls.Add(this.sbtnUTNext);
-            this.gcTop.Controls.Add(this.sbtnGTPerv);
-            this.gcTop.Controls.Add(this.GTMissing);
-            this.gcTop.Controls.Add(this.sbtnGTNext);
-            this.gcTop.Controls.Add(this.clbchannels);
-            this.gcTop.Controls.Add(this.ceShowUnFiltered);
-            this.gcTop.Controls.Add(this.ceShowFiltered);
-            this.gcTop.Controls.Add(this.lblTolerance);
-            this.gcTop.Controls.Add(this.seTolerance);
-            this.gcTop.Controls.Add(this.lblType);
-            this.gcTop.Controls.Add(this.cbTypes);
-            this.gcTop.Controls.Add(this.lblTop);
             this.gcTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gcTop.Location = new System.Drawing.Point(0, 0);
             this.gcTop.Name = "gcTop";
             this.gcTop.Size = new System.Drawing.Size(1746, 176);
             this.gcTop.TabIndex = 1;
-            // 
-            // lbUTMissing
-            // 
-            this.lbUTMissing.Location = new System.Drawing.Point(363, 130);
-            this.lbUTMissing.Name = "lbUTMissing";
-            this.lbUTMissing.Size = new System.Drawing.Size(21, 16);
-            this.lbUTMissing.TabIndex = 57;
-            this.lbUTMissing.Text = "UT:";
-            // 
-            // lblGTMissing
-            // 
-            this.lblGTMissing.Location = new System.Drawing.Point(363, 103);
-            this.lblGTMissing.Name = "lblGTMissing";
-            this.lblGTMissing.Size = new System.Drawing.Size(21, 16);
-            this.lblGTMissing.TabIndex = 56;
-            this.lblGTMissing.Text = "GT:";
-            // 
-            // lueUTMissing
-            // 
-            this.lueUTMissing.Location = new System.Drawing.Point(407, 127);
-            this.lueUTMissing.MenuManager = this.barManager1;
-            this.lueUTMissing.Name = "lueUTMissing";
-            this.lueUTMissing.Properties.BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup;
-            this.lueUTMissing.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.lueUTMissing.Size = new System.Drawing.Size(244, 22);
-            this.lueUTMissing.TabIndex = 55;
-            this.lueUTMissing.EditValueChanged += new System.EventHandler(this.lueUTMissing_EditValueChanged);
             // 
             // barManager1
             // 
@@ -254,21 +183,9 @@
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 538);
             // 
-            // lueGTMissing
-            // 
-            this.lueGTMissing.Location = new System.Drawing.Point(407, 100);
-            this.lueGTMissing.MenuManager = this.barManager1;
-            this.lueGTMissing.Name = "lueGTMissing";
-            this.lueGTMissing.Properties.BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup;
-            this.lueGTMissing.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.lueGTMissing.Size = new System.Drawing.Size(244, 22);
-            this.lueGTMissing.TabIndex = 54;
-            this.lueGTMissing.EditValueChanged += new System.EventHandler(this.lueGTMissing_EditValueChanged);
-            // 
             // sbtnForceRedraw
             // 
-            this.sbtnForceRedraw.Location = new System.Drawing.Point(1366, 66);
+            this.sbtnForceRedraw.Location = new System.Drawing.Point(1454, 144);
             this.sbtnForceRedraw.Name = "sbtnForceRedraw";
             this.sbtnForceRedraw.Size = new System.Drawing.Size(120, 29);
             this.sbtnForceRedraw.TabIndex = 53;
@@ -277,7 +194,7 @@
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(1172, 73);
+            this.labelControl1.Location = new System.Drawing.Point(1260, 151);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(72, 16);
             this.labelControl1.TabIndex = 52;
@@ -290,7 +207,7 @@
             0,
             0,
             0});
-            this.seTimeOffset.Location = new System.Drawing.Point(1267, 69);
+            this.seTimeOffset.Location = new System.Drawing.Point(1355, 147);
             this.seTimeOffset.Name = "seTimeOffset";
             this.seTimeOffset.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -312,155 +229,11 @@
             // ceTimeAxis
             // 
             this.ceTimeAxis.EditValue = true;
-            this.ceTimeAxis.Location = new System.Drawing.Point(1024, 68);
+            this.ceTimeAxis.Location = new System.Drawing.Point(1112, 146);
             this.ceTimeAxis.Name = "ceTimeAxis";
             this.ceTimeAxis.Properties.Caption = "Show Time in Axis";
             this.ceTimeAxis.Size = new System.Drawing.Size(146, 24);
             this.ceTimeAxis.TabIndex = 50;
-            // 
-            // sbtnUTPerv
-            // 
-            this.sbtnUTPerv.Location = new System.Drawing.Point(657, 128);
-            this.sbtnUTPerv.Name = "sbtnUTPerv";
-            this.sbtnUTPerv.Size = new System.Drawing.Size(24, 24);
-            this.sbtnUTPerv.TabIndex = 49;
-            this.sbtnUTPerv.Click += new System.EventHandler(this.sbtnUTPerv_Click);
-            // 
-            // UTMissing
-            // 
-            this.UTMissing.Location = new System.Drawing.Point(719, 133);
-            this.UTMissing.Name = "UTMissing";
-            this.UTMissing.Size = new System.Drawing.Size(33, 16);
-            this.UTMissing.TabIndex = 47;
-            this.UTMissing.Text = "0/200";
-            // 
-            // sbtnUTNext
-            // 
-            this.sbtnUTNext.Enabled = false;
-            this.sbtnUTNext.Location = new System.Drawing.Point(687, 128);
-            this.sbtnUTNext.Name = "sbtnUTNext";
-            this.sbtnUTNext.Size = new System.Drawing.Size(24, 24);
-            this.sbtnUTNext.TabIndex = 46;
-            this.sbtnUTNext.Click += new System.EventHandler(this.sbtnUTNext_Click);
-            // 
-            // sbtnGTPerv
-            // 
-            this.sbtnGTPerv.Location = new System.Drawing.Point(657, 98);
-            this.sbtnGTPerv.Name = "sbtnGTPerv";
-            this.sbtnGTPerv.Size = new System.Drawing.Size(24, 24);
-            this.sbtnGTPerv.TabIndex = 45;
-            this.sbtnGTPerv.Click += new System.EventHandler(this.sbtnGTPerv_Click);
-            // 
-            // GTMissing
-            // 
-            this.GTMissing.Location = new System.Drawing.Point(719, 103);
-            this.GTMissing.Name = "GTMissing";
-            this.GTMissing.Size = new System.Drawing.Size(33, 16);
-            this.GTMissing.TabIndex = 43;
-            this.GTMissing.Text = "0/200";
-            // 
-            // sbtnGTNext
-            // 
-            this.sbtnGTNext.Enabled = false;
-            this.sbtnGTNext.Location = new System.Drawing.Point(687, 98);
-            this.sbtnGTNext.Name = "sbtnGTNext";
-            this.sbtnGTNext.Size = new System.Drawing.Size(24, 24);
-            this.sbtnGTNext.TabIndex = 42;
-            this.sbtnGTNext.Click += new System.EventHandler(this.sbtnGTNext_Click);
-            // 
-            // clbchannels
-            // 
-            this.clbchannels.Items.AddRange(new DevExpress.XtraEditors.Controls.CheckedListBoxItem[] {
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "Lead I", System.Windows.Forms.CheckState.Checked),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "Lead II", System.Windows.Forms.CheckState.Checked),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "Lead III"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "AVR"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "AVF"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "V1"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "V2"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "V3"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "V4"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "V5"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "V6"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "Channel 12")});
-            this.clbchannels.Location = new System.Drawing.Point(12, 66);
-            this.clbchannels.Name = "clbchannels";
-            this.clbchannels.Size = new System.Drawing.Size(132, 95);
-            this.clbchannels.TabIndex = 41;
-            // 
-            // ceShowUnFiltered
-            // 
-            this.ceShowUnFiltered.Location = new System.Drawing.Point(151, 94);
-            this.ceShowUnFiltered.Name = "ceShowUnFiltered";
-            this.ceShowUnFiltered.Properties.Caption = "Show UnFiltered Data";
-            this.ceShowUnFiltered.Size = new System.Drawing.Size(172, 24);
-            this.ceShowUnFiltered.TabIndex = 40;
-            // 
-            // ceShowFiltered
-            // 
-            this.ceShowFiltered.EditValue = true;
-            this.ceShowFiltered.Location = new System.Drawing.Point(151, 66);
-            this.ceShowFiltered.Name = "ceShowFiltered";
-            this.ceShowFiltered.Properties.Caption = "Show Filtered Data";
-            this.ceShowFiltered.Size = new System.Drawing.Size(138, 24);
-            this.ceShowFiltered.TabIndex = 39;
-            // 
-            // lblTolerance
-            // 
-            this.lblTolerance.Location = new System.Drawing.Point(661, 72);
-            this.lblTolerance.Name = "lblTolerance";
-            this.lblTolerance.Size = new System.Drawing.Size(188, 16);
-            this.lblTolerance.TabIndex = 15;
-            this.lblTolerance.Text = "Data before and after the on/off:";
-            // 
-            // seTolerance
-            // 
-            this.seTolerance.EditValue = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.seTolerance.Location = new System.Drawing.Point(856, 67);
-            this.seTolerance.Name = "seTolerance";
-            this.seTolerance.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.seTolerance.Properties.MaskSettings.Set("mask", "n0");
-            this.seTolerance.Properties.MaxValue = new decimal(new int[] {
-            658067456,
-            1164,
-            0,
-            0});
-            this.seTolerance.Size = new System.Drawing.Size(146, 24);
-            this.seTolerance.TabIndex = 14;
-            this.seTolerance.EditValueChanged += new System.EventHandler(this.seTolerance_EditValueChanged);
-            // 
-            // lblType
-            // 
-            this.lblType.Location = new System.Drawing.Point(363, 71);
-            this.lblType.Name = "lblType";
-            this.lblType.Size = new System.Drawing.Size(33, 16);
-            this.lblType.TabIndex = 2;
-            this.lblType.Text = "Type:";
-            // 
-            // cbTypes
-            // 
-            this.cbTypes.Location = new System.Drawing.Point(407, 68);
-            this.cbTypes.Name = "cbTypes";
-            this.cbTypes.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.cbTypes.Properties.Items.AddRange(new object[] {
-            "P",
-            "Q",
-            "T",
-            "V",
-            "A",
-            "N",
-            "X",
-            "P Over PQ"});
-            this.cbTypes.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            this.cbTypes.Size = new System.Drawing.Size(244, 22);
-            this.cbTypes.TabIndex = 1;
-            this.cbTypes.SelectedIndexChanged += new System.EventHandler(this.cbTypes_SelectedIndexChanged);
             // 
             // gcDocument
             // 
@@ -491,15 +264,61 @@
             this.splitContainerControl1.SplitterPosition = 176;
             this.splitContainerControl1.TabIndex = 39;
             // 
-            // ceShowAllData
+            // lblProgressText
             // 
-            this.ceShowAllData.EditValue = true;
-            this.ceShowAllData.Location = new System.Drawing.Point(856, 99);
-            this.ceShowAllData.Name = "ceShowAllData";
-            this.ceShowAllData.Properties.Caption = "Show All types of Data in the interval";
-            this.ceShowAllData.Size = new System.Drawing.Size(314, 24);
-            this.ceShowAllData.TabIndex = 58;
-            this.ceShowAllData.EditValueChanged += new System.EventHandler(this.ceShowAllData_EditValueChanged);
+            this.lblProgressText.AutoEllipsis = true;
+            this.lblProgressText.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.lblProgressText.Location = new System.Drawing.Point(12, 75);
+            this.lblProgressText.Name = "lblProgressText";
+            this.lblProgressText.Size = new System.Drawing.Size(88, 22);
+            this.lblProgressText.TabIndex = 59;
+            this.lblProgressText.Text = "Progress:";
+            // 
+            // pbH5
+            // 
+            this.pbH5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbH5.Location = new System.Drawing.Point(106, 61);
+            this.pbH5.Name = "pbH5";
+            this.pbH5.Properties.ShowTitle = true;
+            this.pbH5.ShowProgressInTaskBar = true;
+            this.pbH5.Size = new System.Drawing.Size(1637, 24);
+            this.pbH5.TabIndex = 58;
+            // 
+            // sbtnLoad
+            // 
+            this.sbtnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.sbtnLoad.Location = new System.Drawing.Point(1663, 28);
+            this.sbtnLoad.Name = "sbtnLoad";
+            this.sbtnLoad.Size = new System.Drawing.Size(80, 27);
+            this.sbtnLoad.TabIndex = 57;
+            this.sbtnLoad.Text = "Load";
+            // 
+            // sbtnBrowse
+            // 
+            this.sbtnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.sbtnBrowse.Location = new System.Drawing.Point(1614, 28);
+            this.sbtnBrowse.Name = "sbtnBrowse";
+            this.sbtnBrowse.Size = new System.Drawing.Size(43, 27);
+            this.sbtnBrowse.TabIndex = 56;
+            this.sbtnBrowse.Text = "...";
+            // 
+            // teH5
+            // 
+            this.teH5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.teH5.Location = new System.Drawing.Point(39, 31);
+            this.teH5.Name = "teH5";
+            this.teH5.Size = new System.Drawing.Size(1569, 22);
+            this.teH5.TabIndex = 55;
+            // 
+            // lblH5File
+            // 
+            this.lblH5File.Location = new System.Drawing.Point(12, 34);
+            this.lblH5File.Name = "lblH5File";
+            this.lblH5File.Size = new System.Drawing.Size(25, 16);
+            this.lblH5File.TabIndex = 54;
+            this.lblH5File.Text = "File:";
             // 
             // DiffComparerForm
             // 
@@ -518,16 +337,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.gcTop)).EndInit();
             this.gcTop.ResumeLayout(false);
             this.gcTop.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lueUTMissing.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lueGTMissing.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.seTimeOffset.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ceTimeAxis.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.clbchannels)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ceShowUnFiltered.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ceShowFiltered.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.seTolerance.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cbTypes.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcDocument)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1.Panel1)).EndInit();
             this.splitContainerControl1.Panel1.ResumeLayout(false);
@@ -535,31 +347,17 @@
             this.splitContainerControl1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).EndInit();
             this.splitContainerControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ceShowAllData.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbH5.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.teH5.Properties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private DevExpress.XtraEditors.LabelControl lblTop;
         private DevExpress.XtraEditors.GroupControl gcTop;
         private DevExpress.XtraEditors.GroupControl gcDocument;
-        private DevExpress.XtraEditors.LabelControl lblType;
-        private DevExpress.XtraEditors.ComboBoxEdit cbTypes;
-        private DevExpress.XtraEditors.LabelControl lblTolerance;
-        private DevExpress.XtraEditors.SpinEdit seTolerance;
         private DevExpress.XtraEditors.SplitContainerControl splitContainerControl1;
-        private DevExpress.XtraEditors.CheckEdit ceShowUnFiltered;
-        private DevExpress.XtraEditors.CheckEdit ceShowFiltered;
-        private DevExpress.XtraEditors.CheckedListBoxControl clbchannels;
-        private DevExpress.XtraEditors.SimpleButton sbtnGTNext;
-        private DevExpress.XtraEditors.LabelControl GTMissing;
-        private DevExpress.XtraEditors.SimpleButton sbtnUTPerv;
-        private DevExpress.XtraEditors.LabelControl UTMissing;
-        private DevExpress.XtraEditors.SimpleButton sbtnUTNext;
-        private DevExpress.XtraEditors.SimpleButton sbtnGTPerv;
         private DevExpress.XtraBars.BarManager barManager1;
         private DevExpress.XtraBars.Bar bar1;
         private DevExpress.XtraBars.BarToggleSwitchItem btsiShowChartControl;
@@ -574,10 +372,11 @@
         private DevExpress.XtraEditors.SimpleButton sbtnForceRedraw;
         private DevExpress.XtraBars.BarToggleSwitchItem btsiShowChartLegend;
         private DevExpress.XtraBars.BarToggleSwitchItem btsiChartFullScreen;
-        private DevExpress.XtraEditors.LookUpEdit lueUTMissing;
-        private DevExpress.XtraEditors.LookUpEdit lueGTMissing;
-        private DevExpress.XtraEditors.LabelControl lbUTMissing;
-        private DevExpress.XtraEditors.LabelControl lblGTMissing;
-        private DevExpress.XtraEditors.CheckEdit ceShowAllData;
+        private DevExpress.XtraEditors.LabelControl lblProgressText;
+        private DevExpress.XtraEditors.ProgressBarControl pbH5;
+        private DevExpress.XtraEditors.SimpleButton sbtnLoad;
+        private DevExpress.XtraEditors.SimpleButton sbtnBrowse;
+        private DevExpress.XtraEditors.TextEdit teH5;
+        private DevExpress.XtraEditors.LabelControl lblH5File;
     }
 }
