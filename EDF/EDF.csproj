@@ -16,7 +16,7 @@
 		<Authors>LiorBanai</Authors>
 		<Company>LiorBanai</Company>
 		<Product>EDF-CSharp</Product>
-		<Description>C# Implementation of the EDF (European Data Format)</Description>
+		<Description>C# Implementation of the EDF (European Data Format) Format</Description>
 		<Copyright>Lior Banai @ 2020-2022</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/LiorBanai/EDF</PackageProjectUrl>
