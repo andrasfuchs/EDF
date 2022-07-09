@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace EDF
+namespace EDFCSharp
 {
     public class EDFFile : IDisposable
     {
@@ -48,7 +48,7 @@ namespace EDF
         /// <param name="edfBase64"></param>
         public void ReadBase64(string edfBase64)
         {
-            byte[] edfBytes = System.Convert.FromBase64String(edfBase64);
+            byte[] edfBytes = Convert.FromBase64String(edfBase64);
             ReadAll(edfBytes);
         }
 
@@ -59,7 +59,7 @@ namespace EDF
         public void Open(string edfFilePath)
         {
             // Open file
-            iReader = new Reader(System.IO.File.Open(edfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read));
+            iReader = new Reader(File.Open(edfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read));
             // Read headers
             Header = iReader.ReadHeader();
             // Allocate signals
@@ -98,7 +98,7 @@ namespace EDF
         /// <param name="edfFilePath"></param>
         public void ReadAll(string edfFilePath)
         {
-            using (var reader = new Reader(System.IO.File.Open(edfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var reader = new Reader(File.Open(edfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 Header = reader.ReadHeader();
                 Signals = reader.ReadSignals(Header);
@@ -123,7 +123,7 @@ namespace EDF
         {
             if (Header == null) return;
 
-            using (var writer = new EDFWriter(System.IO.File.Open(edfFilePath, FileMode.Create)))
+            using (var writer = new EDFWriter(File.Open(edfFilePath, FileMode.Create)))
             {
                 writer.WriteEDF(this, edfFilePath);
             }

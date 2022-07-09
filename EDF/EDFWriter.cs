@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace EDF
+namespace EDFCSharp
 {
     public class EDFWriter : BinaryWriter
     {
@@ -86,7 +86,7 @@ namespace EDF
             WriteSignals(edf);
 
             Close();
-            Console.WriteLine("File size: " + new System.IO.FileInfo(edfFilePath).Length);
+            Console.WriteLine("File size: " + new FileInfo(edfFilePath).Length);
         }
 
 
@@ -105,7 +105,7 @@ namespace EDF
             string strItem = headerItem.ToAscii();
             if (strItem == null) strItem = "";
             byte[] itemBytes = AsciiToBytes(strItem);
-            this.Write(itemBytes);
+            Write(itemBytes);
         }
 
         private void WriteItem(IEnumerable<HeaderItem> headerItems)
@@ -113,7 +113,7 @@ namespace EDF
             string joinedItems = StrJoin(headerItems);
             if (joinedItems == null) joinedItems = "";
             byte[] itemBytes = AsciiToBytes(joinedItems);
-            this.Write(itemBytes);
+            Write(itemBytes);
         }
 
         private string StrJoin(IEnumerable<HeaderItem> list)
@@ -158,7 +158,7 @@ namespace EDF
                     int signalStartPos = recordIndex * signal.NumberOfSamplesInDataRecord.Value;
                     int signalEndPos = Math.Min(signalStartPos + signal.NumberOfSamplesInDataRecord.Value, signal.Samples.Count);
                     for (; signalStartPos < signalEndPos; signalStartPos++)
-                        this.Write(BitConverter.GetBytes(signal.Samples[signalStartPos]));
+                        Write(BitConverter.GetBytes(signal.Samples[signalStartPos]));
                 }
                 if (edf.AnnotationSignals != null && edf.AnnotationSignals.Any())
                 {
@@ -195,21 +195,21 @@ namespace EDF
             Console.WriteLine($"Filling with {blockSize - bytesWritten} bytes");
 #endif
             for (int i = bytesWritten; i < blockSize; i++)
-                this.Write(TAL.byte_0);
+                Write(TAL.byte_0);
 
         }
 
         private int WriteAnnotation(TAL annotations)
         {
             var bytesToWrite = TALExtensions.GetBytes(annotations);
-            this.Write(bytesToWrite);
+            Write(bytesToWrite);
             return bytesToWrite.Length;
         }
 
         private int WriteAnnotationIndex(int index)
         {
             var bytesToWrite = TALExtensions.GetBytesForTALIndex(index);
-            this.Write(bytesToWrite);
+            Write(bytesToWrite);
             return bytesToWrite.Length;
         }
     }

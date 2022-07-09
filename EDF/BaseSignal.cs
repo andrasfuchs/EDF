@@ -1,29 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace EDF
+namespace EDFCSharp
 {
-    public interface IBaseSignal<T>
-    {
-        /// <summary>
-        /// Index of that signal in the EDF file it belongs to.
-        /// </summary>
-        int Index { get; set; }
-        FixedLengthString Label { get; }
-        FixedLengthString TransducerType { get; }
-        FixedLengthString PhysicalDimension { get; }
-        FixedLengthDouble PhysicalMinimum { get; }
-        FixedLengthDouble PhysicalMaximum { get; }
-        FixedLengthInt DigitalMinimum { get; }
-        FixedLengthInt DigitalMaximum { get; }
-        FixedLengthString Prefiltering { get; }
-        FixedLengthInt NumberOfSamplesInDataRecord { get; }
-        FixedLengthString Reserved { get; }
-        List<T> Samples { get; set; }
-        long SamplesCount { get; }
-    }
-
-    public class EDFSignal : IBaseSignal<short>
+    public class EDFSignal : IEDFBaseSignal<short>
     {
         public int Index { get; set; }
 

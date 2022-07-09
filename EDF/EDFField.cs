@@ -1,4 +1,4 @@
-﻿namespace EDF
+﻿namespace EDFCSharp
 {
     public class EDFField
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace EDF
+namespace EDFCSharp
 {
     public class EDFHeader
     {
@@ -88,16 +88,16 @@ namespace EDF
         /// <summary>
         /// Provides the time corresponding to the given signal sample with millisecond precision.
         /// </summary>
-        /// <param name="aEdfSignal"></param>
-        /// <param name="aSampleIndex"></param>
+        /// <param name="signal"></param>
+        /// <param name="sampleIndex"></param>
         /// <returns></returns>
-        public DateTime SampleTime(EDF.EDFSignal aEdfSignal, int aSampleIndex)
+        public DateTime SampleTime(EDFSignal signal, int sampleIndex)
         {
-            int recordIndex = aSampleIndex / aEdfSignal.NumberOfSamplesInDataRecord.Value;
-            int modulo = aSampleIndex % aEdfSignal.NumberOfSamplesInDataRecord.Value;
+            int recordIndex = sampleIndex / signal.NumberOfSamplesInDataRecord.Value;
+            int modulo = sampleIndex % signal.NumberOfSamplesInDataRecord.Value;
             DateTime recordTime = RecordTime(recordIndex);
             // That will only give us milliseconds precision
-            DateTime sampleTime = recordTime.AddMilliseconds(RecordDurationInSeconds.Value * 1000 * modulo / aEdfSignal.NumberOfSamplesInDataRecord.Value);
+            DateTime sampleTime = recordTime.AddMilliseconds(RecordDurationInSeconds.Value * 1000 * modulo / signal.NumberOfSamplesInDataRecord.Value);
             return sampleTime;
         }
 

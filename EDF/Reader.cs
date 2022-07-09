@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace EDF
+namespace EDFCSharp
 {
     class Reader : BinaryReader
     {
@@ -17,7 +16,7 @@ namespace EDF
         {
             EDFHeader h = new EDFHeader();
 
-            this.BaseStream.Seek(0, SeekOrigin.Begin);
+            BaseStream.Seek(0, SeekOrigin.Begin);
 
             // Fixed size header
             h.Version.Value = ReadAscii(HeaderItems.Version);
@@ -87,7 +86,7 @@ namespace EDF
         public void ReadSignal(EDFHeader aEdfHeader, EDFSignal aEdfSignal)
         {
             // Make sure we start just after our header
-            this.BaseStream.Seek(aEdfHeader.SizeInBytes.Value, SeekOrigin.Begin);
+            BaseStream.Seek(aEdfHeader.SizeInBytes.Value, SeekOrigin.Begin);
 
             aEdfSignal.Samples.Clear();
             // For each record
@@ -141,7 +140,7 @@ namespace EDF
         private void ReadNextSignalSamples(ICollection<short> aSamples, int aSampleCount)
         {
             // Single file read operation per record
-            byte[] intBytes = this.ReadBytes(sizeof(short) * aSampleCount);
+            byte[] intBytes = ReadBytes(sizeof(short) * aSampleCount);
             for (int i = 0; i < aSampleCount; i++)
             {
                 // Fetch our sample short from our record buffer
@@ -196,7 +195,7 @@ namespace EDF
 
         private string ReadAscii(EDFField itemInfo)
         {
-            byte[] bytes = this.ReadBytes(itemInfo.AsciiLength);
+            byte[] bytes = ReadBytes(itemInfo.AsciiLength);
             return AsciiString(bytes).Trim();
         }
 
@@ -206,7 +205,7 @@ namespace EDF
 
             for (int i = 0; i < numberOfParts; i++)
             {
-                byte[] bytes = this.ReadBytes(itemInfo.AsciiLength);
+                byte[] bytes = ReadBytes(itemInfo.AsciiLength);
                 parts.Add(AsciiString(bytes).Trim());
             }
 
@@ -219,7 +218,7 @@ namespace EDF
 
             for (int i = 0; i < numberOfParts; i++)
             {
-                byte[] bytes = this.ReadBytes(itemInfo.AsciiLength);
+                byte[] bytes = ReadBytes(itemInfo.AsciiLength);
                 string ascii = AsciiString(bytes);
                 parts.Add(Convert.ToInt32(ascii));
             }
@@ -239,7 +238,7 @@ namespace EDF
 
             for (int i = 0; i < numberOfParts; i++)
             {
-                byte[] bytes = this.ReadBytes(itemInfo.AsciiLength);
+                byte[] bytes = ReadBytes(itemInfo.AsciiLength);
                 string ascii = AsciiString(bytes);
                 // Use invariant culure as we have a '.' as decimal separator
                 parts.Add(double.Parse(ascii, CultureInfo.InvariantCulture));

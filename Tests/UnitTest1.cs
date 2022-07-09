@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using EDF;
+using EDFCSharp;
 
 namespace EDFSharpTests
 {

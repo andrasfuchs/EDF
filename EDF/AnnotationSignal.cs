@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace EDF
+namespace EDFCSharp
 {
-    public class AnnotationSignal : IBaseSignal<TAL>
+    public class AnnotationSignal : IEDFBaseSignal<TAL>
     {
         /// <summary>
         /// Provided sample value after scaling.
@@ -58,15 +58,15 @@ namespace EDF
              * For the sake of EDF compatibility, the fields 'digital minimum' and 'digital maximum' must be filled with -32768 and 32767, respectively. 
              * The 'Physical maximum' and 'Physical minimum' fields must contain values that differ from each other. 
              * The other fields of this signal are filled with spaces*/
-            this.Label.Value = "EDF Annotations";
-            this.DigitalMinimum.Value = -32768;
-            this.DigitalMaximum.Value = 32767;
-            this.PhysicalMinimum.Value = -1;
-            this.PhysicalMaximum.Value = 1;
-            this.PhysicalDimension.Value = string.Empty;
-            this.TransducerType.Value = string.Empty;
-            this.Prefiltering.Value = string.Empty;
-            this.Reserved.Value = string.Empty;
+            Label.Value = "EDF Annotations";
+            DigitalMinimum.Value = -32768;
+            DigitalMaximum.Value = 32767;
+            PhysicalMinimum.Value = -1;
+            PhysicalMaximum.Value = 1;
+            PhysicalDimension.Value = string.Empty;
+            TransducerType.Value = string.Empty;
+            Prefiltering.Value = string.Empty;
+            Reserved.Value = string.Empty;
         }
     }
     /// <summary>
@@ -94,7 +94,7 @@ namespace EDF
         {
             this.startSeconds = startSeconds;
             this.durationSeconds = durationSeconds;
-            this.AnnotationDescription = description;
+            AnnotationDescription = description;
         }
     }
 
