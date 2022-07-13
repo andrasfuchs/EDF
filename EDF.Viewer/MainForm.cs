@@ -78,6 +78,9 @@ namespace EDF.Viewer
                 tbRange.EditValueChanged -= TbRange_ValueChanged;
                 tbRange.Properties.Maximum = TotalDurationInSeconds;
                 tbRange.Properties.Minimum = 0;
+                tbRange.Properties.Labels.Clear();
+                tbRange.Properties.Labels.AddRange(Enumerable.Range(0, TotalDurationInSeconds)
+                    .Select(s => new TrackBarLabel(s.ToString(), s)).ToArray());
                 tbRange.Value = 0;
                 tbRange.EditValueChanged += TbRange_ValueChanged;
             }
@@ -86,9 +89,9 @@ namespace EDF.Viewer
 
         private void TbRange_ValueChanged(object sender, EventArgs e)
         {
-         SelectedSecond = tbRange.Value;
-         lblOffset.Text = $"Offset from start: {SelectedSecond}";
-         LoadDataToChart(false);
+            SelectedSecond = tbRange.Value;
+            lblOffset.Text = $"Offset from start: {SelectedSecond}";
+            LoadDataToChart(false);
         }
 
         public void GeneratePlotter()
@@ -168,10 +171,10 @@ namespace EDF.Viewer
                     {
                         data.Add(new AnalogyPlottingPointData(signal.Label.Value, signal.Samples[i], signal.Times[i].DateTime, signal.Timestamps[i], AxisType));
                     }
-                 
+
                 }
 
-                
+
                 OnNewPointsData?.Invoke(this, data);
             }
         }
