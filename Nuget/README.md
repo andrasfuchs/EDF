@@ -44,6 +44,9 @@ This project is provided under the terms of the [MIT license](http://choosealice
 
 ## History
 
+### V0.5.5: 
+ - Add Static method to Read Header Only
+
 ### V0.5.4: 
  - https://github.com/LiorBanai/EDF/issues/4 : Create EDF Viewer #4
  - Add Timestamps per channel

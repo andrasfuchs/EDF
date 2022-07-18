@@ -95,6 +95,13 @@ namespace EDFCSharp
             return signal;
         }
 
+        public static EDFHeader ReadHeader(string filename)
+        {
+            using (var reader = new Reader(File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            {
+                return reader.ReadHeader();
+            }
+        }
         /// <summary>
         /// Read the whole file into memory
         /// </summary>
