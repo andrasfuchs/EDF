@@ -74,13 +74,16 @@ namespace EDF.Viewer
                 Series = edf.Signals.Select(s => (s.Label.Value, AnalogyPlottingSeriesType.Line)).ToList();
                 Signals = edf.Signals;
                 TotalDurationInSeconds = (int)edf.Header.TotalDurationInSeconds;
+                //seWindowInterval.EditValueChanged -= seWindowInterval_EditValueChanged;
+                //seWindowInterval.Value = TotalDurationInSeconds;
+                //seWindowInterval.EditValueChanged += seWindowInterval_EditValueChanged;
                 StartTime = edf.Header.GetStartTime();
                 tbRange.EditValueChanged -= TbRange_ValueChanged;
                 tbRange.Properties.Maximum = TotalDurationInSeconds;
                 tbRange.Properties.Minimum = 0;
-                tbRange.Properties.Labels.Clear();
-                tbRange.Properties.Labels.AddRange(Enumerable.Range(0, TotalDurationInSeconds)
-                    .Select(s => new TrackBarLabel(s.ToString(), s)).ToArray());
+                //tbRange.Properties.Labels.Clear();
+                //tbRange.Properties.Labels.AddRange(Enumerable.Range(0, TotalDurationInSeconds)
+                //    .Select(s => new TrackBarLabel(s.ToString(), s)).ToArray());
                 tbRange.Value = 0;
                 tbRange.EditValueChanged += TbRange_ValueChanged;
             }
@@ -155,6 +158,7 @@ namespace EDF.Viewer
                 Plotter?.ClearSeriesDataAndRemoveConstantLines();
             }
 
+            Plotter.Interactor.WindowSize = TotalDurationInSeconds;
             int minimumRange = Math.Max(0, SelectedSecond - (int)seWindowInterval.Value);
             int maximumRange = SelectedSecond + (int)seWindowInterval.Value;
             foreach (EDFSignal signal in Signals)

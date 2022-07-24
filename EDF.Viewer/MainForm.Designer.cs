@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.gcTop = new DevExpress.XtraEditors.GroupControl();
+            this.lblOffset = new DevExpress.XtraEditors.LabelControl();
             this.tbRange = new DevExpress.XtraEditors.TrackBarControl();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar1 = new DevExpress.XtraBars.Bar();
@@ -54,7 +55,6 @@
             this.ceTimeAxis = new DevExpress.XtraEditors.CheckEdit();
             this.gcDocument = new DevExpress.XtraEditors.GroupControl();
             this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
-            this.lblOffset = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.gcTop)).BeginInit();
             this.gcTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbRange)).BeginInit();
@@ -92,6 +92,15 @@
             this.gcTop.Name = "gcTop";
             this.gcTop.Size = new System.Drawing.Size(1746, 149);
             this.gcTop.TabIndex = 1;
+            // 
+            // lblOffset
+            // 
+            this.lblOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblOffset.Location = new System.Drawing.Point(1286, 112);
+            this.lblOffset.Name = "lblOffset";
+            this.lblOffset.Size = new System.Drawing.Size(116, 16);
+            this.lblOffset.TabIndex = 63;
+            this.lblOffset.Text = "Offset From Start: 0";
             // 
             // tbRange
             // 
@@ -219,7 +228,7 @@
             // 
             this.seWindowInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.seWindowInterval.EditValue = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -229,7 +238,7 @@
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.seWindowInterval.Properties.MaskSettings.Set("mask", "n0");
             this.seWindowInterval.Properties.MaxValue = new decimal(new int[] {
-            1000000,
+            1000000000,
             0,
             0,
             0});
@@ -362,15 +371,6 @@
             this.splitContainerControl1.Size = new System.Drawing.Size(1746, 538);
             this.splitContainerControl1.SplitterPosition = 149;
             this.splitContainerControl1.TabIndex = 39;
-            // 
-            // lblOffset
-            // 
-            this.lblOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblOffset.Location = new System.Drawing.Point(1286, 112);
-            this.lblOffset.Name = "lblOffset";
-            this.lblOffset.Size = new System.Drawing.Size(116, 16);
-            this.lblOffset.TabIndex = 63;
-            this.lblOffset.Text = "Offset From Start: 0";
             // 
             // MainForm
             // 
