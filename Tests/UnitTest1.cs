@@ -76,10 +76,10 @@ namespace EDFSharpTests
             System.IO.File.Delete(edfFilePath);
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void ReadFie()
         {
-            string filename = @"D:\edf\11-11-27.EDF";
+            string filename = Path.Combine(Environment.CurrentDirectory,"files","sample_ecg.EDF");
             if (!File.Exists(filename))
             {
                 return;

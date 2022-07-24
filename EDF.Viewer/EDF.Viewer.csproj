@@ -360,13 +360,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Analogy.LogViewer.Interfaces" Version="3.2.3" />
-	  <PackageReference Include="Analogy.CommonUtilities" Version="2.2.2" />
-
+	  <Compile Remove="Plotting\**" />
+	  <EmbeddedResource Remove="Plotting\**" />
+	  <None Remove="Plotting\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Plotting\" />
+	  <PackageReference Include="Analogy.LogViewer.Interfaces" Version="3.2.3" />
+	  <PackageReference Include="Analogy.CommonUtilities" Version="2.2.2" />
+
 	</ItemGroup>
 
 	<ItemGroup>
