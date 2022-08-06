@@ -44,6 +44,10 @@ This project is provided under the terms of the [MIT license](http://choosealice
 
 ## History
 
+### V0.5.6: 
+ - Fix Divided By Zero
+ - Add Net461 to target frameworks
+
 ### V0.5.5: 
  - Add Static method to Read Header Only
 
