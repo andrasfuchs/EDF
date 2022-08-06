@@ -257,5 +257,10 @@ namespace EDFCSharp
             return Encoding.ASCII.GetString(bytes);
         }
         #endregion
+
+        public List<AnnotationSignal> ReadAnnotationSignals(EDFHeader header)
+        {
+            return new List<AnnotationSignal>();
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace EDFCSharp
     {
         public EDFHeader Header { get; set; }
         public EDFSignal[] Signals { get; set; }
-        public IList<AnnotationSignal> AnnotationSignals { get; set; }
+        public List<AnnotationSignal> AnnotationSignals { get; set; }
 
         private Reader Reader { get; set; }
 
@@ -112,7 +112,7 @@ namespace EDFCSharp
             {
                 Header = reader.ReadHeader();
                 Signals = reader.ReadSignals(Header);
-                //AnnotationSignals = reader.ReadAnnotationSignals(Header);
+                AnnotationSignals = reader.ReadAnnotationSignals(Header);
             }
         }
 

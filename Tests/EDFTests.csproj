@@ -39,6 +39,9 @@
     <ProjectReference Include="..\EDF\EDF.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="files\annotations.edf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="files\sample_ecg.edf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
