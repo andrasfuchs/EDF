@@ -102,7 +102,7 @@ namespace EDFCSharp
                     // Read that signal samples
                     if (i == signal.Index)
                     {
-                        ReadNextSignalSamples(signal.Samples,signal.Timestamps, signal.NumberOfSamplesInDataRecord.Value,ref current,interval);
+                        ReadNextSignalSamples(signal.Samples,signal.Timestamps, signal.NumberOfSamplesInDataRecord.Value,ref current);
                     }
                     else
                     {
@@ -128,10 +128,8 @@ namespace EDFCSharp
                 // For each signal
                 for (int i = 0; i < signals.Length; i++)
                 {
-                    var interval = 1000 / (int)signals[i].FrequencyInHZ;
-
-                    // Read that signal samples
-                    ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps, signals[i].NumberOfSamplesInDataRecord.Value, ref current, interval);
+                   // Read that signal samples
+                    ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps, signals[i].NumberOfSamplesInDataRecord.Value, ref current);
                 }
             }
 
@@ -142,7 +140,7 @@ namespace EDFCSharp
         /// Read n next samples
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ReadNextSignalSamples(ICollection<short> samples,List<long> timestamps, int sampleCount,ref long currentTimestamp,int timestampInterval)
+        private void ReadNextSignalSamples(ICollection<short> samples,List<long> timestamps, int sampleCount,ref long currentTimestamp)
         {
             // Single file read operation per record
             byte[] intBytes = ReadBytes(sizeof(short) * sampleCount);
@@ -153,7 +151,6 @@ namespace EDFCSharp
                 // TODO: use a static array for better performance? I guess it's not needed since we prealloc using Capacity.
                 samples.Add(intVal);
                 timestamps.Add(currentTimestamp);
-                currentTimestamp += timestampInterval;
             }
         }
 

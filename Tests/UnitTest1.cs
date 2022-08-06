@@ -95,7 +95,23 @@ namespace EDFSharpTests
         [TestMethod]
         public void ReadAnnotationFile()
         {
-            string filename = Path.Combine(Environment.CurrentDirectory, "files", "annotations.EDF");
+            string filename = Path.Combine(Environment.CurrentDirectory, "files", "annotations2.EDF");
+            if (!File.Exists(filename))
+            {
+                return;
+            }
+            var edf = new EDFFile(filename);
+            Console.WriteLine(edf.ToString());
+            Console.WriteLine(edf.Header.GetStartTime());
+            Console.WriteLine(edf.Header.GetEndTime());
+            Console.WriteLine(edf.Header.TotalDurationInSeconds);
+            TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
+            Console.WriteLine(t);
+        }
+        [TestMethod]
+        public void ReadTemplateFile()
+        {
+            string filename = Path.Combine(Environment.CurrentDirectory, "files", "template.EDF");
             if (!File.Exists(filename))
             {
                 return;

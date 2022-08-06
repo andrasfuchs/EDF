@@ -126,6 +126,8 @@ namespace EDFCSharp
             {
                 Header = r.ReadHeader();
                 Signals = r.ReadSignals(Header);
+                AnnotationSignals = r.ReadAnnotationSignals(Header);
+
             }
         }
 
