@@ -58,7 +58,7 @@ namespace EDFCSharp
              * For the sake of EDF compatibility, the fields 'digital minimum' and 'digital maximum' must be filled with -32768 and 32767, respectively. 
              * The 'Physical maximum' and 'Physical minimum' fields must contain values that differ from each other. 
              * The other fields of this signal are filled with spaces*/
-            Label.Value = "EDF Annotations";
+            Label.Value = EDFConstants.AnnotationLabel;
             DigitalMinimum.Value = -32768;
             DigitalMaximum.Value = 32767;
             PhysicalMinimum.Value = -1;
@@ -96,6 +96,7 @@ namespace EDFCSharp
             this.durationSeconds = durationSeconds;
             AnnotationDescription = description;
         }
+
     }
 
     public static class TALExtensions
@@ -106,7 +107,7 @@ namespace EDFCSharp
         /// </summary>
         /// <param name="tal"></param>
         /// <returns></returns>
-        public static byte[] GetBytes(this TAL tal)
+        public static byte[] GetBytes(TAL tal)
         {
             List<byte> result = new List<byte>();
             result.AddRange(Encoding.ASCII.GetBytes(tal.StartSecondsString));
@@ -122,6 +123,12 @@ namespace EDFCSharp
             return result.ToArray();
         }
 
+        public static List<TAL> BytesToTALs(byte[] bytes)
+        {
+
+            List<TAL> result = new List<TAL>();
+            return result;
+        }
         public static byte[] GetBytesForTALIndex(int index)
         {
             List<byte> result = new List<byte>();

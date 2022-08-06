@@ -60,6 +60,7 @@ namespace EDFCSharp
 
             for (int i = 0; i < signals.Length; i++)
             {
+
                 signals[i] = new EDFSignal();
                 signals[i].Index = i;
                 signals[i].Label.Value = header.Labels.Value[i];
@@ -102,7 +103,7 @@ namespace EDFCSharp
                     // Read that signal samples
                     if (i == signal.Index)
                     {
-                        ReadNextSignalSamples(signal.Samples,signal.Timestamps, signal.NumberOfSamplesInDataRecord.Value,ref current);
+                        ReadNextSignalSamples(signal.Samples, signal.Timestamps, signal.NumberOfSamplesInDataRecord.Value, ref current);
                     }
                     else
                     {
@@ -128,7 +129,7 @@ namespace EDFCSharp
                 // For each signal
                 for (int i = 0; i < signals.Length; i++)
                 {
-                   // Read that signal samples
+                    // Read that signal samples
                     ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps, signals[i].NumberOfSamplesInDataRecord.Value, ref current);
                 }
             }
@@ -140,7 +141,7 @@ namespace EDFCSharp
         /// Read n next samples
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ReadNextSignalSamples(ICollection<short> samples,List<long> timestamps, int sampleCount,ref long currentTimestamp)
+        private void ReadNextSignalSamples(ICollection<short> samples, List<long> timestamps, int sampleCount, ref long currentTimestamp)
         {
             // Single file read operation per record
             byte[] intBytes = ReadBytes(sizeof(short) * sampleCount);
@@ -257,6 +258,22 @@ namespace EDFCSharp
 
         public List<AnnotationSignal> ReadAnnotationSignals(EDFHeader header)
         {
+            //// Make sure we start just after our header
+            //BaseStream.Seek(header.SizeInBytes.Value, SeekOrigin.Begin);
+            //// For each record
+            //for (int i = 0; i < header.NumberOfDataRecords.Value; i++)
+            //{
+            //    if (header.Labels.Value[i] != EDFConstants.AnnotationLabel)
+            //    {
+            //        SkipSignalSamples(header.NumberOfSamplesPerRecord.Value[i]);
+            //        continue;
+            //    }
+            //    var index = TALExtensions.GetBytesForTALIndex(i);
+            //    var data = ReadBytes(header.NumberOfSamplesPerRecord.Value[i]);
+            //    var startsecond = ReadString();
+            //    //var TAl = TALExtensions.BytesToTALs(talData);
+            //}
+
             return new List<AnnotationSignal>();
         }
     }

@@ -163,12 +163,16 @@ namespace EDFCSharp
                     int signalStartPos = recordIndex * signal.NumberOfSamplesInDataRecord.Value;
                     int signalEndPos = Math.Min(signalStartPos + signal.NumberOfSamplesInDataRecord.Value, signal.Samples.Count);
                     for (; signalStartPos < signalEndPos; signalStartPos++)
+                    {
                         Write(BitConverter.GetBytes(signal.Samples[signalStartPos]));
+                    }
                 }
                 if (edf.AnnotationSignals != null && edf.AnnotationSignals.Any())
                 {
                     foreach (var annotationSignal in edf.AnnotationSignals)
+                    {
                         WriteAnnotations(recordIndex, annotationSignal.Samples, annotationSignal.NumberOfSamplesInDataRecord.Value);
+                    }
                 }
 
             }
@@ -189,7 +193,9 @@ namespace EDFCSharp
             var bytesWritten = 0;
             bytesWritten += WriteAnnotationIndex(index);
             if (index < annotations.Count)
+            {
                 bytesWritten += WriteAnnotation(annotations[index]);
+            }
 
             //Fills block size left with 0
             var blockSize = sampleCountPerRecord * 2;
@@ -206,9 +212,9 @@ namespace EDFCSharp
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int WriteAnnotation(TAL annotations)
+        private int WriteAnnotation(TAL tal)
         {
-            var bytesToWrite = TALExtensions.GetBytes(annotations);
+            var bytesToWrite = TALExtensions.GetBytes(tal);
             Write(bytesToWrite);
             return bytesToWrite.Length;
         }

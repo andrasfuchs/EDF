@@ -17,12 +17,12 @@ namespace EDFCSharp
         {
             AnnotationSignals = new List<AnnotationSignal>();
         }
-        public EDFFile(string filePath):this()
+        public EDFFile(string filePath) : this()
         {
             ReadAll(filePath);
         }
 
-        public EDFFile(byte[] edfBytes):this()
+        public EDFFile(byte[] edfBytes) : this()
         {
             ReadAll(edfBytes);
         }
@@ -63,9 +63,7 @@ namespace EDFCSharp
         {
             // Open file
             Reader = new Reader(File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read));
-            // Read headers
             Header = Reader.ReadHeader();
-            // Allocate signals
             Signals = Reader.AllocateSignals(Header);
         }
 
@@ -127,7 +125,6 @@ namespace EDFCSharp
                 Header = r.ReadHeader();
                 Signals = r.ReadSignals(Header);
                 AnnotationSignals = r.ReadAnnotationSignals(Header);
-
             }
         }
 
