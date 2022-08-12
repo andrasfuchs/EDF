@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 
 namespace EDFCSharp
 {
@@ -139,6 +140,18 @@ namespace EDFCSharp
                 ascii += temp;
             }
             return ascii;
+        }
+    }
+
+    public class ReadResults
+    {
+        public EDFSignal[] Signals { get; set; }
+        public List<TAL> Annotations { get; set; }
+
+        public ReadResults(EDFSignal[] signals, List<TAL> annotations)
+        {
+            Signals = signals;
+            Annotations = annotations;
         }
     }
 }

@@ -55,7 +55,7 @@ namespace EDFCSharp
             DateTime time = DateTime.MinValue;
             try
             {
-                time = DateTime.ParseExact(timePart, "hh.mm.ss", provider);
+                time = DateTime.ParseExact(timePart, "HH.mm.ss", provider);
             }
             catch (FormatException)
             {

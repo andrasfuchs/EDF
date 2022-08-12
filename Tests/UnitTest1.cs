@@ -95,7 +95,7 @@ namespace EDFSharpTests
         [TestMethod]
         public void ReadAnnotationFile()
         {
-            string filename = Path.Combine(Environment.CurrentDirectory, "files", "annotations2.EDF");
+            string filename = Path.Combine(Environment.CurrentDirectory, "files", "annotations_and_signals.EDF");
             if (!File.Exists(filename))
             {
                 return;

@@ -8,6 +8,6 @@ namespace EDFCSharp
 {
     internal class EDFConstants
     {
-        public static string AnnotationLabel = "EDF Annotations";
+        public static readonly string AnnotationLabel = "EDF Annotations";
     }
 }

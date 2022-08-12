@@ -9,12 +9,13 @@ namespace EDFCSharp
     {
         public EDFHeader Header { get; set; }
         public EDFSignal[] Signals { get; set; }
+        public List<TAL> Annotations { get; set; }
         public List<AnnotationSignal> AnnotationSignals { get; set; }
-
         private Reader Reader { get; set; }
 
         public EDFFile()
         {
+            Annotations = new List<TAL>();
             AnnotationSignals = new List<AnnotationSignal>();
         }
         public EDFFile(string filePath) : this()
@@ -65,6 +66,7 @@ namespace EDFCSharp
             Reader = new Reader(File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read));
             Header = Reader.ReadHeader();
             Signals = Reader.AllocateSignals(Header);
+
         }
 
         /// <summary>
@@ -109,8 +111,9 @@ namespace EDFCSharp
             using (var reader = new Reader(File.Open(edfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 Header = reader.ReadHeader();
-                Signals = reader.ReadSignals(Header);
-                AnnotationSignals = reader.ReadAnnotationSignals(Header);
+                var result = reader.ReadSignalsAndAnnotations(Header);
+                Signals = result.Signals;
+                Annotations = result.Annotations;
             }
         }
 
@@ -120,11 +123,12 @@ namespace EDFCSharp
         /// <param name="edfBytes"></param>
         public void ReadAll(byte[] edfBytes)
         {
-            using (var r = new Reader(edfBytes))
+            using (var reader = new Reader(edfBytes))
             {
-                Header = r.ReadHeader();
-                Signals = r.ReadSignals(Header);
-                AnnotationSignals = r.ReadAnnotationSignals(Header);
+                Header = reader.ReadHeader();
+                var result = reader.ReadSignalsAndAnnotations(Header);
+                Signals = result.Signals;
+                Annotations = result.Annotations;
             }
         }
 
