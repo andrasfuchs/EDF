@@ -125,10 +125,11 @@ namespace EDFCSharp
         /// Read all signal sample value from our file.
         /// </summary>
         /// <returns></returns>
-        public EDFSignal[] ReadSignals(EDFHeader header)
+        public ReadResults ReadSignals(EDFHeader header)
         {
             var current = ((DateTimeOffset)header.StartTime).ToUnixTimeMilliseconds();
             EDFSignal[] signals = AllocateSignals(header);
+            List<AnnotationSignal> annotation = new List<AnnotationSignal>();
             // For each record
             for (int j = 0; j < header.NumberOfDataRecords.Value; j++)
             {
@@ -136,14 +137,23 @@ namespace EDFCSharp
                 // For each signal
                 for (int i = 0; i < signals.Length; i++)
                 {
-
-                    var interval = signals[i].FrequencyInHZ == 0 ? 0 : (1000 / signals[i].FrequencyInHZ);
-                    // Read that signal samples
-                    ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps, signals[i].NumberOfSamplesInDataRecord.Value, (long)currentPerRecord, (long)interval);
+                    if (signals[i].Label.Value != EDFConstants.AnnotationLabel)
+                    {
+                        var interval = signals[i].FrequencyInHZ == 0 ? 0 : (1000 / signals[i].FrequencyInHZ);
+                        // Read that signal samples
+                        ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps,
+                            signals[i].NumberOfSamplesInDataRecord.Value, (long)currentPerRecord, (long)interval);
+                    }
+                    else //read annotation
+                    {
+                        var single = new AnnotationSignal();
+                        ReadNextAnnotationSamples(single.Samples, signals[i].NumberOfSamplesInDataRecord.Value, (long)currentPerRecord);
+                        annotation.Add(single);
+                    }
                 }
             }
 
-            return signals;
+            return new ReadResults(signals, annotation);
         }
 
         /// <summary>
@@ -161,6 +171,25 @@ namespace EDFCSharp
                 samples.Add(intVal);
                 timestamps.Add(currentTimestamp);
                 currentTimestamp += interval;
+            }
+        }
+
+        /// <summary>
+        /// Read n next samples
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ReadNextAnnotationSamples(ICollection<TAL> samples, int sampleCount, long currentTimestamp)
+        {
+            // Single file read operation per record
+            byte[] intBytes = ReadBytes(sizeof(short) * sampleCount);
+            if (intBytes == null)
+            {
+                return;
+            }
+            var tals = TALExtensions.BytesToTALs(intBytes);
+            foreach (TAL tal in tals)
+            {
+                samples.Add(tal);
             }
         }
 

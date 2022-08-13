@@ -23,7 +23,7 @@ namespace EDFCSharp
         private double startSeconds;
         private double durationSeconds;
         public string StartSecondsString => startSeconds < 0 ?
-            $"-{startSeconds.ToString(StringDoubleFormat, CultureInfo.InvariantCulture)}" :
+            $"{startSeconds.ToString(StringDoubleFormat, CultureInfo.InvariantCulture)}" :
             $"+{startSeconds.ToString(StringDoubleFormat, CultureInfo.InvariantCulture)}";
         public string DurationSecondsString => durationSeconds >= 0 ? durationSeconds.ToString(StringDoubleFormat, CultureInfo.InvariantCulture) : null;
         public string AnnotationDescription { get; private set; }
@@ -63,20 +63,34 @@ namespace EDFCSharp
             return result.ToArray();
         }
 
-        public static List<TAL> BytesToTALs(byte[] raw, DateTime start)
+        public static List<TAL> BytesToTALs(byte[] raw)
         {
             List<TAL> result = new List<TAL>();
             String outlet = "";
             bool inside = false;
-            int duration = 0;
+            List<string> entries = new List<string>();
+            int loc = 0;
             for (int i = 0; i < raw.Length; ++i)
             {
+                // Fetch our sample short from our record buffer
+                //short intVal = BitConverter.ToInt16(raw, i * sizeof(short));
+
+
                 if (inside)
                 {
                     if (raw[i] == TAL.byte_0)
                     {
                         inside = false;
-                        outlet += Environment.NewLine;
+                        if (loc < 2)
+                        {
+                            outlet += " ";
+                            loc++;
+                        }
+                        else
+                        {
+                            entries.Add(outlet);
+                            outlet = "";
+                        }
                     }
                     else
                     {
@@ -84,6 +98,10 @@ namespace EDFCSharp
                         bool fact = (it == TAL.byte_20) || (it == TAL.byte_21);
                         raw[i] = (fact) ? (byte)' ' : it;
                         outlet += (char)raw[i];
+                        if (fact)
+                        {
+
+                        }
                     }
                 }
                 else if (raw[i] == '+' || raw[i] == '-')
@@ -93,12 +111,58 @@ namespace EDFCSharp
                 }
             }
 
-            //return outlet;
-            string[] annotations = outlet.Split(new String[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string annotation in annotations)
+            
+            for (var index = 0; index < entries.Count; index++)
             {
+                var annotation = entries[index];
+                bool onsetsearch = true;
+                bool durationSearch = false;
+                int onsetEnd = 0;
+                int durationStart = 0;
+                int durationEnd = 0;
+                string text = "";
+                for (int i = 0; i < annotation.Length; i++)
+                {
+                    if (onsetsearch && annotation[i] == ' ')
+                    {
+                        onsetsearch = false;
+                        durationSearch = true;
+                        onsetEnd = i;
+                        while (annotation[i] == ' ')
+                        {
+                            i++;
+                        }
 
+                        durationStart = i;
+                    }
+
+                    if (durationSearch && annotation[i] == ' ')
+                    {
+                        durationSearch = false;
+                        durationEnd = i;
+                        while (annotation[i] == ' ')
+                        {
+                            i++;
+                        }
+
+                        text = annotation.Substring(i);
+                        break;
+                    }
+                }
+
+                var start = double.Parse(annotation.Substring(0, onsetEnd));
+                var duration = double.Parse(annotation.Substring(durationStart, durationEnd - durationStart));
+                if (duration < 0)
+                {
+                    start += duration;
+                    duration = 0;
+                }
+
+                TAL tal = new TAL(start, duration, text);
+                result.Add(tal);
             }
+
+
             return result;
         }
         public static byte[] GetBytesForTALIndex(int index)

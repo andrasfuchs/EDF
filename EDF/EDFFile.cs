@@ -9,14 +9,12 @@ namespace EDFCSharp
     {
         public EDFHeader Header { get; set; }
         public EDFSignal[] Signals { get; set; }
-        public List<TAL> Annotations { get; set; }
         public List<AnnotationSignal> AnnotationSignals { get; set; }
         private Reader Reader { get; set; }
 
         public EDFFile()
         {
-            Annotations = new List<TAL>();
-            AnnotationSignals = new List<AnnotationSignal>();
+            AnnotationSignals=new List<AnnotationSignal>();
         }
         public EDFFile(string filePath) : this()
         {
@@ -112,7 +110,8 @@ namespace EDFCSharp
             {
                 Header = reader.ReadHeader();
                 var result = reader.ReadSignals(Header);
-                Signals = result;
+                Signals = result.Signals;
+                AnnotationSignals = result.AnnotationSignal;
             }
         }
 
@@ -126,7 +125,9 @@ namespace EDFCSharp
             {
                 Header = reader.ReadHeader();
                 var result = reader.ReadSignals(Header);
-                Signals = result;
+                Signals = result.Signals;
+                AnnotationSignals = result.AnnotationSignal;
+
             }
         }
 

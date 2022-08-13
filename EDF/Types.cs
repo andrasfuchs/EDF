@@ -146,12 +146,12 @@ namespace EDFCSharp
     public class ReadResults
     {
         public EDFSignal[] Signals { get; set; }
-        public List<TAL> Annotations { get; set; }
+        public List<AnnotationSignal> AnnotationSignal { get; set; }
 
-        public ReadResults(EDFSignal[] signals, List<TAL> annotations)
+        public ReadResults(EDFSignal[] signals, List<AnnotationSignal> annotations)
         {
             Signals = signals;
-            Annotations = annotations;
+            AnnotationSignal = annotations;
         }
     }
 }

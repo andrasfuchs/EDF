@@ -77,7 +77,7 @@ namespace EDFSharpTests
         }
 
         [TestMethod]
-        public void ReadFie()
+        public void ReadSampleFile()
         {
             string filename = Path.Combine(Environment.CurrentDirectory,"files","sample_ecg.EDF");
             if (!File.Exists(filename))
@@ -93,7 +93,23 @@ namespace EDFSharpTests
             Console.WriteLine(t);
         }
         [TestMethod]
-        public void ReadAnnotationFile()
+        public void ReadAnnotationOnlyFile()
+        {
+            string filename = Path.Combine(Environment.CurrentDirectory, "files", "annotations.EDF");
+            if (!File.Exists(filename))
+            {
+                return;
+            }
+            var edf = new EDFFile(filename);
+            Console.WriteLine(edf.ToString());
+            Console.WriteLine(edf.Header.StartTime);
+            Console.WriteLine(edf.Header.EndTime);
+            Console.WriteLine(edf.Header.TotalDurationInSeconds);
+            TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
+            Console.WriteLine(t);
+        }
+        [TestMethod]
+        public void ReadAnnotationAndSignalsFile()
         {
             string filename = Path.Combine(Environment.CurrentDirectory, "files", "annotations_and_signals.EDF");
             if (!File.Exists(filename))
