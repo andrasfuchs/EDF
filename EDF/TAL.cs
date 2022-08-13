@@ -35,6 +35,11 @@ namespace EDFCSharp
             AnnotationDescription = description;
         }
 
+
+        public override string ToString()
+        {
+            return $"{nameof(AnnotationDescription)}: {AnnotationDescription}";
+        }
     }
 
 
@@ -111,7 +116,7 @@ namespace EDFCSharp
                 }
             }
 
-            
+
             for (var index = 0; index < entries.Count; index++)
             {
                 var annotation = entries[index];
@@ -134,24 +139,49 @@ namespace EDFCSharp
                         }
 
                         durationStart = i;
+                        durationEnd = i;
                     }
 
-                    if (durationSearch && annotation[i] == ' ')
+
+                    if (durationSearch)
                     {
-                        durationSearch = false;
-                        durationEnd = i;
-                        while (annotation[i] == ' ')
+                        if (char.IsDigit(annotation[i]) || annotation[i] == '.' || annotation[i] == '-'|| annotation[i] == '+')
                         {
-                            i++;
+                            durationEnd = i;
                         }
 
-                        text = annotation.Substring(i);
-                        break;
+                        else if (annotation[i] == ' ')
+                        {
+                            durationSearch = false;
+                            durationEnd = i;
+                            while (annotation[i] == ' ')
+                            {
+                                i++;
+                            }
+
+                            text = annotation.Substring(i);
+                            break;
+                        }
+                        else
+                        {
+                            durationSearch = false;
+                            durationEnd = i;
+                            text = annotation.Substring(i);
+                            break;
+                        }
+
                     }
+
                 }
 
-                var start = double.Parse(annotation.Substring(0, onsetEnd));
-                var duration = double.Parse(annotation.Substring(durationStart, durationEnd - durationStart));
+                if (!double.TryParse(annotation.Substring(0, onsetEnd), out var start))
+                {
+
+                }
+                if (!double.TryParse(annotation.Substring(durationStart, durationEnd - durationStart), out var duration))
+                {
+
+                }
                 if (duration < 0)
                 {
                     start += duration;

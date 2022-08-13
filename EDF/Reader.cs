@@ -182,10 +182,6 @@ namespace EDFCSharp
         {
             // Single file read operation per record
             byte[] intBytes = ReadBytes(sizeof(short) * sampleCount);
-            if (intBytes == null)
-            {
-                return;
-            }
             var tals = TALExtensions.BytesToTALs(intBytes);
             foreach (TAL tal in tals)
             {
