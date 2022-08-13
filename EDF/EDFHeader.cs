@@ -1,44 +1,87 @@
 ﻿using System;
 using System.Globalization;
+using System.Reflection.Emit;
 
 namespace EDFCSharp
 {
     public class EDFHeader
     {
-        /// <summary>
-        /// The time at which the first record was obtained.
-        /// </summary>
-        public DateTime FirstRecordTime;
-
-        public FixedLengthString Version { get; } = new FixedLengthString(HeaderItems.Version);
-        public FixedLengthString PatientID { get; } = new FixedLengthString(HeaderItems.PatientID);
-        public FixedLengthString RecordID { get; } = new FixedLengthString(HeaderItems.RecordID);
-        public FixedLengthString RecordingStartDate { get; } = new FixedLengthString(HeaderItems.RecordingStartDate);
-        public FixedLengthString RecordingStartTime { get; } = new FixedLengthString(HeaderItems.RecordingStartTime);
-        public FixedLengthInt SizeInBytes { get; } = new FixedLengthInt(HeaderItems.SizeInBytes);
-        public FixedLengthString Reserved { get; } = new FixedLengthString(HeaderItems.Reserved);
-        public FixedLengthLong NumberOfDataRecords { get; } = new FixedLengthLong(HeaderItems.NumberOfDataRecords);
-        public FixedLengthDouble RecordDurationInSeconds { get; } = new FixedLengthDouble(HeaderItems.RecordDurationInSeconds);
-        public FixedLengthInt NumberOfSignalsInRecord { get; } = new FixedLengthInt(HeaderItems.NumberOfSignalsInRecord);
-        public VariableLengthString Labels { get; } = new VariableLengthString(HeaderItems.Label);
-        public VariableLengthString TransducerTypes { get; } = new VariableLengthString(HeaderItems.TransducerType);
-        public VariableLengthString PhysicalDimensions { get; } = new VariableLengthString(HeaderItems.PhysicalDimension);
-        public VariableLengthDouble PhysicalMinimums { get; } = new VariableLengthDouble(HeaderItems.PhysicalMinimum);
-        public VariableLengthDouble PhysicalMaximums { get; } = new VariableLengthDouble(HeaderItems.PhysicalMaximum);
-        public VariableLengthInt DigitalMinimums { get; } = new VariableLengthInt(HeaderItems.DigitalMinimum);
-        public VariableLengthInt DigitalMaximums { get; } = new VariableLengthInt(HeaderItems.DigitalMaximum);
-        public VariableLengthString PreFilterings { get; } = new VariableLengthString(HeaderItems.Prefiltering);
-        public VariableLengthInt NumberOfSamplesPerRecord { get; } = new VariableLengthInt(HeaderItems.NumberOfSamplesInDataRecord);
-        public VariableLengthString SignalsReserved { get; } = new VariableLengthString(HeaderItems.SignalsReserved);
-
-        public DateTime GetStartTime() => GetDateTime(RecordingStartDate.Value, RecordingStartTime.Value);
-
-        public DateTime GetEndTime() => GetDateTime(RecordingStartDate.Value, RecordingStartTime.Value)
-            .AddSeconds(NumberOfDataRecords.Value * RecordDurationInSeconds.Value);
-        
-
+        public DateTime StartTime { get; }
+        public DateTime EndTime { get; }
+        public FixedLengthString Version { get; }
+        public FixedLengthString PatientID { get; }
+        public FixedLengthString RecordID { get; }
+        public FixedLengthString RecordingStartDate { get; }
+        public FixedLengthString RecordingStartTime { get; }
+        public FixedLengthInt SizeInBytes { get; }
+        public FixedLengthString Reserved { get; }
+        public FixedLengthLong NumberOfDataRecords { get; }
+        public FixedLengthDouble RecordDurationInSeconds { get; }
+        public FixedLengthInt NumberOfSignalsInRecord { get; }
+        public VariableLengthString Labels { get; }
+        public VariableLengthString TransducerTypes { get; }
+        public VariableLengthString PhysicalDimensions { get; }
+        public VariableLengthDouble PhysicalMinimums { get; }
+        public VariableLengthDouble PhysicalMaximums { get; }
+        public VariableLengthInt DigitalMinimums { get; }
+        public VariableLengthInt DigitalMaximums { get; }
+        public VariableLengthString PreFilterings { get; }
+        public VariableLengthInt NumberOfSamplesPerRecord { get; }
+        public VariableLengthString SignalsReserved { get; }
         public double TotalDurationInSeconds => NumberOfDataRecords.Value * RecordDurationInSeconds.Value;
 
+        public EDFHeader()
+        {
+            Version = new FixedLengthString(HeaderItems.Version);
+            PatientID = new FixedLengthString(HeaderItems.PatientID);
+            RecordID = new FixedLengthString(HeaderItems.RecordID);
+            RecordingStartDate = new FixedLengthString(HeaderItems.RecordingStartDate);
+            RecordingStartTime = new FixedLengthString(HeaderItems.RecordingStartTime);
+            SizeInBytes = new FixedLengthInt(HeaderItems.SizeInBytes);
+            Reserved = new FixedLengthString(HeaderItems.Reserved);
+            NumberOfDataRecords = new FixedLengthLong(HeaderItems.NumberOfDataRecords);
+            RecordDurationInSeconds = new FixedLengthDouble(HeaderItems.RecordDurationInSeconds);
+            NumberOfSignalsInRecord = new FixedLengthInt(HeaderItems.NumberOfSignalsInRecord);
+            Labels = new VariableLengthString(HeaderItems.Label);
+            TransducerTypes = new VariableLengthString(HeaderItems.TransducerType);
+            PhysicalDimensions = new VariableLengthString(HeaderItems.PhysicalDimension);
+            PhysicalMinimums = new VariableLengthDouble(HeaderItems.PhysicalMinimum);
+            PhysicalMaximums = new VariableLengthDouble(HeaderItems.PhysicalMaximum);
+            DigitalMinimums = new VariableLengthInt(HeaderItems.DigitalMinimum);
+            DigitalMaximums = new VariableLengthInt(HeaderItems.DigitalMaximum);
+            PreFilterings = new VariableLengthString(HeaderItems.Prefiltering);
+            NumberOfSamplesPerRecord = new VariableLengthInt(HeaderItems.NumberOfSamplesInDataRecord);
+            SignalsReserved = new VariableLengthString(HeaderItems.SignalsReserved);
+        }
+        public EDFHeader(string version, string patientId, string recordId, string recordingStartDate, string recordingStartTime,
+            short sizeInBytes, string reserved, long numberOfDataRecords, double recordDurationInSeconds,
+            short numberOfSignalsInRecord, string[] labels, string[] transducerTypes, string[] physicalDimensions,
+            double[] physicalMinimums, double[] physicalMaximums, int[] digitalMinimums, int[] digitalMaximums,
+            string[] preFilterings, int[] numberOfSamplesPerRecord, string[] signalsReserved):this()
+        {
+            Version.Value = version;
+            PatientID.Value = patientId;
+            RecordID . Value = recordId;
+            RecordingStartDate.Value = recordingStartDate;
+            RecordingStartTime.Value = recordingStartTime;
+            SizeInBytes.Value = sizeInBytes;
+            Reserved.Value = reserved;
+            NumberOfDataRecords.Value = numberOfDataRecords;
+            RecordDurationInSeconds.Value = recordDurationInSeconds;
+            NumberOfSignalsInRecord .Value = numberOfSignalsInRecord;
+            Labels. Value = labels;
+            TransducerTypes .Value = transducerTypes;
+            PhysicalDimensions .Value = physicalDimensions;
+            PhysicalMinimums .Value = physicalMinimums;
+            PhysicalMaximums.Value = physicalMaximums;
+            DigitalMinimums . Value = digitalMinimums;
+            DigitalMaximums .Value = digitalMaximums;
+            PreFilterings .Value = preFilterings;
+            NumberOfSamplesPerRecord . Value = numberOfSamplesPerRecord;
+            SignalsReserved .Value = signalsReserved;
+            StartTime = GetDateTime(RecordingStartDate.Value, RecordingStartTime.Value);
+            EndTime = StartTime.AddSeconds(TotalDurationInSeconds);
+        }
 
         private DateTime GetDateTime(string datePart, string timePart)
         {
@@ -64,24 +107,16 @@ namespace EDFCSharp
             DateTime combined = date.Date.Add(time.TimeOfDay);
             return combined;
         }
-        /// <summary>
-        /// Parse record start date and time string to obtain a DateTime object.
-        /// </summary>
-        public void ParseRecordingStartTime()
-        {
-            string timeString = RecordingStartDate.Value + " " + RecordingStartTime.Value.Replace('.', ':');
-            // As days comes before months use German culture explicitly
-            FirstRecordTime = DateTime.Parse(timeString, CultureInfo.GetCultureInfo("de-DE"));
-        }
+
 
         /// <summary>
         /// Provides the time corresponding to the given record index.
         /// </summary>
         /// <param name="aRecordIndex"></param>
         /// <returns></returns>
-        public DateTime RecordTime(int aRecordIndex)
+        private DateTime RecordTime(int aRecordIndex)
         {
-            return FirstRecordTime.AddSeconds(aRecordIndex * RecordDurationInSeconds.Value);
+            return StartTime.AddSeconds(aRecordIndex * RecordDurationInSeconds.Value);
         }
 
 

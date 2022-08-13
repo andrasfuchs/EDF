@@ -77,7 +77,7 @@ namespace EDF.Viewer
                 //seWindowInterval.EditValueChanged -= seWindowInterval_EditValueChanged;
                 //seWindowInterval.Value = TotalDurationInSeconds;
                 //seWindowInterval.EditValueChanged += seWindowInterval_EditValueChanged;
-                StartTime = edf.Header.GetStartTime();
+                StartTime = edf.Header.StartTime;
                 tbRange.EditValueChanged -= TbRange_ValueChanged;
                 tbRange.Properties.Maximum = TotalDurationInSeconds;
                 tbRange.Properties.Minimum = 0;

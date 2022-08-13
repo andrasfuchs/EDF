@@ -111,9 +111,8 @@ namespace EDFCSharp
             using (var reader = new Reader(File.Open(edfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 Header = reader.ReadHeader();
-                var result = reader.ReadSignalsAndAnnotations(Header);
-                Signals = result.Signals;
-                Annotations = result.Annotations;
+                var result = reader.ReadSignals(Header);
+                Signals = result;
             }
         }
 
@@ -126,9 +125,8 @@ namespace EDFCSharp
             using (var reader = new Reader(edfBytes))
             {
                 Header = reader.ReadHeader();
-                var result = reader.ReadSignalsAndAnnotations(Header);
-                Signals = result.Signals;
-                Annotations = result.Annotations;
+                var result = reader.ReadSignals(Header);
+                Signals = result;
             }
         }
 

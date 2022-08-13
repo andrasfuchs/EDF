@@ -86,8 +86,8 @@ namespace EDFSharpTests
             }
             var edf = new EDFFile(filename);
             Console.WriteLine(edf.ToString());
-            Console.WriteLine(edf.Header.GetStartTime());
-            Console.WriteLine(edf.Header.GetEndTime());
+            Console.WriteLine(edf.Header.StartTime);
+            Console.WriteLine(edf.Header.EndTime);
             Console.WriteLine(edf.Header.TotalDurationInSeconds);
             TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
             Console.WriteLine(t);
@@ -102,8 +102,8 @@ namespace EDFSharpTests
             }
             var edf = new EDFFile(filename);
             Console.WriteLine(edf.ToString());
-            Console.WriteLine(edf.Header.GetStartTime());
-            Console.WriteLine(edf.Header.GetEndTime());
+            Console.WriteLine(edf.Header.StartTime);
+            Console.WriteLine(edf.Header.EndTime);
             Console.WriteLine(edf.Header.TotalDurationInSeconds);
             TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
             Console.WriteLine(t);
@@ -118,8 +118,8 @@ namespace EDFSharpTests
             }
             var edf = new EDFFile(filename);
             Console.WriteLine(edf.ToString());
-            Console.WriteLine(edf.Header.GetStartTime());
-            Console.WriteLine(edf.Header.GetEndTime());
+            Console.WriteLine(edf.Header.StartTime);
+            Console.WriteLine(edf.Header.EndTime);
             Console.WriteLine(edf.Header.TotalDurationInSeconds);
             TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
             Console.WriteLine(t);

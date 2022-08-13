@@ -47,6 +47,16 @@ namespace EDFCSharp
         }
 
         public long SamplesCount => Samples.Count;
+
+        public EDFSignal()
+        {
+            
+        }
+        public EDFSignal(int index, double frequencyInHz)
+        {
+            Index = index;
+            FrequencyInHZ = frequencyInHz;
+        }
         /// <summary>
         /// Provided sample value after scaling.
         /// </summary>
@@ -64,6 +74,11 @@ namespace EDFCSharp
         {
             return Label.Value + " " + NumberOfSamplesInDataRecord.Value.ToString() + "/" + Samples.Count().ToString() + " ["
                 + string.Join(",", Samples.Skip(0).Take(10).ToArray()) + " ...]";
+        }
+
+        public void CalculateAllTimeStamps(DateTime startTime,double frequency, long totalSamples)
+        {
+            
         }
     }
 

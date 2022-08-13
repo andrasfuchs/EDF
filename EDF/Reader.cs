@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -15,39 +14,44 @@ namespace EDFCSharp
 
         public EDFHeader ReadHeader()
         {
-            EDFHeader h = new EDFHeader();
+
 
             BaseStream.Seek(0, SeekOrigin.Begin);
 
             // Fixed size header
-            h.Version.Value = ReadAscii(HeaderItems.Version);
-            h.PatientID.Value = ReadAscii(HeaderItems.PatientID);
-            h.RecordID.Value = ReadAscii(HeaderItems.RecordID);
-            h.RecordingStartDate.Value = ReadAscii(HeaderItems.RecordingStartDate);
-            h.RecordingStartTime.Value = ReadAscii(HeaderItems.RecordingStartTime);
-            h.SizeInBytes.Value = ReadInt16(HeaderItems.SizeInBytes);
-            h.Reserved.Value = ReadAscii(HeaderItems.Reserved);
-            h.NumberOfDataRecords.Value = ReadLong(HeaderItems.NumberOfDataRecords);
-            h.RecordDurationInSeconds.Value = ReadDouble(HeaderItems.RecordDurationInSeconds);
-            h.NumberOfSignalsInRecord.Value = ReadInt16(HeaderItems.NumberOfSignalsInRecord);
+            var version = ReadAscii(HeaderItems.Version);
+            var patientID = ReadAscii(HeaderItems.PatientID);
+            var recordID = ReadAscii(HeaderItems.RecordID);
+            var recordingStartDate = ReadAscii(HeaderItems.RecordingStartDate);
+            var recordingStartTime = ReadAscii(HeaderItems.RecordingStartTime);
+            var sizeInBytes = ReadInt16(HeaderItems.SizeInBytes);
+            var reserved = ReadAscii(HeaderItems.Reserved);
+            var numberOfDataRecords = ReadLong(HeaderItems.NumberOfDataRecords);
+            var recordDurationInSeconds = ReadDouble(HeaderItems.RecordDurationInSeconds);
+            var numberOfSignalsInRecord = ReadInt16(HeaderItems.NumberOfSignalsInRecord);
 
             // Variable size header
             // Contains signal headers
-            int ns = h.NumberOfSignalsInRecord.Value;
-            h.Labels.Value = ReadMultipleAscii(HeaderItems.Label, ns);
-            h.TransducerTypes.Value = ReadMultipleAscii(HeaderItems.TransducerType, ns);
-            h.PhysicalDimensions.Value = ReadMultipleAscii(HeaderItems.PhysicalDimension, ns);
-            h.PhysicalMinimums.Value = ReadMultipleDouble(HeaderItems.PhysicalMinimum, ns);
-            h.PhysicalMaximums.Value = ReadMultipleDouble(HeaderItems.PhysicalMaximum, ns);
-            h.DigitalMinimums.Value = ReadMultipleInt(HeaderItems.DigitalMinimum, ns);
-            h.DigitalMaximums.Value = ReadMultipleInt(HeaderItems.DigitalMaximum, ns);
-            h.PreFilterings.Value = ReadMultipleAscii(HeaderItems.Prefiltering, ns);
-            h.NumberOfSamplesPerRecord.Value = ReadMultipleInt(HeaderItems.NumberOfSamplesInDataRecord, ns);
-            h.SignalsReserved.Value = ReadMultipleAscii(HeaderItems.SignalsReserved, ns);
+            int ns = numberOfSignalsInRecord;
+            var labels = ReadMultipleAscii(HeaderItems.Label, ns);
+            var transducerTypes = ReadMultipleAscii(HeaderItems.TransducerType, ns);
+            var physicalDimensions = ReadMultipleAscii(HeaderItems.PhysicalDimension, ns);
+            var physicalMinimums = ReadMultipleDouble(HeaderItems.PhysicalMinimum, ns);
+            var physicalMaximums = ReadMultipleDouble(HeaderItems.PhysicalMaximum, ns);
+            var digitalMinimums = ReadMultipleInt(HeaderItems.DigitalMinimum, ns);
+            var digitalMaximums = ReadMultipleInt(HeaderItems.DigitalMaximum, ns);
+            var preFilterings = ReadMultipleAscii(HeaderItems.Prefiltering, ns);
+            var numberOfSamplesPerRecord = ReadMultipleInt(HeaderItems.NumberOfSamplesInDataRecord, ns);
+            var signalsReserved = ReadMultipleAscii(HeaderItems.SignalsReserved, ns);
 
-            h.ParseRecordingStartTime();
+            EDFHeader h = new EDFHeader(version, patientID, recordID, recordingStartDate, recordingStartTime,
+                sizeInBytes, reserved, numberOfDataRecords, recordDurationInSeconds, numberOfSignalsInRecord, labels,
+                transducerTypes, physicalDimensions, physicalMinimums, physicalMaximums, digitalMinimums, digitalMaximums, preFilterings,
+                numberOfSamplesPerRecord, signalsReserved);
 
             return h;
+
+
         }
 
         /// <summary>
@@ -61,9 +65,10 @@ namespace EDFCSharp
             EDFSignal[] signals = new EDFSignal[header.NumberOfSignalsInRecord.Value];
             for (int i = 0; i < signals.Length; i++)
             {
-
-                signals[i] = new EDFSignal();
-                signals[i].Index = i;
+                var numberOfSamplesInRecord = header.NumberOfSamplesPerRecord.Value[i];
+                var frequency = numberOfSamplesInRecord / header.RecordDurationInSeconds.Value;
+                var totalSamples = numberOfSamplesInRecord * header.NumberOfDataRecords.Value;
+                signals[i] = new EDFSignal(i, frequency);
                 signals[i].Label.Value = header.Labels.Value[i];
                 signals[i].TransducerType.Value = header.TransducerTypes.Value[i];
                 signals[i].PhysicalDimension.Value = header.PhysicalDimensions.Value[i];
@@ -73,8 +78,8 @@ namespace EDFCSharp
                 signals[i].DigitalMaximum.Value = header.DigitalMaximums.Value[i];
                 signals[i].Prefiltering.Value = header.PreFilterings.Value[i];
                 signals[i].Reserved.Value = header.SignalsReserved.Value[i];
-                signals[i].NumberOfSamplesInDataRecord.Value = header.NumberOfSamplesPerRecord.Value[i];
-                signals[i].FrequencyInHZ = signals[i].NumberOfSamplesInDataRecord.Value / header.RecordDurationInSeconds.Value;
+                signals[i].NumberOfSamplesInDataRecord.Value = numberOfSamplesInRecord;
+                signals[i].CalculateAllTimeStamps(header.StartTime, frequency, totalSamples);
             }
 
             return signals;
@@ -87,7 +92,7 @@ namespace EDFCSharp
         /// <param name="signal"></param>
         public void ReadSignal(EDFHeader header, EDFSignal signal)
         {
-            var current = ((DateTimeOffset)header.GetStartTime()).ToUnixTimeMilliseconds();
+            var current = ((DateTimeOffset)header.StartTime).ToUnixTimeMilliseconds();
             var interval = 1000 / (int)signal.FrequencyInHZ;
 
             // Make sure we start just after our header
@@ -104,7 +109,7 @@ namespace EDFCSharp
                     // Read that signal samples
                     if (i == signal.Index)
                     {
-                        ReadNextSignalSamples(signal.Samples, signal.Timestamps, signal.NumberOfSamplesInDataRecord.Value, ref current);
+                        ReadNextSignalSamples(signal.Samples, signal.Timestamps, signal.NumberOfSamplesInDataRecord.Value, ref current, interval);
                     }
                     else
                     {
@@ -120,49 +125,31 @@ namespace EDFCSharp
         /// Read all signal sample value from our file.
         /// </summary>
         /// <returns></returns>
-        public ReadResults ReadSignalsAndAnnotations(EDFHeader header)
+        public EDFSignal[] ReadSignals(EDFHeader header)
         {
-            var current = ((DateTimeOffset)header.GetStartTime()).ToUnixTimeMilliseconds();
+            var current = ((DateTimeOffset)header.StartTime).ToUnixTimeMilliseconds();
             EDFSignal[] signals = AllocateSignals(header);
-            List<TAL> tals = new List<TAL>();
-            int annotationIndex = -1;
             // For each record
             for (int j = 0; j < header.NumberOfDataRecords.Value; j++)
             {
                 // For each signal
                 for (int i = 0; i < signals.Length; i++)
                 {
-                    //if (signals[i].Label.Value != EDFConstants.AnnotationLabel)
-                    {
-                        // Read that signal samples
-                        ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps,
-                            signals[i].NumberOfSamplesInDataRecord.Value, ref current);
-                    }
-                    //else //read annotation
-                    //{
-                    //    AnnotationSignal annotation = new AnnotationSignal(); 
-                    //    var index = TALExtensions.GetBytesForTALIndex(i);
-                    //    annotationIndex = i;
-                    //    //byte zero;
-                    //    //do
-                    //    //{
-                    //    //    zero = ReadByte();
-                    //    //}
-                    //    //while (zero != TAL.byte_0);
+                    var interval = 1000 / signals[i].FrequencyInHZ;
 
-                    //    var data = ReadBytes(header.NumberOfSamplesPerRecord.Value[annotationIndex]);
-                    //    tals.AddRange(TALExtensions.BytesToTALs(data, header.GetStartTime()));
-                    //}
+                    // Read that signal samples
+                    ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps, signals[i].NumberOfSamplesInDataRecord.Value, ref current, interval);
                 }
             }
-            return new ReadResults(signals, tals);
+
+            return signals;
         }
 
         /// <summary>
         /// Read n next samples
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ReadNextSignalSamples(ICollection<short> samples, List<long> timestamps, int sampleCount, ref long currentTimestamp)
+        private void ReadNextSignalSamples(ICollection<short> samples, List<long> timestamps, int sampleCount, ref long currentTimestamp, double timestampInterval)
         {
             // Single file read operation per record
             byte[] intBytes = ReadBytes(sizeof(short) * sampleCount);
@@ -170,9 +157,9 @@ namespace EDFCSharp
             {
                 // Fetch our sample short from our record buffer
                 short intVal = BitConverter.ToInt16(intBytes, i * sizeof(short));
-                // TODO: use a static array for better performance? I guess it's not needed since we prealloc using Capacity.
                 samples.Add(intVal);
                 timestamps.Add(currentTimestamp);
+                currentTimestamp += (long)timestampInterval;
             }
         }
 
@@ -276,32 +263,5 @@ namespace EDFCSharp
             return Encoding.ASCII.GetString(bytes);
         }
         #endregion
-
-        //public List<TAL> ReadAnnotationSignals(EDFHeader header)
-        //{
-        //    var annotations = new List<TAL>();
-        //    // Make sure we start just after our header
-        //    BaseStream.Seek(header.SizeInBytes.Value, SeekOrigin.Begin);
-        //    // For each record
-        //    for (int j = 0; j < header.NumberOfDataRecords.Value; j++)
-        //    {
-
-        //        for (int i = 0; i < header.NumberOfSignalsInRecord.Value; i++)
-        //        {
-        //            if (header.Labels.Value[i] != EDFConstants.AnnotationLabel)
-        //            {
-        //                SkipSignalSamples(header.NumberOfSamplesPerRecord.Value[i]);
-        //                continue;
-        //            }
-
-        //            var index = TALExtensions.GetBytesForTALIndex(i);
-        //            var data = ReadBytes(header.NumberOfSamplesPerRecord.Value[i]);
-        //            var tals = TALExtensions.BytesToTALs(data, header.GetStartTime());
-        //            annotations.AddRange(tals);
-        //        }
-        //    }
-
-        //    return annotations;
-        //}
     }
 }
