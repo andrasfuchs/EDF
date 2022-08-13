@@ -43,6 +43,8 @@ This project is provided under the terms of the [MIT license](http://choosealice
 |nr of samples[ns] * integer | last signal |
 
 ## History
+### V0.5.7: 
+ - https://github.com/LiorBanai/EDF/issues/7 : Fix Timestamps calculations 
 
 ### V0.5.6: 
  - Fix Divided By Zero

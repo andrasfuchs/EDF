@@ -93,8 +93,7 @@ namespace EDFCSharp
         public void ReadSignal(EDFHeader header, EDFSignal signal)
         {
             var current = ((DateTimeOffset)header.StartTime).ToUnixTimeMilliseconds();
-            var interval = 1000 / (int)signal.FrequencyInHZ;
-
+            var interval = signal.FrequencyInHZ == 0 ? 0 : (1000 / signal.FrequencyInHZ);
             // Make sure we start just after our header
             BaseStream.Seek(header.SizeInBytes.Value, SeekOrigin.Begin);
 
@@ -103,20 +102,21 @@ namespace EDFCSharp
             // For each record
             for (int j = 0; j < header.NumberOfDataRecords.Value; j++)
             {
+                var currentPerRecord = (current + j * header.RecordDurationInSeconds.Value * 1000);
                 // For each signal
                 for (int i = 0; i < header.NumberOfSignalsInRecord.Value; i++)
                 {
                     // Read that signal samples
                     if (i == signal.Index)
                     {
-                        ReadNextSignalSamples(signal.Samples, signal.Timestamps, signal.NumberOfSamplesInDataRecord.Value, current);
+                        ReadNextSignalSamples(signal.Samples, signal.Timestamps, signal.NumberOfSamplesInDataRecord.Value, current, (long)interval);
                     }
                     else
                     {
                         // Just skip it
                         SkipSignalSamples(header.NumberOfSamplesPerRecord.Value[i]);
+
                     }
-                    current += interval;
                 }
             }
         }
@@ -136,11 +136,10 @@ namespace EDFCSharp
                 // For each signal
                 for (int i = 0; i < signals.Length; i++)
                 {
-                    var interval = 1000 / signals[i].FrequencyInHZ;
 
+                    var interval = signals[i].FrequencyInHZ == 0 ? 0 : (1000 / signals[i].FrequencyInHZ);
                     // Read that signal samples
-                    ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps, signals[i].NumberOfSamplesInDataRecord.Value, (long)currentPerRecord);
-                    currentPerRecord += interval;
+                    ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps, signals[i].NumberOfSamplesInDataRecord.Value, (long)currentPerRecord, (long)interval);
                 }
             }
 
@@ -151,7 +150,7 @@ namespace EDFCSharp
         /// Read n next samples
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ReadNextSignalSamples(ICollection<short> samples, List<long> timestamps, int sampleCount, long currentTimestamp)
+        private void ReadNextSignalSamples(ICollection<short> samples, List<long> timestamps, int sampleCount, long currentTimestamp, long interval)
         {
             // Single file read operation per record
             byte[] intBytes = ReadBytes(sizeof(short) * sampleCount);
@@ -161,6 +160,7 @@ namespace EDFCSharp
                 short intVal = BitConverter.ToInt16(intBytes, i * sizeof(short));
                 samples.Add(intVal);
                 timestamps.Add(currentTimestamp);
+                currentTimestamp += interval;
             }
         }
 
