@@ -147,7 +147,7 @@ namespace EDFCSharp
                     else //read annotation
                     {
                         var single = new AnnotationSignal();
-                        ReadNextAnnotationSamples(single.Samples, signals[i].NumberOfSamplesInDataRecord.Value, (long)currentPerRecord);
+                        ReadNextAnnotationSamples(single.Samples, signals[i].NumberOfSamplesInDataRecord.Value);
                         annotation.Add(single);
                     }
                 }
@@ -178,7 +178,7 @@ namespace EDFCSharp
         /// Read n next samples
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ReadNextAnnotationSamples(ICollection<TAL> samples, int sampleCount, long currentTimestamp)
+        private void ReadNextAnnotationSamples(ICollection<TAL> samples, int sampleCount)
         {
             // Single file read operation per record
             byte[] intBytes = ReadBytes(sizeof(short) * sampleCount);

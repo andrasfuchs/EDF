@@ -116,7 +116,10 @@ namespace EDFCSharp
                 }
             }
 
-
+            if (!string.IsNullOrEmpty(outlet))
+            {
+                entries.Add(outlet);
+            }
             for (var index = 0; index < entries.Count; index++)
             {
                 var annotation = entries[index];
@@ -136,10 +139,20 @@ namespace EDFCSharp
                         while (annotation[i] == ' ')
                         {
                             i++;
+                            if (i >= annotation.Length)
+                            {
+                                durationStart = 0;
+                                durationEnd = 0;
+                                durationSearch = false;
+                                break;
+                            }
                         }
 
-                        durationStart = i;
-                        durationEnd = i;
+                        if (durationSearch)
+                        {
+                            durationStart = i;
+                            durationEnd = i;
+                        }
                     }
 
 

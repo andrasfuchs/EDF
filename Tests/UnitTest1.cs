@@ -75,11 +75,42 @@ namespace EDFSharpTests
             Assert.AreEqual(edf2.Signals[0].Samples.Count, edf1.Signals[0].Samples.Count);
             System.IO.File.Delete(edfFilePath);
         }
-
+        [TestMethod]
+        public void ReadSignalOnlyFile1()
+        {
+            string filename = Path.Combine(Environment.CurrentDirectory, "files", "signals_only.EDF");
+            if (!File.Exists(filename))
+            {
+                return;
+            }
+            var edf = new EDFFile(filename);
+            Console.WriteLine(edf.ToString());
+            Console.WriteLine(edf.Header.StartTime);
+            Console.WriteLine(edf.Header.EndTime);
+            Console.WriteLine(edf.Header.TotalDurationInSeconds);
+            TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
+            Console.WriteLine(t);
+        }
+        [TestMethod]
+        public void ReadSignalOnlyFile2()
+        {
+            string filename = Path.Combine(Environment.CurrentDirectory, "files", "signals_only2.EDF");
+            if (!File.Exists(filename))
+            {
+                return;
+            }
+            var edf = new EDFFile(filename);
+            Console.WriteLine(edf.ToString());
+            Console.WriteLine(edf.Header.StartTime);
+            Console.WriteLine(edf.Header.EndTime);
+            Console.WriteLine(edf.Header.TotalDurationInSeconds);
+            TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
+            Console.WriteLine(t);
+        }
         [TestMethod]
         public void ReadSampleFile()
         {
-            string filename = Path.Combine(Environment.CurrentDirectory,"files","sample_ecg.EDF");
+            string filename = Path.Combine(Environment.CurrentDirectory, "files", "sample_ecg.EDF");
             if (!File.Exists(filename))
             {
                 return;
@@ -106,6 +137,8 @@ namespace EDFSharpTests
             Console.WriteLine(edf.Header.EndTime);
             Console.WriteLine(edf.Header.TotalDurationInSeconds);
             TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
+            Assert.IsTrue(edf.AnnotationSignals.Count == 8);
+            Assert.IsTrue(edf.AnnotationSignals[0].SamplesCount==144);
             Console.WriteLine(t);
         }
         [TestMethod]
