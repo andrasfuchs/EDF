@@ -48,6 +48,9 @@
     <None Update="files\annotations_and_signals.edf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="files\annotations_and_signals2.edf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="files\sample_ecg.edf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

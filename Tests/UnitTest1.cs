@@ -132,14 +132,8 @@ namespace EDFSharpTests
                 return;
             }
             var edf = new EDFFile(filename);
-            Console.WriteLine(edf.ToString());
-            Console.WriteLine(edf.Header.StartTime);
-            Console.WriteLine(edf.Header.EndTime);
-            Console.WriteLine(edf.Header.TotalDurationInSeconds);
-            TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
             Assert.IsTrue(edf.AnnotationSignals.Count == 8);
-            Assert.IsTrue(edf.AnnotationSignals[0].SamplesCount==144);
-            Console.WriteLine(t);
+            Assert.IsTrue(edf.AnnotationSignals[0].SamplesCount == 145);
         }
         [TestMethod]
         public void ReadAnnotationAndSignalsFile()
@@ -150,12 +144,19 @@ namespace EDFSharpTests
                 return;
             }
             var edf = new EDFFile(filename);
-            Console.WriteLine(edf.ToString());
-            Console.WriteLine(edf.Header.StartTime);
-            Console.WriteLine(edf.Header.EndTime);
-            Console.WriteLine(edf.Header.TotalDurationInSeconds);
-            TimeSpan t = TimeSpan.FromSeconds(edf.Header.TotalDurationInSeconds);
-            Console.WriteLine(t);
+            Assert.IsTrue(edf.AnnotationSignals.Sum(a => a.SamplesCount) == 2);
+
+        }
+        [TestMethod]
+        public void ReadAnnotationAndSignalsFile2()
+        {
+            string filename = Path.Combine(Environment.CurrentDirectory, "files", "annotations_and_signals2.EDF");
+            if (!File.Exists(filename))
+            {
+                return;
+            }
+            var edf = new EDFFile(filename);
+            Assert.IsTrue(edf.AnnotationSignals.Sum(a => a.SamplesCount) == 25);
         }
         [TestMethod]
         public void ReadTemplateFile()

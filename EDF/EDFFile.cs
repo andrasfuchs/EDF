@@ -14,7 +14,7 @@ namespace EDFCSharp
 
         public EDFFile()
         {
-            AnnotationSignals=new List<AnnotationSignal>();
+            AnnotationSignals = new List<AnnotationSignal>();
         }
         public EDFFile(string filePath) : this()
         {

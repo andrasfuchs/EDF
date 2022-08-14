@@ -38,7 +38,7 @@ namespace EDFCSharp
 
         public override string ToString()
         {
-            return $"{nameof(AnnotationDescription)}: {AnnotationDescription}";
+            return $"onset: {startSeconds}. Duration: {DurationSecondsString} Description: {AnnotationDescription}";
         }
     }
 
@@ -74,7 +74,7 @@ namespace EDFCSharp
             String outlet = "";
             bool inside = false;
             List<string> entries = new List<string>();
-            int loc = 0;
+            // int loc = 0;
             for (int i = 0; i < raw.Length; ++i)
             {
                 // Fetch our sample short from our record buffer
@@ -85,17 +85,11 @@ namespace EDFCSharp
                 {
                     if (raw[i] == TAL.byte_0)
                     {
-                        inside = false;
-                        if (loc < 2)
-                        {
-                            outlet += " ";
-                            loc++;
-                        }
-                        else
+                        if (!string.IsNullOrEmpty(outlet))
                         {
                             entries.Add(outlet);
-                            outlet = "";
                         }
+                        outlet = "";
                     }
                     else
                     {
@@ -129,6 +123,7 @@ namespace EDFCSharp
                 int durationStart = 0;
                 int durationEnd = 0;
                 string text = "";
+                bool valid = false;
                 for (int i = 0; i < annotation.Length; i++)
                 {
                     if (onsetsearch && annotation[i] == ' ')
@@ -158,7 +153,7 @@ namespace EDFCSharp
 
                     if (durationSearch)
                     {
-                        if (char.IsDigit(annotation[i]) || annotation[i] == '.' || annotation[i] == '-'|| annotation[i] == '+')
+                        if (char.IsDigit(annotation[i]) || annotation[i] == '.' || annotation[i] == '-' || annotation[i] == '+')
                         {
                             durationEnd = i;
                         }
@@ -173,6 +168,7 @@ namespace EDFCSharp
                             }
 
                             text = annotation.Substring(i);
+                            valid = !string.IsNullOrEmpty(text);
                             break;
                         }
                         else
@@ -180,6 +176,7 @@ namespace EDFCSharp
                             durationSearch = false;
                             durationEnd = i;
                             text = annotation.Substring(i);
+                            valid = !string.IsNullOrEmpty(text);
                             break;
                         }
 
@@ -187,22 +184,29 @@ namespace EDFCSharp
 
                 }
 
-                if (!double.TryParse(annotation.Substring(0, onsetEnd), out var start))
+                if (valid)
                 {
+                    string onsetText = annotation.Substring(0, onsetEnd);
+                    string durationText = annotation.Substring(durationStart, durationEnd - durationStart);
+                    if (!double.TryParse(onsetText, out var start))
+                    {
 
-                }
-                if (!double.TryParse(annotation.Substring(durationStart, durationEnd - durationStart), out var duration))
-                {
+                    }
 
-                }
-                if (duration < 0)
-                {
-                    start += duration;
-                    duration = 0;
-                }
+                    if (!double.TryParse(durationText, out var duration))
+                    {
 
-                TAL tal = new TAL(start, duration, text);
-                result.Add(tal);
+                    }
+
+                    if (duration < 0)
+                    {
+                        start += duration;
+                        duration = 0;
+                    }
+
+                    TAL tal = new TAL(start, duration, text);
+                    result.Add(tal);
+                }
             }
 
 
