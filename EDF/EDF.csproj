@@ -7,7 +7,7 @@
 		<RootNamespace>EDFCSharp</RootNamespace>
 		<Company>Lior Banai</Company>
 		<Product>EDF</Product>
-		<Version>0.6.1</Version>
+		<Version>0.6.2</Version>
 		<Description>Read and write EDF signal files.</Description>
 		<Copyright>Copyright © 2022</Copyright>
 		<SignAssembly>false</SignAssembly>

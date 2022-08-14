@@ -7,9 +7,10 @@ namespace EDFCSharp
 {
     public class EDFFile : IDisposable
     {
-        public EDFHeader Header { get; set; }
-        public EDFSignal[] Signals { get; set; }
-        public List<AnnotationSignal> AnnotationSignals { get; set; }
+        public EDFHeader Header { get; private set; }
+        public EDFSignal[] Signals { get; private set; }
+        public List<AnnotationSignal> AnnotationSignals { get; private set; }
+        public List<TAL> AllAnnotations => AnnotationSignals.SelectMany(a => a.Samples).ToList();
         private Reader Reader { get; set; }
 
         public EDFFile()
