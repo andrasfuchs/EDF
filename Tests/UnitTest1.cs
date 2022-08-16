@@ -72,6 +72,7 @@ namespace EDFSharpTests
             Assert.AreEqual(edf2.Signals[0].Samples.Count, edf1.Signals[0].Samples.Count);
             System.IO.File.Delete(edfFilePath);
         }
+
         [TestMethod]
         public void ReadSignalOnlyFile1()
         {
@@ -121,7 +122,7 @@ namespace EDFSharpTests
             Console.WriteLine(t);
         }
         [TestMethod]
-        public void ReadAnnotationOnlyFile()
+        public void ReadAndSaveAnnotationOnlyFile()
         {
             string filename = Path.Combine(Environment.CurrentDirectory, "files", "annotations.EDF");
             if (!File.Exists(filename))
@@ -131,6 +132,13 @@ namespace EDFSharpTests
             var edf = new EDFFile(filename);
             Assert.IsTrue(edf.AnnotationSignals.Count == 8);
             Assert.IsTrue(edf.AnnotationSignals[0].SamplesCount == 145);
+
+            string file2 = "test2.edf";
+            edf.Save(file2);
+            var edf2 = new EDFFile(file2);
+            Assert.IsTrue(edf2.Header.Equals(edf.Header));
+            Assert.IsTrue(edf2.Signals.SequenceEqual(edf.Signals));
+            Assert.IsTrue(edf2.AnnotationSignals.SequenceEqual(edf.AnnotationSignals));
         }
         [TestMethod]
         public void ReadAnnotationAndSignalsFile()

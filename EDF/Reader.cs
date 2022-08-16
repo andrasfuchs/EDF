@@ -146,7 +146,7 @@ namespace EDFCSharp
                     }
                     else //read annotation
                     {
-                        var single = new AnnotationSignal();
+                        var single = new AnnotationSignal(signals[i].NumberOfSamplesInDataRecord.Value);
                         ReadNextAnnotationSamples(single.Samples, signals[i].NumberOfSamplesInDataRecord.Value);
                         annotation.Add(single);
                     }

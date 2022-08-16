@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace EDFCSharp
 {
@@ -57,6 +58,24 @@ namespace EDFCSharp
 
             return asciiString;
         }
+
+        protected bool Equals(FixedLengthString other)
+        {
+            return Value == other.Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((FixedLengthString)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Value != null ? Value.GetHashCode() : 0);
+        }
     }
     public class FixedLengthInt : HeaderItem
     {
@@ -64,6 +83,23 @@ namespace EDFCSharp
         public FixedLengthInt(EDFField info) : base(info) { }
         public override string ToAscii() => Value.ToString(CultureInfo.InvariantCulture).PadRight(AsciiLength, ' ');
 
+        protected bool Equals(FixedLengthInt other)
+        {
+            return Value == other.Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((FixedLengthInt)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value;
+        }
     }
     public class FixedLengthLong : HeaderItem
     {
@@ -71,6 +107,23 @@ namespace EDFCSharp
         public FixedLengthLong(EDFField info) : base(info) { }
         public override string ToAscii() => Value.ToString(CultureInfo.InvariantCulture).PadRight(AsciiLength, ' ');
 
+        protected bool Equals(FixedLengthLong other)
+        {
+            return Value == other.Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((FixedLengthLong)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
     }
     public class FixedLengthDouble : HeaderItem
     {
@@ -84,6 +137,24 @@ namespace EDFCSharp
                 ? asciiString.Substring(0, AsciiLength)
                 : Value.ToString(CultureInfo.InvariantCulture).PadRight(AsciiLength, ' ');
             return asciiString;
+        }
+
+        protected bool Equals(FixedLengthDouble other)
+        {
+            return Value.Equals(other.Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((FixedLengthDouble)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
         }
     }
 
@@ -102,6 +173,38 @@ namespace EDFCSharp
             }
 
             return ascii;
+        }
+
+        protected bool Equals(VariableLengthString other)
+        {
+            if (Value == null && other.Value == null)
+            {
+                return true;
+            }
+
+            if (Value == null && other.Value != null)
+            {
+                return false;
+            }
+
+            if (Value != null && other.Value == null)
+            {
+                return false;
+            }
+            return Value.SequenceEqual(other.Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((VariableLengthString)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Value != null ? Value.GetHashCode() : 0);
         }
     }
 
@@ -122,6 +225,38 @@ namespace EDFCSharp
             }
             return ascii;
         }
+
+        protected bool Equals(VariableLengthInt other)
+        {
+            if (Value == null && other.Value == null)
+            {
+                return true;
+            }
+
+            if (Value == null && other.Value != null)
+            {
+                return false;
+            }
+
+            if (Value != null && other.Value == null)
+            {
+                return false;
+            }
+            return Value.SequenceEqual(other.Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((VariableLengthInt)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Value != null ? Value.GetHashCode() : 0);
+        }
     }
 
     public class VariableLengthDouble : HeaderItem
@@ -140,6 +275,38 @@ namespace EDFCSharp
                 ascii += temp;
             }
             return ascii;
+        }
+
+        protected bool Equals(VariableLengthDouble other)
+        {
+            if (Value == null && other.Value == null)
+            {
+                return true;
+            }
+
+            if (Value == null && other.Value != null)
+            {
+                return false;
+            }
+
+            if (Value != null && other.Value == null)
+            {
+                return false;
+            }
+            return Value.SequenceEqual(other.Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((VariableLengthDouble)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Value != null ? Value.GetHashCode() : 0);
         }
     }
 

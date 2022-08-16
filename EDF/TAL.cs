@@ -34,11 +34,32 @@ namespace EDFCSharp
             this.durationSeconds = durationSeconds;
             AnnotationDescription = description;
         }
-
-
         public override string ToString()
         {
             return $"onset: {startSeconds}. Duration: {DurationSecondsString} Description: {AnnotationDescription}";
+        }
+
+        protected bool Equals(TAL other)
+        {
+            return startSeconds.Equals(other.startSeconds) && durationSeconds.Equals(other.durationSeconds) &&
+                   AnnotationDescription == other.AnnotationDescription;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((TAL)obj);
+        }
+
+        public override int GetHashCode()
+        {
+#if NET
+            return HashCode.Combine(startSeconds, durationSeconds, AnnotationDescription);
+#else
+return 0;
+#endif
         }
     }
 

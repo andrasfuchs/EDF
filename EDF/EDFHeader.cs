@@ -181,5 +181,63 @@ namespace EDFCSharp
 
             return strOutput;
         }
+
+        protected bool Equals(EDFHeader other)
+        {
+            return StartTime.Equals(other.StartTime) && EndTime.Equals(other.EndTime) &&
+                   Equals(Version, other.Version) && Equals(PatientID, other.PatientID) &&
+                   Equals(RecordID, other.RecordID) && Equals(RecordingStartDate, other.RecordingStartDate) &&
+                   Equals(RecordingStartTime, other.RecordingStartTime) && Equals(SizeInBytes, other.SizeInBytes) &&
+                   Equals(Reserved, other.Reserved) && Equals(NumberOfDataRecords, other.NumberOfDataRecords) &&
+                   Equals(RecordDurationInSeconds, other.RecordDurationInSeconds) &&
+                   Equals(NumberOfSignalsInRecord, other.NumberOfSignalsInRecord) && Equals(Labels, other.Labels) &&
+                   Equals(TransducerTypes, other.TransducerTypes) &&
+                   Equals(PhysicalDimensions, other.PhysicalDimensions) &&
+                   Equals(PhysicalMinimums, other.PhysicalMinimums) &&
+                   Equals(PhysicalMaximums, other.PhysicalMaximums) && Equals(DigitalMinimums, other.DigitalMinimums) &&
+                   Equals(DigitalMaximums, other.DigitalMaximums) && Equals(PreFilterings, other.PreFilterings) &&
+                   Equals(NumberOfSamplesPerRecord, other.NumberOfSamplesPerRecord) &&
+                   Equals(SignalsReserved, other.SignalsReserved);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((EDFHeader)obj);
+        }
+
+        public override int GetHashCode()
+        {
+#if NET
+            var hashCode = new HashCode();
+            hashCode.Add(StartTime);
+            hashCode.Add(EndTime);
+            hashCode.Add(Version);
+            hashCode.Add(PatientID);
+            hashCode.Add(RecordID);
+            hashCode.Add(RecordingStartDate);
+            hashCode.Add(RecordingStartTime);
+            hashCode.Add(SizeInBytes);
+            hashCode.Add(Reserved);
+            hashCode.Add(NumberOfDataRecords);
+            hashCode.Add(RecordDurationInSeconds);
+            hashCode.Add(NumberOfSignalsInRecord);
+            hashCode.Add(Labels);
+            hashCode.Add(TransducerTypes);
+            hashCode.Add(PhysicalDimensions);
+            hashCode.Add(PhysicalMinimums);
+            hashCode.Add(PhysicalMaximums);
+            hashCode.Add(DigitalMinimums);
+            hashCode.Add(DigitalMaximums);
+            hashCode.Add(PreFilterings);
+            hashCode.Add(NumberOfSamplesPerRecord);
+            hashCode.Add(SignalsReserved);
+            return hashCode.ToHashCode();
+#else
+return 0;
+#endif
+        }
     }
 }

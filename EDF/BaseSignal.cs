@@ -80,6 +80,50 @@ namespace EDFCSharp
         {
             
         }
+
+        protected bool Equals(EDFSignal other)
+        {
+            return Index == other.Index && Equals(Label, other.Label) && Equals(TransducerType, other.TransducerType) &&
+                   Equals(PhysicalDimension, other.PhysicalDimension) &&
+                   Equals(PhysicalMinimum, other.PhysicalMinimum) && Equals(PhysicalMaximum, other.PhysicalMaximum) &&
+                   Equals(DigitalMinimum, other.DigitalMinimum) && Equals(DigitalMaximum, other.DigitalMaximum) &&
+                   Equals(Prefiltering, other.Prefiltering) &&
+                   Equals(NumberOfSamplesInDataRecord, other.NumberOfSamplesInDataRecord) &&
+                   Equals(Reserved, other.Reserved) && FrequencyInHZ.Equals(other.FrequencyInHZ) &&
+                   Samples.SequenceEqual(other.Samples) && Timestamps.SequenceEqual(other.Timestamps);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((EDFSignal)obj);
+        }
+
+        public override int GetHashCode()
+        {
+#if NET
+            var hashCode = new HashCode();
+            hashCode.Add(Index);
+            hashCode.Add(Label.Value);
+            hashCode.Add(TransducerType.Value);
+            hashCode.Add(PhysicalDimension.Value);
+            hashCode.Add(PhysicalMinimum.Value);
+            hashCode.Add(PhysicalMaximum.Value);
+            hashCode.Add(DigitalMinimum.Value);
+            hashCode.Add(DigitalMaximum.Value);
+            hashCode.Add(Prefiltering.Value);
+            hashCode.Add(NumberOfSamplesInDataRecord.Value);
+            hashCode.Add(Reserved.Value);
+            hashCode.Add(FrequencyInHZ);
+            hashCode.Add(Samples.Count);
+            hashCode.Add(Timestamps.Count);
+            return hashCode.ToHashCode();
+#else
+return 0;
+#endif
+        }
     }
 
 

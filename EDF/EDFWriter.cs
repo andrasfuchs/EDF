@@ -32,53 +32,33 @@ namespace EDFCSharp
 
             //----------------- Variable length header items -----------------
             var headerSignalsLabel = edf.Signals.Select(s => s.Label);
-            if (edf.AnnotationSignals != null)
-                headerSignalsLabel = headerSignalsLabel.Concat(edf.AnnotationSignals.Select(x => x.Label));
             WriteItem(headerSignalsLabel);
-
+            
             var trandsducerTypes = edf.Signals.Select(s => s.TransducerType);
-            if (edf.AnnotationSignals != null)
-                trandsducerTypes = trandsducerTypes.Concat(edf.AnnotationSignals.Select(x => x.TransducerType));
             WriteItem(trandsducerTypes);
 
             var physicalDimensions = edf.Signals.Select(s => s.PhysicalDimension);
-            if (edf.AnnotationSignals != null)
-                physicalDimensions = physicalDimensions.Concat(edf.AnnotationSignals.Select(x => x.PhysicalDimension));
             WriteItem(physicalDimensions);
 
             var physicalMinimums = edf.Signals.Select(s => s.PhysicalMinimum);
-            if (edf.AnnotationSignals != null)
-                physicalMinimums = physicalMinimums.Concat(edf.AnnotationSignals.Select(x => x.PhysicalMinimum));
             WriteItem(physicalMinimums);
 
             var physicalMaximuns = edf.Signals.Select(s => s.PhysicalMaximum);
-            if (edf.AnnotationSignals != null)
-                physicalMaximuns = physicalMaximuns.Concat(edf.AnnotationSignals.Select(x => x.PhysicalMaximum));
             WriteItem(physicalMaximuns);
 
             var digitalMinimuns = edf.Signals.Select(s => s.DigitalMinimum);
-            if (edf.AnnotationSignals != null)
-                digitalMinimuns = digitalMinimuns.Concat(edf.AnnotationSignals.Select(x => x.DigitalMinimum));
             WriteItem(digitalMinimuns);
 
             var digitalMaximuns = edf.Signals.Select(s => s.DigitalMaximum);
-            if (edf.AnnotationSignals != null)
-                digitalMaximuns = digitalMaximuns.Concat(edf.AnnotationSignals.Select(x => x.DigitalMaximum));
             WriteItem(digitalMaximuns);
 
             var prefilterings = edf.Signals.Select(s => s.Prefiltering);
-            if (edf.AnnotationSignals != null)
-                prefilterings = prefilterings.Concat(edf.AnnotationSignals.Select(x => x.Prefiltering));
             WriteItem(prefilterings);
 
             var samplesCountPerRecords = edf.Signals.Select(s => s.NumberOfSamplesInDataRecord);
-            if (edf.AnnotationSignals != null)
-                samplesCountPerRecords = samplesCountPerRecords.Concat(edf.AnnotationSignals.Select(x => x.NumberOfSamplesInDataRecord));
             WriteItem(samplesCountPerRecords);
 
             var reservedValues = edf.Signals.Select(s => s.Reserved);
-            if (edf.AnnotationSignals != null)
-                reservedValues = reservedValues.Concat(edf.AnnotationSignals.Select(x => x.Reserved));
             WriteItem(reservedValues);
 
             Console.WriteLine("Writer position after header: " + BaseStream.Position);
@@ -107,7 +87,7 @@ namespace EDFCSharp
             byte[] itemBytes = AsciiToBytes(strItem);
             Write(itemBytes);
         }
-       
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteItem(IEnumerable<HeaderItem> headerItems)
         {
@@ -149,7 +129,7 @@ namespace EDFCSharp
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteSignals(EDFFile edf)
         {
-            if (!edf.Signals.Any())
+            if (!edf.Signals.Any() && !edf.AnnotationSignals.Any())
             {
                 Console.WriteLine("There are no signals to write");
                 return;
@@ -210,7 +190,7 @@ namespace EDFCSharp
                 Write(TAL.byte_0);
 
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int WriteAnnotation(TAL tal)
         {
@@ -218,7 +198,7 @@ namespace EDFCSharp
             Write(bytesToWrite);
             return bytesToWrite.Length;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int WriteAnnotationIndex(int index)
         {

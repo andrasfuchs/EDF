@@ -52,7 +52,7 @@ namespace EDFCSharp
         public List<TAL> Samples { get; set; } = new List<TAL> { };
         public long SamplesCount => Samples.Count;
 
-        public AnnotationSignal()
+        public AnnotationSignal(int numberOfSamplesInDataRecord)
         {
             /* /// https://www.edfplus.info/specs/edfplus.html#annotationssignal section 2.2.1
              * For the sake of EDF compatibility, the fields 'digital minimum' and 'digital maximum' must be filled with -32768 and 32767, respectively. 
@@ -67,6 +67,48 @@ namespace EDFCSharp
             TransducerType.Value = string.Empty;
             Prefiltering.Value = string.Empty;
             Reserved.Value = string.Empty;
+            NumberOfSamplesInDataRecord.Value = numberOfSamplesInDataRecord;
+        }
+
+        protected bool Equals(AnnotationSignal other)
+        {
+            return Index == other.Index && Equals(Label, other.Label) && Equals(TransducerType, other.TransducerType) &&
+                   Equals(PhysicalDimension, other.PhysicalDimension) &&
+                   Equals(PhysicalMinimum, other.PhysicalMinimum) && Equals(PhysicalMaximum, other.PhysicalMaximum) &&
+                   Equals(DigitalMinimum, other.DigitalMinimum) && Equals(DigitalMaximum, other.DigitalMaximum) &&
+                   Equals(Prefiltering, other.Prefiltering) &&
+                   Equals(NumberOfSamplesInDataRecord, other.NumberOfSamplesInDataRecord) &&
+                   Equals(Reserved, other.Reserved) && Samples.SequenceEqual(other.Samples);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((AnnotationSignal)obj);
+        }
+
+        public override int GetHashCode()
+        {
+#if NET
+            var hashCode = new HashCode();
+            hashCode.Add(Index);
+            hashCode.Add(Label.Value);
+            hashCode.Add(TransducerType.Value);
+            hashCode.Add(PhysicalDimension.Value);
+            hashCode.Add(PhysicalMinimum.Value);
+            hashCode.Add(PhysicalMaximum.Value);
+            hashCode.Add(DigitalMinimum.Value);
+            hashCode.Add(DigitalMaximum.Value);
+            hashCode.Add(Prefiltering.Value);
+            hashCode.Add(NumberOfSamplesInDataRecord);
+            hashCode.Add(Reserved.Value);
+            hashCode.Add(Samples.Count);
+            return hashCode.ToHashCode();
+#else
+            return 0;
+#endif
         }
     }
 
