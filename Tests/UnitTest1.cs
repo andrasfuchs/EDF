@@ -13,9 +13,6 @@ namespace EDFSharpTests
         [TestMethod]
         public void Test_WriteReadEDF_ShouldReturnSameData()
         {
-            //Write an EDF file with two signals then read it and check the data is correct
-            var edf1 = new EDFFile();
-
             var ecgSig = new EDFSignal();
             ecgSig.Label.Value = "ECG";
             ecgSig.NumberOfSamplesInDataRecord.Value = 10; //Small number of samples for testing
@@ -42,7 +39,7 @@ namespace EDFSharpTests
             soundSig.Samples = new List<short> { 11, 200, 300, 123, 87, 204, 145, 234, 222, 75 };
             soundSig.Reserved.Value = "RESERVED";
 
-            edf1.Signals = new EDFSignal[2] { ecgSig, soundSig };
+            var signals = new EDFSignal[2] { ecgSig, soundSig };
 
             var h = new EDFHeader();
             h.RecordDurationInSeconds.Value = 1;
@@ -53,10 +50,10 @@ namespace EDFSharpTests
             h.RecordingStartTime.Value = "12.12.12"; //hh.mm.ss
             h.Reserved.Value = "RESERVED";
             h.NumberOfDataRecords.Value = 1;
-            h.NumberOfSignalsInRecord.Value = (short)edf1.Signals.Length;
+            h.NumberOfSignalsInRecord.Value = (short)2;
             h.SignalsReserved.Value = Enumerable.Repeat("RESERVED", h.NumberOfSignalsInRecord.Value).ToArray();
 
-            edf1.Header = h;
+            var edf1 = new EDFFile(h, signals, new List<AnnotationSignal>());
 
             string edfFilePath = @"test1.EDF";
             edf1.Save(edfFilePath);

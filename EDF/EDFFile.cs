@@ -17,6 +17,13 @@ namespace EDFCSharp
         {
             AnnotationSignals = new List<AnnotationSignal>();
         }
+        public EDFFile(EDFHeader header, EDFSignal[] signals, List<AnnotationSignal> annotationSignals)
+        {
+            Header = header;
+            Signals = signals;
+            AnnotationSignals = annotationSignals;
+        }
+
         public EDFFile(string filePath) : this()
         {
             ReadAll(filePath);
