@@ -51,6 +51,9 @@
     <None Update="files\annotations_and_signals2.edf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="files\Female57yrs 07-MAR-2009 00h00m00s APSG.edf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="files\sample_ecg.edf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

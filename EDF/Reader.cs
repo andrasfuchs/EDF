@@ -109,7 +109,7 @@ namespace EDFCSharp
                     // Read that signal samples
                     if (i == signal.Index)
                     {
-                        ReadNextSignalSamples(signal.Samples, signal.Timestamps, signal.NumberOfSamplesInDataRecord.Value, current, (long)interval);
+                        ReadNextSignalSamples(signal.Samples,signal.Values, signal.Timestamps,signal.ScaleFactor(), signal.NumberOfSamplesInDataRecord.Value, current, (long)interval);
                     }
                     else
                     {
@@ -141,7 +141,7 @@ namespace EDFCSharp
                     {
                         var interval = signals[i].FrequencyInHZ == 0 ? 0 : (1000 / signals[i].FrequencyInHZ);
                         // Read that signal samples
-                        ReadNextSignalSamples(signals[i].Samples, signals[i].Timestamps,
+                        ReadNextSignalSamples(signals[i].Samples, signals[i].Values, signals[i].Timestamps, signals[i].ScaleFactor(),
                             signals[i].NumberOfSamplesInDataRecord.Value, (long)currentPerRecord, (long)interval);
                     }
                     else //read annotation
@@ -160,7 +160,7 @@ namespace EDFCSharp
         /// Read n next samples
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ReadNextSignalSamples(ICollection<short> samples, List<long> timestamps, int sampleCount, long currentTimestamp, long interval)
+        private void ReadNextSignalSamples(ICollection<short> samples, ICollection<double> values, List<long> timestamps, double scaleValue, int sampleCount, long currentTimestamp, long interval)
         {
             // Single file read operation per record
             byte[] intBytes = ReadBytes(sizeof(short) * sampleCount);
@@ -169,6 +169,7 @@ namespace EDFCSharp
                 // Fetch our sample short from our record buffer
                 short intVal = BitConverter.ToInt16(intBytes, i * sizeof(short));
                 samples.Add(intVal);
+                values.Add(intVal * scaleValue);
                 timestamps.Add(currentTimestamp);
                 currentTimestamp += interval;
             }

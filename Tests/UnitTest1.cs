@@ -11,9 +11,15 @@ namespace EDFSharpTests
     public class UnitTest1
     {
         [TestMethod]
-        public void Test_WriteReadEDF_ShouldReturnSameData()
+        public void Test_Read_File()
         {
-            var ecgSig = new EDFSignal();
+           string file =  Path.Combine(Environment.CurrentDirectory, "files", "Female57yrs 07-MAR-2009 00h00m00s APSG.edf");
+           var edf2 = new EDFFile(file);
+        }
+        [TestMethod]
+        public void Test_WriteRead_EDF_signals_only()
+        {
+            var ecgSig = new EDFSignal(0,10);
             ecgSig.Label.Value = "ECG";
             ecgSig.NumberOfSamplesInDataRecord.Value = 10; //Small number of samples for testing
             ecgSig.PhysicalDimension.Value = "mV";
@@ -26,7 +32,7 @@ namespace EDFSharpTests
             ecgSig.Reserved.Value = "RESERVED";
             ecgSig.Samples = new List<short> { 100, 50, 23, 75, 12, 88, 73, 12, 34, 83 };
 
-            var soundSig = new EDFSignal();
+            var soundSig = new EDFSignal(1,10);
             soundSig.Label.Value = "SOUND";
             soundSig.NumberOfSamplesInDataRecord.Value = 10;//Small number of samples for testing
             soundSig.PhysicalDimension.Value = "mV";
@@ -70,6 +76,8 @@ namespace EDFSharpTests
             Assert.AreEqual(edf2.Header.NumberOfDataRecords.ToAscii(), edf1.Header.NumberOfDataRecords.ToAscii());
             Assert.AreEqual(edf2.Header.SignalsReserved.ToAscii(), edf1.Header.SignalsReserved.ToAscii());
             Assert.AreEqual(edf2.Signals[0].Samples.Count, edf1.Signals[0].Samples.Count);
+            Assert.IsTrue(edf2.Signals[0].Equals(edf1.Signals[0]));
+            Assert.IsTrue(edf2.Signals[1].Equals(edf1.Signals[1]));
             System.IO.File.Delete(edfFilePath);
         }
 

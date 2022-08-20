@@ -179,7 +179,7 @@ namespace EDF.Viewer
                     if (signal.Times[i] >= StartTime.AddSeconds(minimumRange) &&
                         signal.Times[i] <= StartTime.AddSeconds(maximumRange))
                     {
-                        data.Add(new AnalogyPlottingPointData(signal.Label.Value, signal.Samples[i], signal.Times[i].DateTime, signal.Timestamps[i], AxisType));
+                        data.Add(new AnalogyPlottingPointData(signal.Label.Value, signal.Values[i], signal.Times[i].DateTime, signal.Timestamps[i], AxisType));
                     }
 
                 }

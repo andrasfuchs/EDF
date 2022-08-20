@@ -31,6 +31,7 @@ namespace EDFCSharp
         public double FrequencyInHZ { get; set; }
         public List<short> Samples { get; set; } = new List<short>();
         public List<long> Timestamps { get; set; } = new List<long>();
+        public List<double> Values { get; set; } = new List<double>();
 
         public List<DateTimeOffset> Times
         {
@@ -90,7 +91,7 @@ namespace EDFCSharp
                    Equals(Prefiltering, other.Prefiltering) &&
                    Equals(NumberOfSamplesInDataRecord, other.NumberOfSamplesInDataRecord) &&
                    Equals(Reserved, other.Reserved) && FrequencyInHZ.Equals(other.FrequencyInHZ) &&
-                   Samples.SequenceEqual(other.Samples) && Timestamps.SequenceEqual(other.Timestamps);
+                   Samples.SequenceEqual(other.Samples);
         }
 
         public override bool Equals(object obj)
