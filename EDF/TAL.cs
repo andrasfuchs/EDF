@@ -235,12 +235,15 @@ return 0;
         }
         public static byte[] GetBytesForTALIndex(int index)
         {
+            var strIndex = index.ToString();
+            var leftSide = (strIndex.Length > 1) ? strIndex.Substring(0, strIndex.Length - 1) : "0";
+            var rightSide = strIndex.Substring(strIndex.Length - 1);
+
             List<byte> result = new List<byte>();
-            var leftSide = index / 10;
-            var rightSide = index % 10;
-            result.AddRange(Encoding.ASCII.GetBytes($"+{leftSide}"));
+            result.AddRange(Encoding.ASCII.GetBytes("+"));
+            result.AddRange(Encoding.ASCII.GetBytes(leftSide));
             result.Add(TAL.byte_46);
-            result.AddRange(Encoding.ASCII.GetBytes($"{rightSide}"));
+            result.AddRange(Encoding.ASCII.GetBytes(rightSide));
             result.Add(TAL.byte_20);
             result.Add(TAL.byte_20);
             result.Add(TAL.byte_0);
