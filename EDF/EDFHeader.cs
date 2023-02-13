@@ -61,24 +61,24 @@ namespace EDFCSharp
         {
             Version.Value = version;
             PatientID.Value = patientId;
-            RecordID . Value = recordId;
+            RecordID.Value = recordId;
             RecordingStartDate.Value = recordingStartDate;
             RecordingStartTime.Value = recordingStartTime;
             SizeInBytes.Value = sizeInBytes;
             Reserved.Value = reserved;
             NumberOfDataRecords.Value = numberOfDataRecords;
             RecordDurationInSeconds.Value = recordDurationInSeconds;
-            NumberOfSignalsInRecord .Value = numberOfSignalsInRecord;
-            Labels. Value = labels;
-            TransducerTypes .Value = transducerTypes;
-            PhysicalDimensions .Value = physicalDimensions;
-            PhysicalMinimums .Value = physicalMinimums;
+            NumberOfSignalsInRecord.Value = numberOfSignalsInRecord;
+            Labels.Value = labels;
+            TransducerTypes.Value = transducerTypes;
+            PhysicalDimensions.Value = physicalDimensions;
+            PhysicalMinimums.Value = physicalMinimums;
             PhysicalMaximums.Value = physicalMaximums;
-            DigitalMinimums . Value = digitalMinimums;
-            DigitalMaximums .Value = digitalMaximums;
-            PreFilterings .Value = preFilterings;
-            NumberOfSamplesPerRecord . Value = numberOfSamplesPerRecord;
-            SignalsReserved .Value = signalsReserved;
+            DigitalMinimums.Value = digitalMinimums;
+            DigitalMaximums.Value = digitalMaximums;
+            PreFilterings.Value = preFilterings;
+            NumberOfSamplesPerRecord.Value = numberOfSamplesPerRecord;
+            SignalsReserved.Value = signalsReserved;
             StartTime = GetDateTime(RecordingStartDate.Value, RecordingStartTime.Value);
             EndTime = StartTime.AddSeconds(TotalDurationInSeconds);
         }
@@ -185,17 +185,24 @@ namespace EDFCSharp
         protected bool Equals(EDFHeader other)
         {
             return StartTime.Equals(other.StartTime) && EndTime.Equals(other.EndTime) &&
-                   Equals(Version, other.Version) && Equals(PatientID, other.PatientID) &&
-                   Equals(RecordID, other.RecordID) && Equals(RecordingStartDate, other.RecordingStartDate) &&
-                   Equals(RecordingStartTime, other.RecordingStartTime) && Equals(SizeInBytes, other.SizeInBytes) &&
-                   Equals(Reserved, other.Reserved) && Equals(NumberOfDataRecords, other.NumberOfDataRecords) &&
+                   Equals(Version, other.Version) && 
+                   Equals(PatientID, other.PatientID) &&
+                   Equals(RecordID, other.RecordID) && 
+                   Equals(RecordingStartDate, other.RecordingStartDate) &&
+                   Equals(RecordingStartTime, other.RecordingStartTime) && 
+                   Equals(SizeInBytes, other.SizeInBytes) &&
+                   Equals(Reserved, other.Reserved) && 
+                   Equals(NumberOfDataRecords, other.NumberOfDataRecords) &&
                    Equals(RecordDurationInSeconds, other.RecordDurationInSeconds) &&
-                   Equals(NumberOfSignalsInRecord, other.NumberOfSignalsInRecord) && Equals(Labels, other.Labels) &&
+                   Equals(NumberOfSignalsInRecord, other.NumberOfSignalsInRecord) && 
+                   Equals(Labels, other.Labels) &&
                    Equals(TransducerTypes, other.TransducerTypes) &&
                    Equals(PhysicalDimensions, other.PhysicalDimensions) &&
                    Equals(PhysicalMinimums, other.PhysicalMinimums) &&
-                   Equals(PhysicalMaximums, other.PhysicalMaximums) && Equals(DigitalMinimums, other.DigitalMinimums) &&
-                   Equals(DigitalMaximums, other.DigitalMaximums) && Equals(PreFilterings, other.PreFilterings) &&
+                   Equals(PhysicalMaximums, other.PhysicalMaximums) && 
+                   Equals(DigitalMinimums, other.DigitalMinimums) &&
+                   Equals(DigitalMaximums, other.DigitalMaximums) && 
+                   Equals(PreFilterings, other.PreFilterings) &&
                    Equals(NumberOfSamplesPerRecord, other.NumberOfSamplesPerRecord) &&
                    Equals(SignalsReserved, other.SignalsReserved);
         }
