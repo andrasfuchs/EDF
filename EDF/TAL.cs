@@ -58,7 +58,7 @@ namespace EDFCSharp
 #if NET
             return HashCode.Combine(startSeconds, durationSeconds, AnnotationDescription);
 #else
-return 0;
+            return 0;
 #endif
         }
     }
@@ -248,7 +248,6 @@ return 0;
             result.Add(TAL.byte_20);
             result.Add(TAL.byte_0);
             return result.ToArray();
-
         }
     }
 }

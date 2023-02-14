@@ -4,15 +4,36 @@ using System.Reflection.Emit;
 
 namespace EDFCSharp
 {
+    /// <summary>
+    /// Header of the EDF (European Data Format) file
+    /// </summary>
     public class EDFHeader
     {
         public DateTime StartTime { get; }
         public DateTime EndTime { get; }
+        /// <summary>
+        /// Version of this data format ("0")
+        /// </summary>
         public FixedLengthString Version { get; }
+        /// <summary>
+        /// Local patient identification
+        /// </summary>
         public FixedLengthString PatientID { get; }
+        /// <summary>
+        /// Local recording identification
+        /// </summary>
         public FixedLengthString RecordID { get; }
+        /// <summary>
+        /// Start date of recording (dd.mm.yy)
+        /// </summary>
         public FixedLengthString RecordingStartDate { get; }
+        /// <summary>
+        /// Start time of recording (hh.mm.ss)
+        /// </summary>
         public FixedLengthString RecordingStartTime { get; }
+        /// <summary>
+        /// Number of bytes in header record
+        /// </summary>
         public FixedLengthInt SizeInBytes { get; }
         public FixedLengthString Reserved { get; }
         public FixedLengthLong NumberOfDataRecords { get; }
@@ -176,8 +197,6 @@ namespace EDFCSharp
             }
 
             strOutput += "\n-----------------------------------\n";
-
-            //Console.WriteLine();
 
             return strOutput;
         }
