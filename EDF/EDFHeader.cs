@@ -35,19 +35,61 @@ namespace EDFCSharp
         /// Number of bytes in header record
         /// </summary>
         public FixedLengthInt SizeInBytes { get; }
+        /// <summary>
+        /// 44-byte long reserved section ("EDF+D" for EDF+)
+        /// </summary>
         public FixedLengthString Reserved { get; }
+        /// <summary>
+        /// Number of data records (-1 if unknown)
+        /// </summary>
         public FixedLengthLong NumberOfDataRecords { get; }
+        /// <summary>
+        /// Duration of a data record, in seconds
+        /// </summary>
         public FixedLengthDouble RecordDurationInSeconds { get; }
+        /// <summary>
+        /// Number of signals (ns) in data record
+        /// </summary>
         public FixedLengthInt NumberOfSignalsInRecord { get; }
+        /// <summary>
+        /// Labels of the signals, concatenated
+        /// </summary>
         public VariableLengthString Labels { get; }
+        /// <summary>
+        /// Transducer types of the signals, concatenated (e.g. "AgAgCl electrode")
+        /// </summary>
         public VariableLengthString TransducerTypes { get; }
+        /// <summary>
+        /// Physical dimensions/units of the signals, concatenated (e.g. "uV")
+        /// </summary>
         public VariableLengthString PhysicalDimensions { get; }
+        /// <summary>
+        /// Physical minimums in units of PhysicalDimension, concatenated (e.g. "-500")
+        /// </summary>
         public VariableLengthDouble PhysicalMinimums { get; }
+        /// <summary>
+        /// Physical maximums in units of PhysicalDimension, concatenated (e.g. "500")
+        /// </summary>
         public VariableLengthDouble PhysicalMaximums { get; }
+        /// <summary>
+        /// Digital minimums, concatenated (e.g. "-2048")
+        /// </summary>
         public VariableLengthInt DigitalMinimums { get; }
+        /// <summary>
+        /// Digital maximums, concatenated (e.g. "2047")
+        /// </summary>
         public VariableLengthInt DigitalMaximums { get; }
+        /// <summary>
+        /// Prefilterings, concatenated (e.g. "HP:0.1Hz LP:75Hz")
+        /// </summary>
         public VariableLengthString PreFilterings { get; }
+        /// <summary>
+        /// Number of samples in each data record, concatenated (e.g. "1000")
+        /// </summary>
         public VariableLengthInt NumberOfSamplesPerRecord { get; }
+        /// <summary>
+        /// 32-byte long reserved section, concatenated
+        /// </summary>
         public VariableLengthString SignalsReserved { get; }
         public double TotalDurationInSeconds => NumberOfDataRecords.Value * RecordDurationInSeconds.Value;
 

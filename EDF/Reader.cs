@@ -8,6 +8,9 @@ using System.Text;
 
 namespace EDFCSharp
 {
+    /// <summary>
+    /// EDF+ file reader
+    /// </summary>
     internal class Reader : BinaryReader
     {
         public Reader(FileStream fs) : base(fs) { }

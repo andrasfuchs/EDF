@@ -81,7 +81,6 @@ namespace EDFCSharp
             Reader = new Reader(File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read));
             Header = Reader.ReadHeader();
             Signals = Reader.AllocateSignals(Header);
-
         }
 
         /// <summary>
