@@ -10,6 +10,9 @@ using System.Text;
 
 namespace EDFCSharp
 {
+    /// <summary>
+    /// EDF+ file writer
+    /// </summary>
     public class EDFWriter : BinaryWriter
     {
         public EDFWriter(FileStream fs) : base(fs) { }
@@ -141,7 +144,7 @@ namespace EDFCSharp
                 foreach (EDFSignal signal in edf.Signals)
                 {
                     int signalStartPos = recordIndex * signal.NumberOfSamplesInDataRecord.Value;
-                    int signalEndPos = Math.Min(signalStartPos + signal.NumberOfSamplesInDataRecord.Value, signal.Samples.Count);
+                    int signalEndPos = Math.Max(signalStartPos + signal.NumberOfSamplesInDataRecord.Value, signal.Samples.Count);
                     for (; signalStartPos < signalEndPos; signalStartPos++)
                     {
                         Write(BitConverter.GetBytes(signal.Samples[signalStartPos]));
