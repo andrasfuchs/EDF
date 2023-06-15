@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 
 namespace EDFCSharp
 {
@@ -10,7 +8,7 @@ namespace EDFCSharp
     /// Annotation signal representing annotations in the EDF+ file ("EDF Annotations").
     /// Non-annotation signal time offsets are also stored in the annotations signal as the first items in their TALs.
     /// </summary>
-    public class AnnotationSignal : IEDFBaseSignal<TAL>
+    public class AnnotationSignal : IEDFBaseSignal<TAL>, IEDFBaseSignal
     {
         /// <summary>
         /// Provided sample value after scaling.
@@ -87,16 +85,23 @@ namespace EDFCSharp
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((AnnotationSignal)obj);
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj.GetType() == GetType() && Equals((AnnotationSignal)obj);
         }
 
         public override int GetHashCode()
         {
 #if NET
-            var hashCode = new HashCode();
+            HashCode hashCode = new HashCode();
             hashCode.Add(Index);
             hashCode.Add(Label.Value);
             hashCode.Add(TransducerType.Value);

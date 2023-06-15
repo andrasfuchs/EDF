@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace EDFCSharp
 {
-    public interface IEDFBaseSignal<T>
+    public interface IEDFBaseSignal
     {
         /// <summary>
         /// Index of that signal in the EDF file it belongs to.
@@ -22,8 +18,11 @@ namespace EDFCSharp
         FixedLengthString Prefiltering { get; }
         FixedLengthInt NumberOfSamplesInDataRecord { get; }
         FixedLengthString Reserved { get; }
-        List<T> Samples { get; set; }
         long SamplesCount { get; }
     }
 
+    public interface IEDFBaseSignal<T> : IEDFBaseSignal
+    {
+        List<T> Samples { get; set; }
+    }
 }
