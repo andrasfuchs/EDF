@@ -19,6 +19,11 @@ namespace EDFCSharp
 
         public void WriteEDF(EDFFile edf, string edfFilePath)
         {
+            List<IEDFBaseSignal> allSignals = new List<IEDFBaseSignal>();
+            allSignals.AddRange(edf.Signals);
+            allSignals.AddRange(edf.AnnotationSignals);
+
+            edf.Header.NumberOfSignalsInRecord.Value = allSignals.Count;
             edf.Header.SizeInBytes.Value = CalcNumOfBytesInHeader(edf);
 
             //----------------- Fixed length header items -----------------
@@ -34,34 +39,34 @@ namespace EDFCSharp
             WriteItem(edf.Header.NumberOfSignalsInRecord);
 
             //----------------- Variable length header items -----------------
-            var headerSignalsLabel = edf.Signals.Select(s => s.Label);
+            IEnumerable<FixedLengthString> headerSignalsLabel = allSignals.Select(s => s.Label);
             WriteItem(headerSignalsLabel);
-            
-            var trandsducerTypes = edf.Signals.Select(s => s.TransducerType);
+
+            IEnumerable<FixedLengthString> trandsducerTypes = allSignals.Select(s => s.TransducerType);
             WriteItem(trandsducerTypes);
 
-            var physicalDimensions = edf.Signals.Select(s => s.PhysicalDimension);
+            IEnumerable<FixedLengthString> physicalDimensions = allSignals.Select(s => s.PhysicalDimension);
             WriteItem(physicalDimensions);
 
-            var physicalMinimums = edf.Signals.Select(s => s.PhysicalMinimum);
+            IEnumerable<FixedLengthDouble> physicalMinimums = allSignals.Select(s => s.PhysicalMinimum);
             WriteItem(physicalMinimums);
 
-            var physicalMaximuns = edf.Signals.Select(s => s.PhysicalMaximum);
+            IEnumerable<FixedLengthDouble> physicalMaximuns = allSignals.Select(s => s.PhysicalMaximum);
             WriteItem(physicalMaximuns);
 
-            var digitalMinimuns = edf.Signals.Select(s => s.DigitalMinimum);
+            IEnumerable<FixedLengthInt> digitalMinimuns = allSignals.Select(s => s.DigitalMinimum);
             WriteItem(digitalMinimuns);
 
-            var digitalMaximuns = edf.Signals.Select(s => s.DigitalMaximum);
+            IEnumerable<FixedLengthInt> digitalMaximuns = allSignals.Select(s => s.DigitalMaximum);
             WriteItem(digitalMaximuns);
 
-            var prefilterings = edf.Signals.Select(s => s.Prefiltering);
+            IEnumerable<FixedLengthString> prefilterings = allSignals.Select(s => s.Prefiltering);
             WriteItem(prefilterings);
 
-            var samplesCountPerRecords = edf.Signals.Select(s => s.NumberOfSamplesInDataRecord);
+            IEnumerable<FixedLengthInt> samplesCountPerRecords = allSignals.Select(s => s.NumberOfSamplesInDataRecord);
             WriteItem(samplesCountPerRecords);
 
-            var reservedValues = edf.Signals.Select(s => s.Reserved);
+            IEnumerable<FixedLengthString> reservedValues = allSignals.Select(s => s.Reserved);
             WriteItem(reservedValues);
 
             Debug.WriteLine("Writer position after header: " + BaseStream.Position);
@@ -79,14 +84,15 @@ namespace EDFCSharp
             int totalFixedLength = 256;
             int ns = edf.Signals.Length;
             ns = edf.AnnotationSignals != null ? ns + edf.AnnotationSignals.Count() : ns;
-            int totalVariableLength = ns * 16 + (ns * 80) * 2 + (ns * 8) * 6 + (ns * 32);
+            int totalVariableLength = (ns * 16) + (ns * 80 * 2) + (ns * 8 * 6) + (ns * 32);
             return totalFixedLength + totalVariableLength;
         }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteItem(HeaderItem headerItem)
         {
             string strItem = headerItem.ToAscii();
-            if (strItem == null) strItem = "";
+            strItem ??= "";
             byte[] itemBytes = AsciiToBytes(strItem);
             Write(itemBytes);
         }
@@ -95,7 +101,7 @@ namespace EDFCSharp
         private void WriteItem(IEnumerable<HeaderItem> headerItems)
         {
             string joinedItems = StrJoin(headerItems);
-            if (joinedItems == null) joinedItems = "";
+            joinedItems ??= "";
             byte[] itemBytes = AsciiToBytes(joinedItems);
             Write(itemBytes);
         }
@@ -105,7 +111,7 @@ namespace EDFCSharp
         {
             string joinedString = "";
 
-            foreach (var item in list)
+            foreach (HeaderItem item in list)
             {
                 joinedString += item.ToAscii();
             }
@@ -123,12 +129,16 @@ namespace EDFCSharp
         private static byte[] AsciiToIntBytes(string strItem, int length)
         {
             string strInt = "";
-            string str = strItem.Substring(0, length);
+            string str = strItem[..length];
             double val = Convert.ToDouble(str);
             strInt += val.ToString("0").PadRight(length, ' ');
             return Encoding.ASCII.GetBytes(strInt);
         }
 
+        /// <summary>
+        /// Write signals to the EDF+ file
+        /// </summary>
+        /// <param name="edf"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteSignals(EDFFile edf)
         {
@@ -139,20 +149,35 @@ namespace EDFCSharp
             }
             long numberOfRecords = edf.Header.NumberOfDataRecords.Value;
 
+            // Write each record after one another. Each record represents a time period.
             for (int recordIndex = 0; recordIndex < numberOfRecords; recordIndex++)
             {
+                // Write each signal segment into the record
                 foreach (EDFSignal signal in edf.Signals)
                 {
-                    int signalStartPos = recordIndex * signal.NumberOfSamplesInDataRecord.Value;
-                    int signalEndPos = Math.Max(signalStartPos + signal.NumberOfSamplesInDataRecord.Value, signal.Samples.Count);
-                    for (; signalStartPos < signalEndPos; signalStartPos++)
+                    // Let's find the start and end position of the signal segment
+                    int signalIndexStart = recordIndex * signal.NumberOfSamplesInDataRecord.Value;
+                    int signalIndexEnd = Math.Min(signalIndexStart + signal.NumberOfSamplesInDataRecord.Value, signal.Samples.Count);
+
+                    int bytesWritten = 0;
+                    for (int signalIndex = signalIndexStart; signalIndex < signalIndexEnd; signalIndex++)
                     {
-                        Write(BitConverter.GetBytes(signal.Samples[signalStartPos]));
+                        Write(BitConverter.GetBytes(signal.Samples[signalIndex]));
+                        bytesWritten += 2;
+                    }
+
+                    // If the signal segment is not full, fill the rest of the segment with 0
+                    int blockSize = signal.NumberOfSamplesInDataRecord.Value * 2;
+                    for (int i = bytesWritten; i < blockSize; i++)
+                    {
+                        Write((byte)0);
                     }
                 }
+
+                // Write each annotation signal segment into the record
                 if (edf.AnnotationSignals != null && edf.AnnotationSignals.Any())
                 {
-                    foreach (var annotationSignal in edf.AnnotationSignals)
+                    foreach (AnnotationSignal annotationSignal in edf.AnnotationSignals)
                     {
                         WriteAnnotations(recordIndex, annotationSignal.Samples, annotationSignal.NumberOfSamplesInDataRecord.Value);
                     }
@@ -173,7 +198,7 @@ namespace EDFCSharp
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteAnnotations(int index, List<TAL> annotations, int sampleCountPerRecord)
         {
-            var bytesWritten = 0;
+            int bytesWritten = 0;
             bytesWritten += WriteAnnotationIndex(index);
             if (index < annotations.Count)
             {
@@ -181,7 +206,7 @@ namespace EDFCSharp
             }
 
             //Fills block size left with 0
-            var blockSize = sampleCountPerRecord * 2;
+            int blockSize = sampleCountPerRecord * 2;
 #if TRACE_BYTES
             Debug.WriteLine($"Total bytes for Annotation index {0} is {bytesWritten}");
 #endif
@@ -190,14 +215,15 @@ namespace EDFCSharp
             Debug.WriteLine($"Filling with {blockSize - bytesWritten} bytes");
 #endif
             for (int i = bytesWritten; i < blockSize; i++)
+            {
                 Write(TAL.byte_0);
-
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int WriteAnnotation(TAL tal)
         {
-            var bytesToWrite = TALExtensions.GetBytes(tal);
+            byte[] bytesToWrite = TALExtensions.GetBytes(tal);
             Write(bytesToWrite);
             return bytesToWrite.Length;
         }
@@ -205,7 +231,7 @@ namespace EDFCSharp
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int WriteAnnotationIndex(int index)
         {
-            var bytesToWrite = TALExtensions.GetBytesForTALIndex(index);
+            byte[] bytesToWrite = TALExtensions.GetBytesForTALIndex(index);
             Write(bytesToWrite);
             return bytesToWrite.Length;
         }
